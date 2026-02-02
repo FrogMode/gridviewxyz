@@ -22,14 +22,15 @@ def fetch_f1_sessions(year: int = None) -> list:
         "session_key": s.get("session_key"),
         "meeting_key": s.get("meeting_key"),
         "name": s.get("session_name"),
-        "meeting": s.get("meeting_name"),
+        "meeting": s.get("location") or s.get("circuit_short_name") or "Unknown",
         "location": s.get("location"),
         "country": s.get("country_name"),
+        "circuit": s.get("circuit_short_name"),
         "date": s.get("date_start"),
         "type": s.get("session_type")
     } for s in sessions]
 
-def fetch_f1_drivers(session_key: int) -> list:
+def fetch_f1_drivers(session_key) -> list:
     """Get drivers for a session."""
     url = f"{OPENF1_BASE}/drivers?session_key={session_key}"
     req = urllib.request.Request(url, headers={"User-Agent": "GridView/1.0"})
@@ -37,13 +38,22 @@ def fetch_f1_drivers(session_key: int) -> list:
     with urllib.request.urlopen(req, timeout=15) as resp:
         drivers = json.loads(resp.read())
     
-    return [{
-        "number": d.get("driver_number"),
-        "code": d.get("name_acronym"),
-        "name": f"{d.get('first_name', '')} {d.get('last_name', '')}".strip(),
-        "team": d.get("team_name"),
-        "team_color": d.get("team_colour")
-    } for d in drivers]
+    # Deduplicate by driver number (API sometimes returns duplicates)
+    seen = set()
+    unique_drivers = []
+    for d in drivers:
+        num = d.get("driver_number")
+        if num and num not in seen:
+            seen.add(num)
+            unique_drivers.append({
+                "number": num,
+                "code": d.get("name_acronym"),
+                "name": f"{d.get('first_name', '')} {d.get('last_name', '')}".strip(),
+                "team": d.get("team_name"),
+                "team_color": d.get("team_colour")
+            })
+    
+    return sorted(unique_drivers, key=lambda x: x.get("number", 99))
 
 def fetch_f1_car_data(session_key: int = None, driver_number: int = None, limit: int = 100) -> list:
     """Get car telemetry data."""
