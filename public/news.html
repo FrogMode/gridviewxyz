@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorsport News - GridView</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        racing: { red: '#e10600', orange: '#ff6b35', dark: '#0a0a0f', card: '#16161d', border: '#2a2a35' }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(180deg, #0a0a0f 0%, #111117 100%); min-height: 100vh; }
+        .category-btn { transition: all 0.2s ease; }
+        .category-btn.active { background: #e10600; color: white; }
+        .category-btn:not(.active):hover { background: rgba(255,255,255,0.1); }
+        .news-card { transition: all 0.2s ease; }
+        .news-card:hover { transform: translateY(-2px); border-color: rgba(225, 6, 0, 0.4); }
+        .news-card:hover .news-image { transform: scale(1.02); }
+        .news-image { transition: transform 0.3s ease; }
+        .shimmer { background: linear-gradient(90deg, #16161d 0%, #2a2a35 50%, #16161d 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Nav -->
+    <nav class="border-b border-racing-border sticky top-0 bg-racing-dark/95 backdrop-blur z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-racing-red rounded flex items-center justify-center">
+                    <span class="text-sm">🏁</span>
+                </div>
+                <span class="font-bold text-lg">GridView</span>
+            </a>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/" class="text-gray-400 hover:text-white">Home</a>
+                <a href="/results.html" class="text-gray-400 hover:text-white">Results</a>
+                <span class="text-racing-red font-medium">News</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto px-4 py-8">
+        <div class="flex items-center gap-4 mb-6">
+            <span class="text-4xl">📰</span>
+            <div>
+                <h1 class="text-3xl font-bold">Motorsport News</h1>
+                <p class="text-gray-400">Latest headlines from across the racing world</p>
+            </div>
+        </div>
+        
+        <!-- Category Filter -->
+        <div id="category-filter" class="flex flex-wrap gap-2">
+            <div class="shimmer h-9 w-24 rounded-lg"></div>
+            <div class="shimmer h-9 w-20 rounded-lg"></div>
+            <div class="shimmer h-9 w-16 rounded-lg"></div>
+        </div>
+    </header>
+
+    <!-- News Grid -->
+    <main class="max-w-6xl mx-auto px-4 pb-12">
+        <div id="news-grid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Loading skeleton -->
+            <div class="news-card bg-racing-card border border-racing-border rounded-xl overflow-hidden">
+                <div class="shimmer h-48 w-full"></div>
+                <div class="p-4 space-y-3">
+                    <div class="shimmer h-6 w-3/4 rounded"></div>
+                    <div class="shimmer h-4 w-full rounded"></div>
+                    <div class="shimmer h-4 w-2/3 rounded"></div>
+                </div>
+            </div>
+            <div class="news-card bg-racing-card border border-racing-border rounded-xl overflow-hidden">
+                <div class="shimmer h-48 w-full"></div>
+                <div class="p-4 space-y-3">
+                    <div class="shimmer h-6 w-3/4 rounded"></div>
+                    <div class="shimmer h-4 w-full rounded"></div>
+                    <div class="shimmer h-4 w-2/3 rounded"></div>
+                </div>
+            </div>
+            <div class="news-card bg-racing-card border border-racing-border rounded-xl overflow-hidden">
+                <div class="shimmer h-48 w-full"></div>
+                <div class="p-4 space-y-3">
+                    <div class="shimmer h-6 w-3/4 rounded"></div>
+                    <div class="shimmer h-4 w-full rounded"></div>
+                    <div class="shimmer h-4 w-2/3 rounded"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More -->
+        <div id="load-more-container" class="mt-8 text-center hidden">
+            <button onclick="loadMore()" id="load-more-btn" class="px-6 py-3 bg-racing-card border border-racing-border rounded-lg font-medium hover:bg-white/5 transition-colors">
+                Load More
+            </button>
+        </div>
+    </main>
+
+    <!-- Footer attribution -->
+    <footer class="max-w-6xl mx-auto px-4 py-6 border-t border-racing-border">
+        <p class="text-gray-500 text-sm text-center">News powered by <a href="https://motorsport.com" target="_blank" class="text-gray-400 hover:text-white">Motorsport.com</a></p>
+    </footer>
+
+    <script>
+        let currentCategory = 'all';
+        let categories = {};
+        let articleCount = 0;
+        const ARTICLES_PER_PAGE = 12;
+
+        function formatTimeAgo(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function getCategoryColor(cat) {
+            const colors = {
+                'Formula 1': 'bg-red-500/20 text-red-400',
+                'F1': 'bg-red-500/20 text-red-400',
+                'WRC': 'bg-blue-500/20 text-blue-400',
+                'MotoGP': 'bg-orange-500/20 text-orange-400',
+                'IndyCar': 'bg-yellow-500/20 text-yellow-400',
+                'NASCAR': 'bg-purple-500/20 text-purple-400',
+                'NASCAR Cup': 'bg-purple-500/20 text-purple-400',
+                'WEC': 'bg-green-500/20 text-green-400',
+                'IMSA': 'bg-green-500/20 text-green-400',
+            };
+            return colors[cat] || 'bg-gray-500/20 text-gray-400';
+        }
+
+        async function init() {
+            try {
+                // Fetch categories
+                const resp = await fetch('/api/news?categories=true');
+                const data = await resp.json();
+                categories = data.labels || {};
+                
+                renderCategoryFilter();
+                loadNews();
+            } catch (e) {
+                console.error('Init error:', e);
+                document.getElementById('news-grid').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-400">
+                        Error loading news: ${e.message}
+                    </div>
+                `;
+            }
+        }
+
+        function renderCategoryFilter() {
+            const container = document.getElementById('category-filter');
+            let html = '';
+            
+            for (const [key, label] of Object.entries(categories)) {
+                html += `
+                    <button 
+                        onclick="switchCategory('${key}')" 
+                        id="cat-${key}"
+                        class="category-btn px-4 py-2 rounded-lg text-sm font-medium border border-racing-border ${key === currentCategory ? 'active' : 'text-gray-400'}"
+                    >
+                        ${label}
+                    </button>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function switchCategory(category) {
+            if (category === currentCategory) return;
+            
+            // Update UI
+            document.getElementById(`cat-${currentCategory}`)?.classList.remove('active');
+            document.getElementById(`cat-${currentCategory}`)?.classList.add('text-gray-400');
+            document.getElementById(`cat-${category}`)?.classList.add('active');
+            document.getElementById(`cat-${category}`)?.classList.remove('text-gray-400');
+            
+            currentCategory = category;
+            articleCount = 0;
+            loadNews();
+        }
+
+        async function loadNews(append = false) {
+            const grid = document.getElementById('news-grid');
+            const loadMoreContainer = document.getElementById('load-more-container');
+            
+            if (!append) {
+                grid.innerHTML = `
+                    <div class="news-card bg-racing-card border border-racing-border rounded-xl overflow-hidden">
+                        <div class="shimmer h-48 w-full"></div>
+                        <div class="p-4 space-y-3">
+                            <div class="shimmer h-6 w-3/4 rounded"></div>
+                            <div class="shimmer h-4 w-full rounded"></div>
+                        </div>
+                    </div>
+                `.repeat(6);
+            }
+            
+            try {
+                const resp = await fetch(`/api/news?category=${currentCategory}&limit=${ARTICLES_PER_PAGE}`);
+                const data = await resp.json();
+                
+                if (!data.articles || data.articles.length === 0) {
+                    grid.innerHTML = `
+                        <div class="col-span-full text-center py-12 text-gray-400">
+                            No news found for this category
+                        </div>
+                    `;
+                    loadMoreContainer.classList.add('hidden');
+                    return;
+                }
+                
+                renderNews(data.articles, append);
+                articleCount = data.articles.length;
+                
+                // Show load more if we got full page
+                if (data.articles.length >= ARTICLES_PER_PAGE) {
+                    loadMoreContainer.classList.remove('hidden');
+                } else {
+                    loadMoreContainer.classList.add('hidden');
+                }
+                
+            } catch (e) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-400">
+                        Error loading news: ${e.message}
+                    </div>
+                `;
+            }
+        }
+
+        function renderNews(articles, append = false) {
+            const grid = document.getElementById('news-grid');
+            
+            let html = articles.map(article => {
+                const primaryCategory = article.categories?.[0] || '';
+                const categoryBadge = primaryCategory ? `
+                    <span class="text-xs px-2 py-1 rounded ${getCategoryColor(primaryCategory)}">${primaryCategory}</span>
+                ` : '';
+                
+                return `
+                    <a href="${article.link}" target="_blank" rel="noopener" class="news-card bg-racing-card border border-racing-border rounded-xl overflow-hidden block">
+                        ${article.image ? `
+                            <div class="h-48 overflow-hidden bg-racing-border">
+                                <img src="${article.image}" alt="" class="news-image w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'h-full flex items-center justify-center text-4xl\\'>🏎️</div>'">
+                            </div>
+                        ` : `
+                            <div class="h-48 bg-racing-border flex items-center justify-center text-4xl">🏎️</div>
+                        `}
+                        <div class="p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                ${categoryBadge}
+                                <span class="text-xs text-gray-500">${formatTimeAgo(article.published)}</span>
+                            </div>
+                            <h3 class="font-semibold text-lg leading-tight mb-2 line-clamp-2">${article.title}</h3>
+                            <p class="text-sm text-gray-400 line-clamp-2">${article.description}</p>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            
+            if (append) {
+                grid.innerHTML += html;
+            } else {
+                grid.innerHTML = html;
+            }
+        }
+
+        function loadMore() {
+            // For now, just scroll to top - RSS doesn't support pagination
+            // In future could cache more items and paginate client-side
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
