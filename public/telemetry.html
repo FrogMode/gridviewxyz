@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Telemetry - GridView</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        racing: { red: '#e10600', orange: '#ff6b35', dark: '#0a0a0f', card: '#16161d', border: '#2a2a35' }
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(180deg, #0a0a0f 0%, #111117 100%); min-height: 100vh; }
+        .series-btn.active { background: #e10600; border-color: #e10600; }
+        .driver-btn.active { border-color: var(--team-color, #e10600); background: color-mix(in srgb, var(--team-color, #e10600) 20%, transparent); }
+        .gauge { transition: all 0.1s ease; }
+        .speed-value { font-variant-numeric: tabular-nums; }
+        .telemetry-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+        @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .live-indicator { animation: pulse-live 2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Nav -->
+    <nav class="border-b border-racing-border sticky top-0 bg-racing-dark/95 backdrop-blur z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-racing-red rounded flex items-center justify-center">
+                    <span class="text-sm">🏁</span>
+                </div>
+                <span class="font-bold text-lg">GridView</span>
+            </a>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="/" class="text-gray-400 hover:text-white">Home</a>
+                <a href="/results.html" class="text-gray-400 hover:text-white">Results</a>
+                <a href="/news.html" class="text-gray-400 hover:text-white">News</a>
+                <span class="text-racing-red font-medium">Telemetry</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="max-w-7xl mx-auto px-4 py-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-4">
+                <span class="text-4xl">📊</span>
+                <div>
+                    <h1 class="text-3xl font-bold">Live Telemetry</h1>
+                    <p class="text-gray-400">Real-time car data visualization</p>
+                </div>
+            </div>
+            <div id="live-status" class="flex items-center gap-2 text-sm text-gray-400">
+                <span class="w-2 h-2 bg-gray-500 rounded-full"></span>
+                <span>Select a session</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Controls -->
+    <div class="max-w-7xl mx-auto px-4 mb-6">
+        <div class="bg-racing-card border border-racing-border rounded-xl p-4 space-y-4">
+            <!-- Series Selection -->
+            <div class="flex flex-wrap gap-2">
+                <button onclick="selectSeries('f1')" id="series-f1" class="series-btn active px-4 py-2 rounded-lg border border-racing-border font-medium text-sm">
+                    🏎️ Formula 1
+                </button>
+                <button onclick="selectSeries('imsa')" id="series-imsa" class="series-btn px-4 py-2 rounded-lg border border-racing-border font-medium text-sm text-gray-400 opacity-50" disabled title="Coming soon">
+                    🏁 IMSA
+                </button>
+                <button onclick="selectSeries('wec')" id="series-wec" class="series-btn px-4 py-2 rounded-lg border border-racing-border font-medium text-sm text-gray-400 opacity-50" disabled title="Coming soon">
+                    🌐 WEC
+                </button>
+            </div>
+            
+            <!-- Session Selection -->
+            <div class="flex flex-wrap gap-4">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="text-xs text-gray-500 uppercase tracking-wide">Session</label>
+                    <select id="session-select" onchange="selectSession(this.value)" class="w-full mt-1 bg-racing-dark border border-racing-border rounded-lg px-3 py-2 text-white">
+                        <option value="">Select session...</option>
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="text-xs text-gray-500 uppercase tracking-wide">Driver</label>
+                    <select id="driver-select" onchange="selectDriver(this.value)" class="w-full mt-1 bg-racing-dark border border-racing-border rounded-lg px-3 py-2 text-white" disabled>
+                        <option value="">Select driver...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telemetry Dashboard -->
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+        <!-- Quick Stats -->
+        <div class="telemetry-grid mb-6">
+            <div class="bg-racing-card border border-racing-border rounded-xl p-5">
+                <div class="text-xs text-gray-500 uppercase tracking-wide mb-2">Speed</div>
+                <div class="flex items-end gap-2">
+                    <span id="stat-speed" class="text-5xl font-bold speed-value">---</span>
+                    <span class="text-gray-400 mb-1">km/h</span>
+                </div>
+                <div class="mt-3 h-2 bg-racing-border rounded-full overflow-hidden">
+                    <div id="speed-bar" class="h-full bg-gradient-to-r from-green-500 via-yellow-500 to-red-500 transition-all duration-100" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="bg-racing-card border border-racing-border rounded-xl p-5">
+                <div class="text-xs text-gray-500 uppercase tracking-wide mb-2">Throttle</div>
+                <div class="flex items-end gap-2">
+                    <span id="stat-throttle" class="text-5xl font-bold speed-value">---</span>
+                    <span class="text-gray-400 mb-1">%</span>
+                </div>
+                <div class="mt-3 h-2 bg-racing-border rounded-full overflow-hidden">
+                    <div id="throttle-bar" class="h-full bg-green-500 transition-all duration-100" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="bg-racing-card border border-racing-border rounded-xl p-5">
+                <div class="text-xs text-gray-500 uppercase tracking-wide mb-2">Brake</div>
+                <div class="flex items-end gap-2">
+                    <span id="stat-brake" class="text-5xl font-bold speed-value">---</span>
+                    <span class="text-gray-400 mb-1">%</span>
+                </div>
+                <div class="mt-3 h-2 bg-racing-border rounded-full overflow-hidden">
+                    <div id="brake-bar" class="h-full bg-red-500 transition-all duration-100" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="bg-racing-card border border-racing-border rounded-xl p-5">
+                <div class="text-xs text-gray-500 uppercase tracking-wide mb-2">RPM / Gear</div>
+                <div class="flex items-end gap-3">
+                    <span id="stat-rpm" class="text-4xl font-bold speed-value">---</span>
+                    <div class="flex items-center gap-1 mb-1">
+                        <span class="text-2xl font-bold text-racing-red" id="stat-gear">-</span>
+                        <span class="text-gray-500 text-sm">gear</span>
+                    </div>
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                    <span id="stat-drs" class="text-xs px-2 py-1 rounded bg-gray-700 text-gray-400">DRS</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Speed Chart -->
+        <div class="bg-racing-card border border-racing-border rounded-xl p-5 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold">Speed Trace</h3>
+                <span class="text-xs text-gray-500">Last 100 samples</span>
+            </div>
+            <div class="h-48">
+                <canvas id="speed-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Throttle/Brake Chart -->
+        <div class="bg-racing-card border border-racing-border rounded-xl p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold">Throttle & Brake</h3>
+                <div class="flex items-center gap-4 text-xs">
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded"></span> Throttle</span>
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded"></span> Brake</span>
+                </div>
+            </div>
+            <div class="h-48">
+                <canvas id="inputs-chart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentSeries = 'f1';
+        let currentSession = null;
+        let currentDriver = null;
+        let refreshInterval = null;
+        let speedChart = null;
+        let inputsChart = null;
+        
+        // Initialize charts
+        function initCharts() {
+            const chartConfig = {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 0 },
+                scales: {
+                    x: { display: false },
+                    y: { 
+                        grid: { color: '#2a2a35' },
+                        ticks: { color: '#6b7280' }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            };
+            
+            speedChart = new Chart(document.getElementById('speed-chart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        borderColor: '#e10600',
+                        borderWidth: 2,
+                        fill: true,
+                        backgroundColor: 'rgba(225, 6, 0, 0.1)',
+                        tension: 0.2,
+                        pointRadius: 0
+                    }]
+                },
+                options: { ...chartConfig, scales: { ...chartConfig.scales, y: { ...chartConfig.scales.y, min: 0, max: 370 } } }
+            });
+            
+            inputsChart = new Chart(document.getElementById('inputs-chart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            data: [],
+                            borderColor: '#22c55e',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 0
+                        },
+                        {
+                            data: [],
+                            borderColor: '#ef4444',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.1,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: { ...chartConfig, scales: { ...chartConfig.scales, y: { ...chartConfig.scales.y, min: 0, max: 100 } } }
+            });
+        }
+        
+        async function loadSessions() {
+            const select = document.getElementById('session-select');
+            select.innerHTML = '<option value="">Loading...</option>';
+            
+            try {
+                const resp = await fetch(`/api/telemetry?series=${currentSeries}&action=sessions`);
+                const data = await resp.json();
+                
+                // Group by meeting and show recent first
+                const sessions = (data.sessions || []).reverse().slice(0, 50);
+                
+                let html = '<option value="">Select session...</option>';
+                sessions.forEach(s => {
+                    const date = s.date ? new Date(s.date).toLocaleDateString() : '';
+                    html += `<option value="${s.session_key}">${s.meeting} - ${s.name} (${date})</option>`;
+                });
+                select.innerHTML = html;
+            } catch (e) {
+                select.innerHTML = '<option value="">Error loading sessions</option>';
+            }
+        }
+        
+        async function selectSession(sessionKey) {
+            currentSession = sessionKey;
+            const driverSelect = document.getElementById('driver-select');
+            
+            if (!sessionKey) {
+                driverSelect.innerHTML = '<option value="">Select driver...</option>';
+                driverSelect.disabled = true;
+                stopLiveUpdates();
+                return;
+            }
+            
+            driverSelect.innerHTML = '<option value="">Loading drivers...</option>';
+            
+            try {
+                const resp = await fetch(`/api/telemetry?series=${currentSeries}&action=drivers&session=${sessionKey}`);
+                const data = await resp.json();
+                
+                let html = '<option value="">Select driver...</option>';
+                (data.drivers || []).forEach(d => {
+                    html += `<option value="${d.number}" data-color="${d.team_color}">${d.code} - ${d.name} (${d.team})</option>`;
+                });
+                driverSelect.innerHTML = html;
+                driverSelect.disabled = false;
+            } catch (e) {
+                driverSelect.innerHTML = '<option value="">Error loading drivers</option>';
+            }
+        }
+        
+        function selectDriver(driverNumber) {
+            currentDriver = driverNumber;
+            
+            if (!driverNumber) {
+                stopLiveUpdates();
+                resetDisplay();
+                return;
+            }
+            
+            // Start live updates
+            startLiveUpdates();
+        }
+        
+        function startLiveUpdates() {
+            stopLiveUpdates();
+            updateTelemetry();
+            refreshInterval = setInterval(updateTelemetry, 1000);
+            
+            document.getElementById('live-status').innerHTML = `
+                <span class="w-2 h-2 bg-green-500 rounded-full live-indicator"></span>
+                <span class="text-green-400">Live</span>
+            `;
+        }
+        
+        function stopLiveUpdates() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+            document.getElementById('live-status').innerHTML = `
+                <span class="w-2 h-2 bg-gray-500 rounded-full"></span>
+                <span>Paused</span>
+            `;
+        }
+        
+        async function updateTelemetry() {
+            if (!currentSession || !currentDriver) return;
+            
+            try {
+                const resp = await fetch(`/api/telemetry?series=${currentSeries}&action=telemetry&session=${currentSession}&driver=${currentDriver}&limit=100`);
+                const data = await resp.json();
+                
+                if (!data.telemetry || data.telemetry.length === 0) return;
+                
+                // Get latest reading
+                const latest = data.telemetry[data.telemetry.length - 1];
+                
+                // Update stats
+                document.getElementById('stat-speed').textContent = latest.speed || 0;
+                document.getElementById('stat-throttle').textContent = latest.throttle || 0;
+                document.getElementById('stat-brake').textContent = latest.brake || 0;
+                document.getElementById('stat-rpm').textContent = latest.rpm ? latest.rpm.toLocaleString() : '---';
+                document.getElementById('stat-gear').textContent = latest.n_gear || '-';
+                
+                // Update bars
+                document.getElementById('speed-bar').style.width = `${(latest.speed || 0) / 370 * 100}%`;
+                document.getElementById('throttle-bar').style.width = `${latest.throttle || 0}%`;
+                document.getElementById('brake-bar').style.width = `${latest.brake || 0}%`;
+                
+                // DRS indicator
+                const drsEl = document.getElementById('stat-drs');
+                if (latest.drs === 1) {
+                    drsEl.className = 'text-xs px-2 py-1 rounded bg-green-500 text-white font-bold';
+                    drsEl.textContent = 'DRS OPEN';
+                } else {
+                    drsEl.className = 'text-xs px-2 py-1 rounded bg-gray-700 text-gray-400';
+                    drsEl.textContent = 'DRS';
+                }
+                
+                // Update charts
+                const labels = data.telemetry.map((_, i) => i);
+                const speeds = data.telemetry.map(t => t.speed || 0);
+                const throttles = data.telemetry.map(t => t.throttle || 0);
+                const brakes = data.telemetry.map(t => t.brake || 0);
+                
+                speedChart.data.labels = labels;
+                speedChart.data.datasets[0].data = speeds;
+                speedChart.update('none');
+                
+                inputsChart.data.labels = labels;
+                inputsChart.data.datasets[0].data = throttles;
+                inputsChart.data.datasets[1].data = brakes;
+                inputsChart.update('none');
+                
+            } catch (e) {
+                console.error('Telemetry update error:', e);
+            }
+        }
+        
+        function resetDisplay() {
+            document.getElementById('stat-speed').textContent = '---';
+            document.getElementById('stat-throttle').textContent = '---';
+            document.getElementById('stat-brake').textContent = '---';
+            document.getElementById('stat-rpm').textContent = '---';
+            document.getElementById('stat-gear').textContent = '-';
+            document.getElementById('speed-bar').style.width = '0%';
+            document.getElementById('throttle-bar').style.width = '0%';
+            document.getElementById('brake-bar').style.width = '0%';
+        }
+        
+        function selectSeries(series) {
+            if (series !== 'f1') {
+                alert('Coming soon! Only F1 telemetry is currently available.');
+                return;
+            }
+            
+            document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`series-${series}`).classList.add('active');
+            currentSeries = series;
+            loadSessions();
+        }
+        
+        // Initialize
+        initCharts();
+        loadSessions();
+    </script>
+</body>
+</html>
