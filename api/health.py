@@ -11,7 +11,8 @@ class handler(BaseHTTPRequestHandler):
         response = {
             "status": "healthy",
             "app": "GridView",
-            "version": "0.1.0"
+            "version": "0.2.0",
+            "endpoints": ["/api/health", "/api/f1", "/api/wrc"]
         }
         self.wfile.write(json.dumps(response).encode())
         return
