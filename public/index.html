@@ -116,7 +116,7 @@
             el.classList.add('loading');
             
             try {
-                const resp = await fetch('/api/f1/calendar');
+                const resp = await fetch('/api/f1');
                 const data = await resp.json();
                 
                 let html = '<h3 class="font-semibold mb-3">2025 Calendar</h3>';
@@ -152,7 +152,7 @@
             el.classList.add('loading');
             
             try {
-                const resp = await fetch('/api/wrc/latest');
+                const resp = await fetch('/api/wrc');
                 const data = await resp.json();
                 
                 let html = `<h3 class="font-semibold mb-3">${data.event.name}</h3>`;
