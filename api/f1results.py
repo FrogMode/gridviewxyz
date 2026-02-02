@@ -1,9 +1,13 @@
-"""F1 Season Results API endpoint - supports 2024 and 2025."""
+"""F1 Season Results API endpoint - dynamic year support."""
 from http.server import BaseHTTPRequestHandler
 import json
 import urllib.request
+from datetime import datetime
 
-def fetch_f1_sessions(year: int = 2025) -> list:
+# OpenF1 has data from 2023 onwards
+AVAILABLE_YEARS = list(range(2023, datetime.now().year + 1))
+
+def fetch_f1_sessions(year: int) -> list:
     """Fetch F1 race sessions from OpenF1 API."""
     url = f"https://api.openf1.org/v1/sessions?year={year}&session_type=Race"
     req = urllib.request.Request(url, headers={"User-Agent": "GridView/1.0"})
@@ -59,24 +63,33 @@ def fetch_race_results(session_key: int) -> list:
             "team_color": driver_info.get("team_color", "ffffff")
         })
     
-    return results[:20]  # Top 20
+    return results[:20]
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            # Parse query params
             from urllib.parse import urlparse, parse_qs
             query = parse_qs(urlparse(self.path).query)
+            
+            # Return available years
+            if 'years' in query:
+                response = {
+                    "years": sorted(AVAILABLE_YEARS, reverse=True),
+                    "default": max(AVAILABLE_YEARS)
+                }
+                self._send_json(response)
+                return
+            
             session_key = query.get('session', [None])[0]
-            year = query.get('year', ['2025'])[0]  # Default to 2025
+            year = query.get('year', [str(max(AVAILABLE_YEARS))])[0]
             
             # Validate year
             try:
                 year = int(year)
-                if year not in [2024, 2025]:
-                    year = 2025
+                if year not in AVAILABLE_YEARS:
+                    year = max(AVAILABLE_YEARS)
             except:
-                year = 2025
+                year = max(AVAILABLE_YEARS)
             
             if session_key:
                 # Get specific race results
@@ -103,11 +116,7 @@ class handler(BaseHTTPRequestHandler):
                     "races": races
                 }
             
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            self.wfile.write(json.dumps(response, indent=2).encode())
+            self._send_json(response)
             
         except Exception as e:
             self.send_response(500)
@@ -115,4 +124,10 @@ class handler(BaseHTTPRequestHandler):
             self.send_header('Access-Control-Allow-Origin', '*')
             self.end_headers()
             self.wfile.write(json.dumps({"error": str(e)}).encode())
-        return
+    
+    def _send_json(self, data):
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(json.dumps(data, indent=2).encode())

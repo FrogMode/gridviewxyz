@@ -29,9 +29,21 @@
         .race-card.open { background: rgba(225, 6, 0, 0.1); border-color: rgba(225, 6, 0, 0.3); }
         .results-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .results-panel.open { max-height: 400px; overflow-y: auto; }
-        .year-btn { transition: all 0.2s ease; }
-        .year-btn.active { background: #e10600; color: white; }
-        .year-btn:not(.active):hover { background: rgba(255,255,255,0.1); }
+        
+        /* Custom select styling */
+        .year-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.25rem;
+            padding-right: 2.5rem;
+        }
+        .year-select:focus {
+            outline: none;
+            border-color: #e10600;
+            box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.2);
+        }
     </style>
 </head>
 <body class="text-white">
@@ -57,14 +69,20 @@
             <div class="flex items-center gap-4">
                 <span class="text-4xl">🏎️</span>
                 <div>
-                    <h1 class="text-3xl font-bold">F1 <span id="season-title">2025</span> Season Results</h1>
+                    <h1 class="text-3xl font-bold">F1 Season Results</h1>
                     <p class="text-gray-400">Click any race to see full results</p>
                 </div>
             </div>
             <!-- Year Selector -->
-            <div class="flex items-center gap-2 bg-racing-card border border-racing-border rounded-lg p-1">
-                <button onclick="switchYear(2025)" id="btn-2025" class="year-btn active px-4 py-2 rounded-md font-semibold text-sm">2025</button>
-                <button onclick="switchYear(2024)" id="btn-2024" class="year-btn px-4 py-2 rounded-md font-semibold text-sm text-gray-400">2024</button>
+            <div class="flex items-center gap-3">
+                <label for="year-select" class="text-gray-400 text-sm font-medium">Season</label>
+                <select 
+                    id="year-select" 
+                    class="year-select bg-racing-card border border-racing-border rounded-lg px-4 py-2.5 font-semibold text-white cursor-pointer transition-all hover:border-gray-500"
+                    onchange="switchYear(this.value)"
+                >
+                    <option value="">Loading...</option>
+                </select>
             </div>
         </div>
     </header>
@@ -74,7 +92,7 @@
         <div id="races-list" class="space-y-3">
             <div class="text-center py-12 text-gray-400">
                 <div class="w-8 h-8 border-2 border-racing-red border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                Loading F1 season...
+                Loading...
             </div>
         </div>
     </main>
@@ -82,7 +100,8 @@
     <script>
         let racesData = [];
         let openRace = null;
-        let currentYear = 2025;
+        let currentYear = null;
+        let availableYears = [];
         
         function getPositionClass(pos) {
             if (pos === 1) return 'position-1';
@@ -97,18 +116,35 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
+        async function init() {
+            try {
+                // Fetch available years
+                const resp = await fetch('/api/f1results?years=true');
+                const data = await resp.json();
+                availableYears = data.years || [];
+                currentYear = data.default || availableYears[0];
+                
+                // Populate dropdown
+                const select = document.getElementById('year-select');
+                select.innerHTML = availableYears.map(year => 
+                    `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`
+                ).join('');
+                
+                // Load races
+                loadRaces();
+            } catch (e) {
+                document.getElementById('races-list').innerHTML = `
+                    <div class="text-center py-12 text-red-400">
+                        Error initializing: ${e.message}
+                    </div>
+                `;
+            }
+        }
+
         function switchYear(year) {
-            if (year === currentYear) return;
+            year = parseInt(year);
+            if (year === currentYear || !year) return;
             currentYear = year;
-            
-            // Update UI
-            document.getElementById('season-title').textContent = year;
-            document.getElementById('btn-2024').classList.toggle('active', year === 2024);
-            document.getElementById('btn-2024').classList.toggle('text-gray-400', year !== 2024);
-            document.getElementById('btn-2025').classList.toggle('active', year === 2025);
-            document.getElementById('btn-2025').classList.toggle('text-gray-400', year !== 2025);
-            
-            // Reload races
             openRace = null;
             loadRaces();
         }
@@ -163,7 +199,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
-                                ${!isPast ? '<span class="text-xs bg-racing-red/20 text-racing-red px-2 py-1 rounded">UPCOMING</span>' : ''}
+                                ${!isPast ? '<span class="text-xs bg-racing-red/20 text-racing-red px-2 py-1 rounded font-medium">UPCOMING</span>' : ''}
                                 <span class="text-sm text-gray-500 font-mono">${formatDate(race.date)}</span>
                                 <svg class="w-5 h-5 text-gray-400 transform transition-transform" id="arrow-${race.session_key}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -255,7 +291,8 @@
             }
         }
 
-        loadRaces();
+        // Initialize on load
+        init();
     </script>
 </body>
 </html>
