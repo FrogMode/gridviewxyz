@@ -1,10 +1,287 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0; url=/">
-    <title>Redirecting...</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridView - Premium Motorsport Data Hub</title>
+    <meta name="description" content="All motorsport data in one place. F1, WRC, NASCAR, IndyCar standings, results, and schedules.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        racing: {
+                            red: '#e10600',
+                            orange: '#ff6b35',
+                            dark: '#0a0a0f',
+                            card: '#16161d',
+                            border: '#2a2a35',
+                            hover: '#1f1f28'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background: linear-gradient(180deg, #0a0a0f 0%, #111117 100%);
+            min-height: 100vh;
+        }
+        .series-card {
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+        }
+        .series-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(225, 6, 0, 0.3);
+            box-shadow: 0 8px 30px rgba(225, 6, 0, 0.15);
+        }
+        .series-card.active {
+            border-color: #e10600;
+            box-shadow: 0 0 20px rgba(225, 6, 0, 0.2);
+        }
+        .data-row { transition: background-color 0.15s ease; }
+        .data-row:hover { background-color: rgba(255, 255, 255, 0.03); }
+        .position-badge { min-width: 2rem; text-align: center; }
+        .position-1 { background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); color: #000; }
+        .position-2 { background: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%); color: #000; }
+        .position-3 { background: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%); color: #fff; }
+        .live-pulse { animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .ad-slot {
+            background: linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
+            border: 1px dashed #2a2a35;
+            display: flex; align-items: center; justify-content: center;
+            color: #4a4a55; font-size: 12px; text-transform: uppercase;
+        }
+    </style>
 </head>
-<body>
-    <p>Redirecting to <a href="/">GridView</a>...</p>
+<body class="text-white">
+    <header class="border-b border-racing-border">
+        <div id="ad-leaderboard" class="ad-slot h-[90px] max-w-[728px] mx-auto my-3 rounded hidden md:flex">
+            <span>Ad Space • 728×90</span>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 py-5">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-racing-red rounded-lg flex items-center justify-center">
+                        <span class="text-xl">🏁</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight">GridView</h1>
+                        <p class="text-gray-500 text-sm">All motorsport. One dashboard.</p>
+                    </div>
+                </div>
+                <nav class="hidden md:flex items-center gap-4">
+                    <a href="#" class="text-gray-400 hover:text-white text-sm">Calendar</a>
+                    <a href="#" class="text-gray-400 hover:text-white text-sm">Standings</a>
+                    <button onclick="toggleSpoilerMode()" id="spoiler-toggle" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-racing-card border border-racing-border text-sm">
+                        <span id="spoiler-icon">👁️</span>
+                        <span id="spoiler-text" class="text-gray-400">Spoilers</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <main class="flex-1">
+                <section class="mb-10">
+                    <h2 class="text-lg font-semibold text-gray-200 mb-5">Racing Series</h2>
+                    <div class="grid grid-cols-4 md:grid-cols-8 gap-3">
+                        <button onclick="loadF1(this)" class="series-card bg-racing-card rounded-xl p-4 text-center">
+                            <span class="text-2xl">🏎️</span>
+                            <h3 class="font-semibold text-sm mt-2">F1</h3>
+                            <span class="text-[10px] text-green-500">● Live</span>
+                        </button>
+                        <button onclick="loadWRC(this)" class="series-card bg-racing-card rounded-xl p-4 text-center">
+                            <span class="text-2xl">🌍</span>
+                            <h3 class="font-semibold text-sm mt-2">WRC</h3>
+                            <span class="text-[10px] text-green-500">● Live</span>
+                        </button>
+                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-2xl">🏁</span>
+                            <h3 class="font-semibold text-sm mt-2">NASCAR</h3>
+                            <span class="text-[10px] text-amber-500">Soon</span>
+                        </div>
+                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-2xl">🇺🇸</span>
+                            <h3 class="font-semibold text-sm mt-2">IndyCar</h3>
+                            <span class="text-[10px] text-amber-500">Soon</span>
+                        </div>
+                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-2xl">🏎️</span>
+                            <h3 class="font-semibold text-sm mt-2">IMSA</h3>
+                            <span class="text-[10px] text-amber-500">Soon</span>
+                        </div>
+                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-2xl">🌐</span>
+                            <h3 class="font-semibold text-sm mt-2">WEC</h3>
+                            <span class="text-[10px] text-amber-500">Soon</span>
+                        </div>
+                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-2xl">🎮</span>
+                            <h3 class="font-semibold text-sm mt-2">iRacing</h3>
+                            <span class="text-[10px] text-amber-500">Soon</span>
+                        </div>
+                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-2xl">🎮</span>
+                            <h3 class="font-semibold text-sm mt-2">ACC</h3>
+                            <span class="text-[10px] text-amber-500">Soon</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid md:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
+                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
+                            <span class="text-xl">🏎️</span>
+                            <h3 class="font-bold text-lg">Formula 1</h3>
+                        </div>
+                        <div id="f1-data" class="p-5">
+                            <p class="text-gray-500 text-sm text-center py-8">Click F1 card to load</p>
+                        </div>
+                    </div>
+                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
+                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
+                            <span class="text-xl">🌍</span>
+                            <h3 class="font-bold text-lg">World Rally</h3>
+                        </div>
+                        <div id="wrc-data" class="p-5">
+                            <p class="text-gray-500 text-sm text-center py-8">Click WRC card to load</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-racing-card rounded-xl border border-racing-border">
+                    <div class="px-5 py-4 border-b border-racing-border">
+                        <h3 class="font-semibold text-sm text-gray-300 uppercase">System Status</h3>
+                    </div>
+                    <div id="api-status" class="p-5">
+                        <span class="text-gray-400 text-sm">Checking...</span>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="hidden lg:block w-[320px] space-y-6">
+                <div class="ad-slot h-[250px] w-[300px] rounded-lg"><span>Ad • 300×250</span></div>
+                <div class="bg-racing-card rounded-xl border border-racing-border">
+                    <div class="px-4 py-3 border-b border-racing-border">
+                        <h3 class="font-semibold text-sm uppercase">📅 Upcoming</h3>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-racing-red text-white text-xs font-bold px-2 py-1 rounded">MAR 16</div>
+                            <div><p class="font-medium text-sm">Australian GP</p><p class="text-xs text-gray-500">F1</p></div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-racing-card border border-racing-border text-xs px-2 py-1 rounded">MAR 23</div>
+                            <div><p class="font-medium text-sm">Safari Rally</p><p class="text-xs text-gray-500">WRC</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ad-slot h-[600px] w-[300px] rounded-lg"><span>Ad • 300×600</span></div>
+            </aside>
+        </div>
+    </div>
+
+    <footer class="border-t border-racing-border mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            GridView • <a href="https://gridview.xyz" class="text-racing-red">gridview.xyz</a>
+        </div>
+    </footer>
+
+    <script>
+        function setActiveCard(btn) {
+            document.querySelectorAll('.series-card').forEach(c => c.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+        }
+        
+        async function checkHealth() {
+            const el = document.getElementById('api-status');
+            try {
+                const resp = await fetch('/api/health');
+                const data = await resp.json();
+                el.innerHTML = '<span class="text-green-400">✓ ' + data.status + '</span>';
+            } catch (e) {
+                el.innerHTML = '<span class="text-red-400">✗ API unavailable</span>';
+            }
+        }
+
+        function getPositionClass(pos) {
+            if (pos === 1) return 'position-1';
+            if (pos === 2) return 'position-2';
+            if (pos === 3) return 'position-3';
+            return 'bg-racing-border';
+        }
+
+        async function loadF1(btn) {
+            setActiveCard(btn);
+            const el = document.getElementById('f1-data');
+            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            try {
+                const resp = await fetch('/api/f1');
+                const data = await resp.json();
+                let html = '<div class="space-y-2 max-h-80 overflow-y-auto">';
+                (data.events || []).slice(0, 10).forEach((r, i) => {
+                    const date = r.date ? new Date(r.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'TBD';
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
+                        '<span class="position-badge ' + getPositionClass(i+1) + ' text-xs font-bold py-0.5 rounded">' + (i+1) + '</span>' +
+                        '<div class="flex-1"><p class="font-medium text-sm">' + (r.name||'TBD') + '</p></div>' +
+                        '<span class="text-xs text-gray-400 font-mono">' + date + '</span></div>';
+                });
+                html += '</div>';
+                el.innerHTML = html;
+            } catch (e) {
+                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+            }
+        }
+
+        async function loadWRC(btn) {
+            setActiveCard(btn);
+            const el = document.getElementById('wrc-data');
+            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            try {
+                const resp = await fetch('/api/wrc');
+                const data = await resp.json();
+                let html = '<h4 class="font-semibold text-sm mb-3">' + (data.event?.name || 'Latest Rally') + '</h4><div class="space-y-2">';
+                (data.results || []).forEach(r => {
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
+                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-0.5 rounded">' + r.position + '</span>' +
+                        '<div class="flex-1"><p class="font-medium text-sm">' + r.driver + '</p></div>' +
+                        '<span class="text-xs text-gray-400 font-mono">' + r.time + '</span></div>';
+                });
+                html += '</div>';
+                el.innerHTML = html;
+            } catch (e) {
+                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+            }
+        }
+
+        let spoilerMode = localStorage.getItem('spoilerMode') === 'true';
+        function toggleSpoilerMode() {
+            spoilerMode = !spoilerMode;
+            localStorage.setItem('spoilerMode', spoilerMode);
+            document.getElementById('spoiler-icon').textContent = spoilerMode ? '🙈' : '👁️';
+            document.getElementById('spoiler-text').textContent = spoilerMode ? 'Hidden' : 'Spoilers';
+        }
+
+        checkHealth();
+    </script>
 </body>
 </html>
