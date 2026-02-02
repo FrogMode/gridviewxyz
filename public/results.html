@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 2024 Results - GridView</title>
+    <title>F1 Results - GridView</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -29,6 +29,9 @@
         .race-card.open { background: rgba(225, 6, 0, 0.1); border-color: rgba(225, 6, 0, 0.3); }
         .results-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .results-panel.open { max-height: 1000px; }
+        .year-btn { transition: all 0.2s ease; }
+        .year-btn.active { background: #e10600; color: white; }
+        .year-btn:not(.active):hover { background: rgba(255,255,255,0.1); }
     </style>
 </head>
 <body class="text-white">
@@ -50,11 +53,18 @@
 
     <!-- Header -->
     <header class="max-w-5xl mx-auto px-4 py-8">
-        <div class="flex items-center gap-4 mb-2">
-            <span class="text-4xl">🏎️</span>
-            <div>
-                <h1 class="text-3xl font-bold">F1 2024 Season Results</h1>
-                <p class="text-gray-400">Click any race to see full results</p>
+        <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-4">
+                <span class="text-4xl">🏎️</span>
+                <div>
+                    <h1 class="text-3xl font-bold">F1 <span id="season-title">2025</span> Season Results</h1>
+                    <p class="text-gray-400">Click any race to see full results</p>
+                </div>
+            </div>
+            <!-- Year Selector -->
+            <div class="flex items-center gap-2 bg-racing-card border border-racing-border rounded-lg p-1">
+                <button onclick="switchYear(2025)" id="btn-2025" class="year-btn active px-4 py-2 rounded-md font-semibold text-sm">2025</button>
+                <button onclick="switchYear(2024)" id="btn-2024" class="year-btn px-4 py-2 rounded-md font-semibold text-sm text-gray-400">2024</button>
             </div>
         </div>
     </header>
@@ -64,7 +74,7 @@
         <div id="races-list" class="space-y-3">
             <div class="text-center py-12 text-gray-400">
                 <div class="w-8 h-8 border-2 border-racing-red border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                Loading 2024 F1 season...
+                Loading F1 season...
             </div>
         </div>
     </main>
@@ -72,6 +82,7 @@
     <script>
         let racesData = [];
         let openRace = null;
+        let currentYear = 2025;
         
         function getPositionClass(pos) {
             if (pos === 1) return 'position-1';
@@ -86,9 +97,32 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
+        function switchYear(year) {
+            if (year === currentYear) return;
+            currentYear = year;
+            
+            // Update UI
+            document.getElementById('season-title').textContent = year;
+            document.getElementById('btn-2024').classList.toggle('active', year === 2024);
+            document.getElementById('btn-2024').classList.toggle('text-gray-400', year !== 2024);
+            document.getElementById('btn-2025').classList.toggle('active', year === 2025);
+            document.getElementById('btn-2025').classList.toggle('text-gray-400', year !== 2025);
+            
+            // Reload races
+            openRace = null;
+            loadRaces();
+        }
+
         async function loadRaces() {
+            document.getElementById('races-list').innerHTML = `
+                <div class="text-center py-12 text-gray-400">
+                    <div class="w-8 h-8 border-2 border-racing-red border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    Loading ${currentYear} F1 season...
+                </div>
+            `;
+            
             try {
-                const resp = await fetch('/api/f1results');
+                const resp = await fetch(`/api/f1results?year=${currentYear}`);
                 const data = await resp.json();
                 racesData = data.races || [];
                 renderRaces();
@@ -105,13 +139,19 @@
             const container = document.getElementById('races-list');
             
             if (racesData.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center py-8">No races found</p>';
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-gray-400 text-lg mb-2">No races found for ${currentYear}</p>
+                        <p class="text-gray-500 text-sm">The season may not have started yet or data isn't available.</p>
+                    </div>
+                `;
                 return;
             }
 
             let html = '';
             racesData.forEach((race, idx) => {
                 const raceNum = idx + 1;
+                const isPast = new Date(race.date) < new Date();
                 html += `
                     <div class="race-card bg-racing-card border border-racing-border rounded-xl overflow-hidden" id="race-${race.session_key}">
                         <button onclick="toggleRace(${race.session_key})" class="w-full px-5 py-4 flex items-center justify-between hover:bg-white/5 transition-colors">
@@ -123,6 +163,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-4">
+                                ${!isPast ? '<span class="text-xs bg-racing-red/20 text-racing-red px-2 py-1 rounded">UPCOMING</span>' : ''}
                                 <span class="text-sm text-gray-500 font-mono">${formatDate(race.date)}</span>
                                 <svg class="w-5 h-5 text-gray-400 transform transition-transform" id="arrow-${race.session_key}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -178,7 +219,7 @@
                 const data = await resp.json();
                 
                 if (!data.results || data.results.length === 0) {
-                    panel.innerHTML = '<div class="p-5 text-gray-400 text-center">No results available</div>';
+                    panel.innerHTML = '<div class="p-5 text-gray-400 text-center">No results available yet</div>';
                     return;
                 }
 

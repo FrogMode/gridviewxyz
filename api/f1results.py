@@ -1,9 +1,9 @@
-"""F1 2024 Season Results API endpoint."""
+"""F1 Season Results API endpoint - supports 2024 and 2025."""
 from http.server import BaseHTTPRequestHandler
 import json
 import urllib.request
 
-def fetch_f1_sessions(year: int = 2024) -> list:
+def fetch_f1_sessions(year: int = 2025) -> list:
     """Fetch F1 race sessions from OpenF1 API."""
     url = f"https://api.openf1.org/v1/sessions?year={year}&session_type=Race"
     req = urllib.request.Request(url, headers={"User-Agent": "GridView/1.0"})
@@ -68,6 +68,15 @@ class handler(BaseHTTPRequestHandler):
             from urllib.parse import urlparse, parse_qs
             query = parse_qs(urlparse(self.path).query)
             session_key = query.get('session', [None])[0]
+            year = query.get('year', ['2025'])[0]  # Default to 2025
+            
+            # Validate year
+            try:
+                year = int(year)
+                if year not in [2024, 2025]:
+                    year = 2025
+            except:
+                year = 2025
             
             if session_key:
                 # Get specific race results
@@ -77,8 +86,8 @@ class handler(BaseHTTPRequestHandler):
                     "results": results
                 }
             else:
-                # Get all 2024 races
-                sessions = fetch_f1_sessions(2024)
+                # Get races for specified year
+                sessions = fetch_f1_sessions(year)
                 races = []
                 for s in sessions:
                     races.append({
@@ -90,7 +99,7 @@ class handler(BaseHTTPRequestHandler):
                         "circuit": s.get("circuit_short_name")
                     })
                 response = {
-                    "season": 2024,
+                    "season": year,
                     "races": races
                 }
             
