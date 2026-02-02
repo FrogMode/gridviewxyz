@@ -117,50 +117,65 @@
     </style>
 </head>
 <body class="text-white">
-    <!-- Header with Leaderboard Ad -->
-    <header class="border-b border-racing-border">
-        <!-- AD SLOT: Leaderboard Banner (728x90 or responsive) -->
-        <div id="ad-leaderboard" class="ad-slot h-[90px] max-w-[728px] mx-auto my-3 rounded hidden md:flex">
-            <!-- INSERT AD NETWORK CODE HERE (e.g., Google AdSense, Carbon Ads) -->
-            <span>Ad Space • 728×90 Leaderboard</span>
+    <!-- Hero Header -->
+    <header class="relative overflow-hidden">
+        <!-- Background gradient -->
+        <div class="absolute inset-0 bg-gradient-to-br from-racing-red/20 via-transparent to-racing-dark"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-racing-red/10 via-transparent to-transparent"></div>
+        
+        <!-- Nav Bar -->
+        <nav class="relative z-10 max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-racing-red rounded flex items-center justify-center">
+                    <span class="text-sm">🏁</span>
+                </div>
+                <span class="font-bold text-lg">GridView</span>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Calendar</a>
+                <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Standings</a>
+                <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Results</a>
+                <button onclick="toggleSpoilerMode()" id="spoiler-toggle" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-racing-red/50 text-sm transition-all">
+                    <span id="spoiler-icon">👁️</span>
+                    <span id="spoiler-text" class="text-gray-400">Spoilers</span>
+                </button>
+                <!-- Timezone Picker -->
+                <select id="timezone-picker" onchange="setTimezone(this.value)" class="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-gray-400 cursor-pointer hover:border-racing-red/50 transition-colors">
+                    <option value="local">Local Time</option>
+                    <option value="UTC">UTC</option>
+                    <option value="America/New_York">ET</option>
+                    <option value="America/Los_Angeles">PT</option>
+                    <option value="Europe/London">GMT</option>
+                    <option value="Asia/Tokyo">JST</option>
+                </select>
+            </div>
+        </nav>
+        
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
+                <span class="bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">All Motorsport.</span>
+                <br>
+                <span class="bg-gradient-to-r from-racing-red to-racing-orange bg-clip-text text-transparent">One Dashboard.</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-8">
+                F1, WRC, NASCAR, IndyCar, IMSA, WEC — real-time results, standings, and schedules in one place.
+            </p>
+            <div class="flex items-center justify-center gap-4 flex-wrap">
+                <div class="flex items-center gap-2 text-green-400 text-sm">
+                    <span class="w-2 h-2 bg-green-400 rounded-full live-pulse"></span>
+                    <span>Live Data</span>
+                </div>
+                <span class="text-gray-600">•</span>
+                <span class="text-gray-400 text-sm">8 Racing Series</span>
+                <span class="text-gray-600">•</span>
+                <span class="text-gray-400 text-sm">Real + Sim Racing</span>
+            </div>
         </div>
         
-        <div class="max-w-7xl mx-auto px-4 py-5">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-racing-red rounded-lg flex items-center justify-center">
-                        <span class="text-xl">🏁</span>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-bold tracking-tight">GridView</h1>
-                        <p class="text-gray-500 text-sm">All Motorsport. One Dashboard.</p>
-                    </div>
-                </div>
-                
-                <nav class="hidden md:flex items-center gap-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Calendar</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Standings</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Results</a>
-                    
-                    <!-- Spoiler-Free Toggle -->
-                    <button onclick="toggleSpoilerMode()" id="spoiler-toggle" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-racing-card border border-racing-border hover:border-racing-red transition-colors text-sm">
-                        <span id="spoiler-icon">👁️</span>
-                        <span id="spoiler-text" class="text-gray-400">Spoilers</span>
-                    </button>
-                    
-                    <!-- Timezone Picker -->
-                    <select id="timezone-picker" onchange="setTimezone(this.value)" class="bg-racing-card border border-racing-border rounded-lg px-2 py-1.5 text-sm text-gray-400 cursor-pointer hover:border-racing-red transition-colors">
-                        <option value="local">Local Time</option>
-                        <option value="UTC">UTC</option>
-                        <option value="America/New_York">ET (New York)</option>
-                        <option value="America/Los_Angeles">PT (Los Angeles)</option>
-                        <option value="Europe/London">GMT (London)</option>
-                        <option value="Europe/Paris">CET (Paris)</option>
-                        <option value="Asia/Tokyo">JST (Tokyo)</option>
-                        <option value="Australia/Sydney">AEDT (Sydney)</option>
-                    </select>
-                </nav>
-            </div>
+        <!-- Ad Banner (below hero) -->
+        <div id="ad-leaderboard" class="ad-slot h-[90px] max-w-[728px] mx-auto mb-4 rounded hidden md:flex">
+            <span>Ad Space • 728×90</span>
         </div>
     </header>
 
