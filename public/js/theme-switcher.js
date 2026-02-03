@@ -34,11 +34,13 @@ const GridViewThemes = {
     this.themeLink.id = 'theme-css';
     document.head.appendChild(this.themeLink);
     
-    // Load theme system CSS
-    const systemCss = document.createElement('link');
-    systemCss.rel = 'stylesheet';
-    systemCss.href = '/themes/theme-system.css';
-    document.head.appendChild(systemCss);
+    // Load theme system CSS (only if not already loaded)
+    if (!document.querySelector('link[href*="theme-system.css"]')) {
+      const systemCss = document.createElement('link');
+      systemCss.rel = 'stylesheet';
+      systemCss.href = '/themes/theme-system.css';
+      document.head.appendChild(systemCss);
+    }
     
     // Apply saved theme
     this.setTheme(savedTheme, false);
