@@ -154,16 +154,16 @@
                             <h3 class="font-semibold text-sm mt-2">IndyCar</h3>
                             <span class="text-[10px] text-amber-500">Soon</span>
                         </div>
-                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                        <button onclick="loadIMSA(this)" class="series-card bg-racing-card rounded-xl p-4 text-center">
                             <span class="text-2xl">🏎️</span>
                             <h3 class="font-semibold text-sm mt-2">IMSA</h3>
-                            <span class="text-[10px] text-amber-500">Soon</span>
-                        </div>
-                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
+                            <span class="text-[10px] text-green-500">● Live</span>
+                        </button>
+                        <button onclick="loadWEC(this)" class="series-card bg-racing-card rounded-xl p-4 text-center">
                             <span class="text-2xl">🌐</span>
                             <h3 class="font-semibold text-sm mt-2">WEC</h3>
-                            <span class="text-[10px] text-amber-500">Soon</span>
-                        </div>
+                            <span class="text-[10px] text-green-500">● Live</span>
+                        </button>
                         <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50">
                             <span class="text-2xl">🎮</span>
                             <h3 class="font-semibold text-sm mt-2">iRacing</h3>
@@ -194,6 +194,27 @@
                         </div>
                         <div id="wrc-data" class="p-5">
                             <p class="text-gray-500 text-sm text-center py-8">Click WRC card to load</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="grid md:grid-cols-2 gap-6 mb-10">
+                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
+                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
+                            <span class="text-xl">🏎️</span>
+                            <h3 class="font-bold text-lg">IMSA SportsCar</h3>
+                        </div>
+                        <div id="imsa-data" class="p-5">
+                            <p class="text-gray-500 text-sm text-center py-8">Click IMSA card to load</p>
+                        </div>
+                    </div>
+                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
+                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
+                            <span class="text-xl">🌐</span>
+                            <h3 class="font-bold text-lg">World Endurance</h3>
+                        </div>
+                        <div id="wec-data" class="p-5">
+                            <p class="text-gray-500 text-sm text-center py-8">Click WEC card to load</p>
                         </div>
                     </div>
                 </section>
@@ -295,6 +316,49 @@
                         '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-0.5 rounded">' + r.position + '</span>' +
                         '<div class="flex-1"><p class="font-medium text-sm">' + r.driver + '</p></div>' +
                         '<span class="text-xs text-gray-400 font-mono">' + r.time + '</span></div>';
+                });
+                html += '</div>';
+                el.innerHTML = html;
+            } catch (e) {
+                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+            }
+        }
+
+        async function loadIMSA(btn) {
+            setActiveCard(btn);
+            const el = document.getElementById('imsa-data');
+            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            try {
+                const resp = await fetch('/api/imsa');
+                const data = await resp.json();
+                let html = '<h4 class="font-semibold text-sm mb-3">' + (data.event || 'Latest Race') + '</h4><div class="space-y-2 max-h-64 overflow-y-auto">';
+                (data.results || []).slice(0, 10).forEach(r => {
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
+                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-0.5 rounded">' + r.position + '</span>' +
+                        '<div class="flex-1"><p class="font-medium text-sm">#' + r.number + ' ' + (r.team || '') + '</p><p class="text-xs text-gray-500">' + (r.class || '') + '</p></div>' +
+                        '<span class="text-xs text-gray-400 font-mono">' + (r.gap || r.time || '') + '</span></div>';
+                });
+                html += '</div>';
+                el.innerHTML = html;
+            } catch (e) {
+                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+            }
+        }
+
+        async function loadWEC(btn) {
+            setActiveCard(btn);
+            const el = document.getElementById('wec-data');
+            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            try {
+                const resp = await fetch('/api/wec?year=2026');
+                const data = await resp.json();
+                let html = '<h4 class="font-semibold text-sm mb-3">2026 Calendar</h4><div class="space-y-2 max-h-64 overflow-y-auto">';
+                (data.events || []).slice(0, 8).forEach((e, i) => {
+                    const date = e.date ? new Date(e.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'TBD';
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
+                        '<span class="position-badge ' + getPositionClass(i+1) + ' text-xs font-bold py-0.5 rounded">' + (i+1) + '</span>' +
+                        '<div class="flex-1"><p class="font-medium text-sm">' + e.name + '</p><p class="text-xs text-gray-500">' + (e.venue || e.country || '') + '</p></div>' +
+                        '<span class="text-xs text-gray-400 font-mono">' + date + '</span></div>';
                 });
                 html += '</div>';
                 el.innerHTML = html;
