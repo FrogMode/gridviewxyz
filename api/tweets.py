@@ -2,23 +2,26 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import subprocess
-import os
+import time
 from urllib.parse import urlparse, parse_qs
 from datetime import datetime
+from typing import Dict, List, Tuple, Optional
 import re
 
-# Bird CLI config - uses OpenClaw browser cookies
-BIRD_PROFILE = os.path.expanduser("~/.openclaw/browser/openclaw/user-data/Default")
+# In-memory cache with TTL
+_tweet_cache: Dict[str, Tuple[List, float]] = {}
+CACHE_TTL = 60  # 1 minute cache
 
 # Motorsport search queries (hashtags and accounts)
+# These are searched via bird CLI (cookie-based Twitter access)
 SEARCH_QUERIES = {
-    "all": "(#F1 OR #NASCAR OR #IndyCar OR #IMSA OR #WEC OR #MotoGP)",
-    "f1": "(from:F1 OR #F1 OR from:ChrisMedlandF1 OR from:ScarbsTech)",
-    "nascar": "(from:NASCAR OR #NASCAR OR from:JennaFryer)",
-    "indycar": "(from:IndyCar OR #IndyCar)",
-    "imsa": "(from:IMABORACING OR #IMSA)",
-    "wec": "(from:FIAWEC OR #WEC)",
-    "motogp": "(from:MotoGP OR #MotoGP)",
+    "all": "(#F1 OR #NASCAR OR #IndyCar OR #IMSA OR #WEC OR #MotoGP) -filter:replies",
+    "f1": "(#F1 OR #Formula1) -filter:replies",
+    "nascar": "(#NASCAR OR #NASCARCup) -filter:replies",
+    "indycar": "(#IndyCar OR #INDYCAR) -filter:replies",
+    "imsa": "(#IMSA OR #Rolex24 OR #WeatherTech) -filter:replies",
+    "wec": "(#WEC OR #LeMans24 OR #Hypercar) -filter:replies",
+    "motogp": "(#MotoGP) -filter:replies",
 }
 
 # Featured accounts to track
@@ -29,33 +32,45 @@ FEATURED_ACCOUNTS = [
 
 
 def run_bird_search(query: str, limit: int = 10) -> list:
-    """Execute bird search command and return tweets."""
+    """Execute bird search command and return tweets with caching."""
+    cache_key = f"search:{query}:{limit}"
+    now = time.time()
+    
+    # Check cache
+    if cache_key in _tweet_cache:
+        data, timestamp = _tweet_cache[cache_key]
+        if now - timestamp < CACHE_TTL:
+            return data
+    
     try:
         cmd = [
             "bird", "search", query,
             "-n", str(limit),
-            "--chrome-profile-dir", BIRD_PROFILE,
             "--json"
         ]
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
-            timeout=30,
-            env={**os.environ, "NO_COLOR": "1"}
+            timeout=30
         )
         
-        if result.returncode != 0:
-            # Try to parse any output anyway
-            pass
-        
-        # Parse JSON output
+        # Parse JSON output (skip any warning lines)
         output = result.stdout.strip()
         if not output:
             return []
         
-        tweets = json.loads(output)
-        return tweets if isinstance(tweets, list) else []
+        # Find JSON array start
+        json_start = output.find('[')
+        if json_start == -1:
+            return []
+        
+        tweets = json.loads(output[json_start:])
+        result_tweets = tweets if isinstance(tweets, list) else []
+        
+        # Cache result
+        _tweet_cache[cache_key] = (result_tweets, now)
+        return result_tweets
         
     except subprocess.TimeoutExpired:
         return []
@@ -72,15 +87,13 @@ def run_bird_user_tweets(username: str, limit: int = 5) -> list:
         cmd = [
             "bird", "user-tweets", f"@{username}",
             "-n", str(limit),
-            "--chrome-profile-dir", BIRD_PROFILE,
             "--json"
         ]
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
-            timeout=30,
-            env={**os.environ, "NO_COLOR": "1"}
+            timeout=30
         )
         
         output = result.stdout.strip()
