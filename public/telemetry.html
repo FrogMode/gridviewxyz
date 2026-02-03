@@ -84,16 +84,22 @@
                 </button>
             </div>
             
-            <!-- Session Selection -->
-            <div class="flex flex-wrap gap-4">
-                <div class="flex-1 min-w-[200px]">
-                    <label class="text-xs text-gray-500 uppercase tracking-wide">Session</label>
-                    <select id="session-select" onchange="selectSession(this.value)" class="w-full mt-1 bg-racing-dark border border-racing-border rounded-lg px-3 py-2 text-white">
+            <!-- 3-Step Selection: Race → Session → Driver -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="text-xs text-gray-500 uppercase tracking-wide">1. Grand Prix</label>
+                    <select id="meeting-select" onchange="selectMeeting(this.value)" class="w-full mt-1 bg-racing-dark border border-racing-border rounded-lg px-3 py-2 text-white">
+                        <option value="">Select race...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-500 uppercase tracking-wide">2. Session</label>
+                    <select id="session-select" onchange="selectSession(this.value)" class="w-full mt-1 bg-racing-dark border border-racing-border rounded-lg px-3 py-2 text-white" disabled>
                         <option value="">Select session...</option>
                     </select>
                 </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label class="text-xs text-gray-500 uppercase tracking-wide">Driver</label>
+                <div>
+                    <label class="text-xs text-gray-500 uppercase tracking-wide">3. Driver</label>
                     <select id="driver-select" onchange="selectDriver(this.value)" class="w-full mt-1 bg-racing-dark border border-racing-border rounded-lg px-3 py-2 text-white" disabled>
                         <option value="">Select driver...</option>
                     </select>
@@ -248,26 +254,76 @@
             });
         }
         
-        async function loadSessions() {
-            const select = document.getElementById('session-select');
-            select.innerHTML = '<option value="">Loading...</option>';
+        let meetingsData = [];  // Store meetings data for session lookup
+        
+        async function loadMeetings() {
+            const select = document.getElementById('meeting-select');
+            const sessionSelect = document.getElementById('session-select');
+            const driverSelect = document.getElementById('driver-select');
+            
+            select.innerHTML = '<option value="">Loading races...</option>';
+            sessionSelect.innerHTML = '<option value="">Select session...</option>';
+            sessionSelect.disabled = true;
+            driverSelect.innerHTML = '<option value="">Select driver...</option>';
+            driverSelect.disabled = true;
             
             try {
-                const resp = await fetch(`/api/telemetry?series=${currentSeries}&action=sessions`);
+                const resp = await fetch(`/api/telemetry?series=${currentSeries}&action=meetings`);
                 const data = await resp.json();
+                meetingsData = data.meetings || [];
                 
-                // Group by meeting and show recent first
-                const sessions = (data.sessions || []).slice(0, 50);  // Already sorted by API (most recent first)
-                
-                let html = '<option value="">Select session...</option>';
-                sessions.forEach(s => {
-                    const date = s.date ? new Date(s.date).toLocaleDateString() : '';
-                    html += `<option value="${s.session_key}">${s.meeting} - ${s.name} (${date})</option>`;
+                let html = '<option value="">Select race...</option>';
+                meetingsData.forEach(m => {
+                    const flag = getCountryFlag(m.country);
+                    html += `<option value="${m.meeting_key}">${flag} ${m.name} (${m.date})</option>`;
                 });
                 select.innerHTML = html;
             } catch (e) {
-                select.innerHTML = '<option value="">Error loading sessions</option>';
+                select.innerHTML = '<option value="">Error loading races</option>';
             }
+        }
+        
+        function getCountryFlag(country) {
+            const flags = {
+                'Bahrain': '🇧🇭', 'Saudi Arabia': '🇸🇦', 'Australia': '🇦🇺', 'Japan': '🇯🇵',
+                'China': '🇨🇳', 'United States': '🇺🇸', 'Italy': '🇮🇹', 'Monaco': '🇲🇨',
+                'Canada': '🇨🇦', 'Spain': '🇪🇸', 'Austria': '🇦🇹', 'United Kingdom': '🇬🇧',
+                'Hungary': '🇭🇺', 'Belgium': '🇧🇪', 'Netherlands': '🇳🇱', 'Singapore': '🇸🇬',
+                'Mexico': '🇲🇽', 'Brazil': '🇧🇷', 'Qatar': '🇶🇦', 'UAE': '🇦🇪',
+                'United Arab Emirates': '🇦🇪', 'Azerbaijan': '🇦🇿'
+            };
+            return flags[country] || '🏁';
+        }
+        
+        function selectMeeting(meetingKey) {
+            const sessionSelect = document.getElementById('session-select');
+            const driverSelect = document.getElementById('driver-select');
+            
+            if (!meetingKey) {
+                sessionSelect.innerHTML = '<option value="">Select session...</option>';
+                sessionSelect.disabled = true;
+                driverSelect.innerHTML = '<option value="">Select driver...</option>';
+                driverSelect.disabled = true;
+                stopLiveUpdates();
+                return;
+            }
+            
+            // Find the meeting
+            const meeting = meetingsData.find(m => String(m.meeting_key) === meetingKey);
+            if (!meeting) return;
+            
+            // Populate sessions
+            let html = '<option value="">Select session...</option>';
+            meeting.sessions.forEach(s => {
+                const icon = s.type === 'Race' ? '🏁' : s.type === 'Qualifying' ? '⏱️' : '🔧';
+                html += `<option value="${s.session_key}">${icon} ${s.name}</option>`;
+            });
+            sessionSelect.innerHTML = html;
+            sessionSelect.disabled = false;
+            
+            // Reset driver
+            driverSelect.innerHTML = '<option value="">Select driver...</option>';
+            driverSelect.disabled = true;
         }
         
         async function selectSession(sessionKey) {
@@ -289,7 +345,8 @@
                 
                 let html = '<option value="">Select driver...</option>';
                 (data.drivers || []).forEach(d => {
-                    html += `<option value="${d.number}" data-color="${d.team_color}">${d.code} - ${d.name} (${d.team})</option>`;
+                    const color = d.team_color ? `#${d.team_color}` : '#666';
+                    html += `<option value="${d.number}" style="border-left: 3px solid ${color}">${d.code} - ${d.name}</option>`;
                 });
                 driverSelect.innerHTML = html;
                 driverSelect.disabled = false;
@@ -407,12 +464,12 @@
             document.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`series-${series}`).classList.add('active');
             currentSeries = series;
-            loadSessions();
+            loadMeetings();
         }
         
         // Initialize
         initCharts();
-        loadSessions();
+        loadMeetings();
     </script>
 </body>
 </html>

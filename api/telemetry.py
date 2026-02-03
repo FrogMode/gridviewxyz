@@ -34,6 +34,47 @@ def fetch_f1_sessions(year: int = None) -> list:
     result.sort(key=lambda x: x.get("date") or "", reverse=True)
     return result
 
+def fetch_f1_meetings(year: int = None) -> list:
+    """Get F1 meetings (Grand Prix events) grouped with their sessions."""
+    if year is None:
+        year = datetime.now().year
+    
+    url = f"{OPENF1_BASE}/sessions?year={year}"
+    req = urllib.request.Request(url, headers={"User-Agent": "GridView/1.0"})
+    
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        sessions = json.loads(resp.read())
+    
+    # Group by meeting
+    meetings = {}
+    for s in sessions:
+        meeting_key = s.get("meeting_key")
+        if meeting_key not in meetings:
+            meetings[meeting_key] = {
+                "meeting_key": meeting_key,
+                "name": s.get("location") or s.get("circuit_short_name") or "Unknown",
+                "country": s.get("country_name"),
+                "circuit": s.get("circuit_short_name"),
+                "date": s.get("date_start", "")[:10],  # Just the date part
+                "sessions": []
+            }
+        meetings[meeting_key]["sessions"].append({
+            "session_key": s.get("session_key"),
+            "name": s.get("session_name"),
+            "type": s.get("session_type"),
+            "date": s.get("date_start")
+        })
+    
+    # Sort meetings by date (most recent first)
+    result = list(meetings.values())
+    result.sort(key=lambda x: x.get("date") or "", reverse=True)
+    
+    # Sort sessions within each meeting by date
+    for m in result:
+        m["sessions"].sort(key=lambda x: x.get("date") or "")
+    
+    return result
+
 def fetch_f1_drivers(session_key) -> list:
     """Get drivers for a session."""
     url = f"{OPENF1_BASE}/drivers?session_key={session_key}"
@@ -142,6 +183,15 @@ class handler(BaseHTTPRequestHandler):
                     "series": "f1",
                     "year": year or datetime.now().year,
                     "sessions": sessions
+                }
+            
+            elif action == 'meetings':
+                # List meetings (Grand Prix) with their sessions grouped
+                meetings = fetch_f1_meetings(year)
+                response = {
+                    "series": "f1",
+                    "year": year or datetime.now().year,
+                    "meetings": meetings
                 }
             
             elif action == 'drivers':
