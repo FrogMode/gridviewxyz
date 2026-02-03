@@ -1,0 +1,15 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Light background -->
+  <rect width="120" height="120" fill="#FFFFFF"/>
+  
+  <!-- Minimal 2x2 grid - Marlboro color blocking -->
+  <!-- All red on white - confident and clean -->
+  
+  <!-- Top row -->
+  <rect x="30" y="30" width="25" height="25" rx="3" fill="#EE1C25"/>
+  <rect x="65" y="30" width="25" height="25" rx="3" fill="#EE1C25"/>
+  
+  <!-- Bottom row - slight inward offset suggests chevron -->
+  <rect x="35" y="65" width="25" height="25" rx="3" fill="#EE1C25"/>
+  <rect x="60" y="65" width="25" height="25" rx="3" fill="#EE1C25"/>
+</svg>

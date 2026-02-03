@@ -1,0 +1,241 @@
+/**
+ * GridView Theme: Light Mode
+ * Clean, bright theme with F1 red accents
+ * Perfect for daytime viewing
+ */
+
+[data-theme="light"] {
+  /* ============================================
+     TYPOGRAPHY
+     ============================================ */
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 800;
+  --theme-heading-letter-spacing: -0.02em;
+  --theme-body-letter-spacing: 0;
+  --theme-text-transform: none;
+  --theme-heading-shadow: none;
+  
+  /* ============================================
+     CORE COLORS - F1 red on white
+     ============================================ */
+  --theme-primary: #e10600;
+  --theme-primary-rgb: 225, 6, 0;
+  --theme-primary-bright: #ff3030;
+  --theme-secondary: #ff6b35;
+  --theme-secondary-rgb: 255, 107, 53;
+  --theme-accent: #e10600;
+  --theme-accent-rgb: 225, 6, 0;
+  
+  /* ============================================
+     BACKGROUNDS - Clean whites and grays
+     ============================================ */
+  --theme-bg-base: #ffffff;
+  --theme-bg-card: #f8f9fa;
+  --theme-bg-elevated: #ffffff;
+  --theme-bg-hover: #f0f1f3;
+  --theme-gradient-body: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(225, 6, 0, 0.1) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  
+  /* ============================================
+     BORDERS
+     ============================================ */
+  --theme-border: #e5e7eb;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(0, 0, 0, 0.08);
+  
+  /* ============================================
+     TEXT - Dark on light
+     ============================================ */
+  --theme-text-primary: #111827;
+  --theme-text-secondary: #4b5563;
+  --theme-text-muted: #9ca3af;
+  --theme-text-accent: var(--theme-primary);
+  
+  /* ============================================
+     POSITION BADGES
+     ============================================ */
+  --theme-pos-1-bg: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+  --theme-pos-1-text: #000000;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  /* ============================================
+     BUTTONS
+     ============================================ */
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #c10500;
+  --theme-btn-secondary-bg: rgba(0, 0, 0, 0.05);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(0, 0, 0, 0.1);
+  
+  /* ============================================
+     SHADOWS & GLOWS
+     ============================================ */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --theme-shadow-hover: 0 8px 30px rgba(225, 6, 0, 0.15);
+  --theme-glow: 0 0 25px rgba(225, 6, 0, 0.25);
+  
+  /* ============================================
+     SPECIAL EFFECTS
+     ============================================ */
+  --theme-stripe-pattern: linear-gradient(90deg,
+    transparent 0%, transparent 40%,
+    rgba(225, 6, 0, 0.15) 40%, rgba(225, 6, 0, 0.15) 60%,
+    transparent 60%, transparent 100%
+  );
+  --theme-accent-pattern: 
+    linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0,0,0,0.02) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.02) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.02) 75%);
+  
+  /* ============================================
+     LIVE INDICATOR
+     ============================================ */
+  --theme-live-color: #16a34a;
+  
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
+  --theme-scrollbar-track: #f5f5f7;
+  --theme-scrollbar-thumb: #d1d5db;
+  --theme-scrollbar-hover: #9ca3af;
+}
+
+/* Light theme header - subtle red glow */
+[data-theme="light"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 250px;
+  background: radial-gradient(ellipse at 50% 0%, 
+    rgba(225, 6, 0, 0.12) 0%, 
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+[data-theme="light"] header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 30%;
+  right: 30%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    rgba(225, 6, 0, 0.4) 20%,
+    #e10600 50%,
+    rgba(225, 6, 0, 0.4) 80%,
+    transparent 100%
+  );
+  z-index: 20;
+}
+
+/* Override default text colors for light mode */
+[data-theme="light"] body {
+  color: #111827;
+}
+
+[data-theme="light"] .text-white {
+  color: #111827 !important;
+}
+
+[data-theme="light"] .text-gray-200 {
+  color: #374151 !important;
+}
+
+[data-theme="light"] .text-gray-300 {
+  color: #4b5563 !important;
+}
+
+[data-theme="light"] .text-gray-400 {
+  color: #6b7280 !important;
+}
+
+[data-theme="light"] .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+/* Card backgrounds */
+[data-theme="light"] .bg-racing-card,
+[data-theme="light"] .bg-\[\#16161d\],
+[data-theme="light"] .bg-\[\#1a1a22\] {
+  background-color: #f8f9fa !important;
+  border: 1px solid #e5e7eb !important;
+}
+
+[data-theme="light"] .bg-racing-dark,
+[data-theme="light"] .bg-\[\#0a0a0f\] {
+  background-color: #f0f1f3 !important;
+}
+
+/* Fix white/semi-transparent backgrounds */
+[data-theme="light"] .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="light"] .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Borders */
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/20,
+[data-theme="light"] .border-white\/30 {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Nav links */
+[data-theme="light"] nav a,
+[data-theme="light"] .text-white\/80 {
+  color: #4b5563 !important;
+}
+
+[data-theme="light"] nav a:hover {
+  color: #111827 !important;
+}
+
+/* Dropdown fix for light mode */
+[data-theme="light"] .theme-dropdown {
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+}
+
+[data-theme="light"] .theme-option {
+  color: #111827 !important;
+}
+
+[data-theme="light"] .theme-option:hover {
+  background: #f3f4f6 !important;
+}
+
+/* Ad slots */
+[data-theme="light"] .ad-slot {
+  background: #f8f9fa !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+}
+
+/* Fix hero text - keep it readable */
+[data-theme="light"] header h1,
+[data-theme="light"] header .text-6xl,
+[data-theme="light"] header .text-8xl {
+  color: #111827 !important;
+}
+
+[data-theme="light"] header p {
+  color: #4b5563 !important;
+}

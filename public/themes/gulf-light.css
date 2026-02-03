@@ -1,0 +1,77 @@
+/**
+ * GridView Theme: Gulf Racing (Light)
+ * Classic Le Mans livery - light variant
+ */
+
+[data-theme="gulf-light"] {
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 800;
+  --theme-heading-letter-spacing: -0.02em;
+  
+  --theme-primary: #5BA3D9;
+  --theme-primary-rgb: 91, 163, 217;
+  --theme-primary-bright: #7BB8E8;
+  --theme-secondary: #F26522;
+  --theme-secondary-rgb: 242, 101, 34;
+  --theme-accent: #F26522;
+  --theme-accent-rgb: 242, 101, 34;
+  
+  --theme-bg-base: #ffffff;
+  --theme-bg-card: #f0f7fc;
+  --theme-bg-elevated: #ffffff;
+  --theme-bg-hover: #e5f1f9;
+  --theme-gradient-body: linear-gradient(180deg, #ffffff 0%, #f0f7fc 100%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(91, 163, 217, 0.15) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #ffffff 0%, #f0f7fc 100%);
+  
+  --theme-border: #c5dff0;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(91, 163, 217, 0.2);
+  
+  --theme-text-primary: #1a3a4d;
+  --theme-text-secondary: #4a6d82;
+  --theme-text-muted: #7a9eb3;
+  --theme-text-accent: var(--theme-secondary);
+  
+  --theme-pos-1-bg: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+  --theme-pos-1-text: #000000;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #4a92c8;
+  --theme-btn-secondary-bg: rgba(91, 163, 217, 0.1);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(91, 163, 217, 0.2);
+  
+  --theme-shadow-card: 0 4px 20px rgba(91, 163, 217, 0.1);
+  --theme-shadow-hover: 0 8px 30px rgba(91, 163, 217, 0.2);
+  --theme-glow: 0 0 25px rgba(91, 163, 217, 0.3);
+  
+  --theme-live-color: #16a34a;
+  --theme-scrollbar-track: #f0f7fc;
+  --theme-scrollbar-thumb: #c5dff0;
+  --theme-scrollbar-hover: #5BA3D9;
+}
+
+[data-theme="gulf-light"] header::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(91, 163, 217, 0.2) 0%, transparent 60%);
+}
+
+[data-theme="gulf-light"] header::after {
+  background: linear-gradient(90deg, transparent, rgba(242, 101, 34, 0.5) 30%, #F26522 50%, rgba(242, 101, 34, 0.5) 70%, transparent);
+}
+
+[data-theme="gulf-light"] .text-white { color: #1a3a4d !important; }
+[data-theme="gulf-light"] .text-gray-200 { color: #4a6d82 !important; }
+[data-theme="gulf-light"] .text-gray-400 { color: #7a9eb3 !important; }
+[data-theme="gulf-light"] .bg-white\/5 { background-color: rgba(91, 163, 217, 0.05) !important; }
+[data-theme="gulf-light"] .bg-white\/10 { background-color: rgba(91, 163, 217, 0.1) !important; }
+[data-theme="gulf-light"] .border-white\/10 { border-color: rgba(91, 163, 217, 0.15) !important; }
+[data-theme="gulf-light"] .bg-racing-card { background-color: #f0f7fc !important; }
+[data-theme="gulf-light"] .bg-racing-dark { background-color: #e5f1f9 !important; }

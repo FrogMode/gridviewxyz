@@ -1,0 +1,19 @@
+<svg width="160" height="140" viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="160" height="140" fill="#1a1a1a"/>
+  
+  <!-- Icon (centered, breathing) -->
+  <g transform="translate(50, 20)">
+    <!-- Top row -->
+    <rect x="0" y="0" width="22" height="22" rx="3" fill="#EE1C25"/>
+    <rect x="32" y="0" width="22" height="22" rx="3" fill="#EE1C25"/>
+    <!-- Bottom row - chevron offset -->
+    <rect x="5" y="32" width="22" height="22" rx="3" fill="#FFFFFF"/>
+    <rect x="27" y="32" width="22" height="22" rx="3" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- Wordmark (centered, generous spacing) -->
+  <text x="80" y="115" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="2">
+    <tspan fill="#FFFFFF">Grid</tspan><tspan fill="#EE1C25">View</tspan>
+  </text>
+</svg>

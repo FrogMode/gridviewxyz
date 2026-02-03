@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#0a0a0a"/>
+  
+  <!-- Simplified Checkered Mark for small sizes -->
+  <g transform="translate(4, 4)">
+    <!-- 2x2 grid for clarity at small sizes -->
+    <rect x="0" y="0" width="10" height="10" fill="#FFFFFF"/>
+    <rect x="12" y="0" width="10" height="10" fill="#1a1a1a"/>
+    <rect x="0" y="12" width="10" height="10" fill="#1a1a1a"/>
+    <rect x="12" y="12" width="10" height="10" fill="#E10600"/>
+  </g>
+  
+  <!-- Red accent line -->
+  <rect x="0" y="28" width="32" height="4" fill="#E10600"/>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 140" width="160" height="140">
+  <!-- Background -->
+  <rect width="160" height="140" fill="#0a0a0a"/>
+  
+  <!-- Icon - Checkered Mark (centered) -->
+  <g transform="translate(40, 12)">
+    <!-- Row 1 -->
+    <rect x="0" y="0" width="22" height="18" fill="#FFFFFF"/>
+    <rect x="27" y="0" width="22" height="18" fill="#1a1a1a"/>
+    <rect x="54" y="0" width="22" height="18" fill="#FFFFFF"/>
+    
+    <!-- Row 2 -->
+    <rect x="0" y="23" width="22" height="18" fill="#1a1a1a"/>
+    <rect x="27" y="23" width="22" height="18" fill="#E10600"/>
+    <rect x="54" y="23" width="22" height="18" fill="#1a1a1a"/>
+    
+    <!-- Row 3 -->
+    <rect x="0" y="46" width="22" height="18" fill="#FFFFFF"/>
+    <rect x="27" y="46" width="22" height="18" fill="#1a1a1a"/>
+    <rect x="54" y="46" width="22" height="18" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- Red stripe under icon -->
+  <rect x="40" y="80" width="80" height="5" fill="#E10600"/>
+  
+  <!-- GRIDVIEW text (centered) -->
+  <text x="80" y="115" font-family="Arial Black, Impact, sans-serif" font-size="26" font-weight="900" letter-spacing="4" fill="#FFFFFF" text-anchor="middle">GRIDVIEW</text>
+  
+  <!-- Red underline under text -->
+  <rect x="20" y="122" width="120" height="4" fill="#E10600"/>
+</svg>

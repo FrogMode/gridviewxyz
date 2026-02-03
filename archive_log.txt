@@ -1,0 +1,74 @@
+🏁 Archiving 11 seasons: 2010-2025
+⏭️  2025 already archived, skipping
+
+🏎️  Archiving 2019...
+  📅 21 races
+  🏁 Round 1/21  🏁 Round 2/21  🏁 Round 3/21  🏁 Round 4/21  🏁 Round 5/21  🏁 Round 6/21  🏁 Round 7/21  🏁 Round 8/21  🏁 Round 9/21  🏁 Round 10/21  🏁 Round 11/21  🏁 Round 12/21  🏁 Round 13/21  🏁 Round 14/21  🏁 Round 15/21  🏁 Round 16/21  🏁 Round 17/21  🏁 Round 18/21  🏁 Round 19/21  🏁 Round 20/21  🏁 Round 21/21
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2019.json (482.5 KB)
+
+🏎️  Archiving 2018...
+  📅 21 races
+  🏁 Round 1/21  🏁 Round 2/21  🏁 Round 3/21  🏁 Round 4/21  🏁 Round 5/21  🏁 Round 6/21  🏁 Round 7/21  🏁 Round 8/21  🏁 Round 9/21  🏁 Round 10/21  🏁 Round 11/21  🏁 Round 12/21  🏁 Round 13/21  🏁 Round 14/21  🏁 Round 15/21  🏁 Round 16/21  🏁 Round 17/21  🏁 Round 18/21  🏁 Round 19/21  🏁 Round 20/21  🏁 Round 21/21
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2018.json (477.4 KB)
+
+🏎️  Archiving 2017...
+  📅 20 races
+  🏁 Round 1/20  🏁 Round 2/20  🏁 Round 3/20  🏁 Round 4/20  🏁 Round 5/20  🏁 Round 6/20  🏁 Round 7/20  🏁 Round 8/20  🏁 Round 9/20  🏁 Round 10/20  🏁 Round 11/20  🏁 Round 12/20  🏁 Round 13/20  🏁 Round 14/20  🏁 Round 15/20  🏁 Round 16/20  🏁 Round 17/20  🏁 Round 18/20  🏁 Round 19/20  🏁 Round 20/20
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2017.json (455.7 KB)
+
+🏎️  Archiving 2016...
+  📅 21 races
+  🏁 Round 1/21  🏁 Round 2/21  🏁 Round 3/21  🏁 Round 4/21  🏁 Round 5/21  🏁 Round 6/21  🏁 Round 7/21  🏁 Round 8/21  🏁 Round 9/21  🏁 Round 10/21  🏁 Round 11/21  🏁 Round 12/21  🏁 Round 13/21  🏁 Round 14/21  🏁 Round 15/21  🏁 Round 16/21  🏁 Round 17/21  🏁 Round 18/21  🏁 Round 19/21  🏁 Round 20/21  🏁 Round 21/21
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2016.json (525.0 KB)
+
+🏎️  Archiving 2015...
+  📅 19 races
+  🏁 Round 1/19  🏁 Round 2/19  🏁 Round 3/19  🏁 Round 4/19  🏁 Round 5/19  🏁 Round 6/19  🏁 Round 7/19  🏁 Round 8/19  🏁 Round 9/19  🏁 Round 10/19  🏁 Round 11/19  🏁 Round 12/19  🏁 Round 13/19  🏁 Round 14/19  🏁 Round 15/19  🏁 Round 16/19  🏁 Round 17/19  🏁 Round 18/19  🏁 Round 19/19
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2015.json (429.9 KB)
+
+🏎️  Archiving 2014...
+  📅 19 races
+  🏁 Round 1/19  🏁 Round 2/19  🏁 Round 3/19  🏁 Round 4/19  🏁 Round 5/19  🏁 Round 6/19  🏁 Round 7/19  🏁 Round 8/19  🏁 Round 9/19  🏁 Round 10/19  🏁 Round 11/19  🏁 Round 12/19  🏁 Round 13/19  🏁 Round 14/19  🏁 Round 15/19  🏁 Round 16/19  🏁 Round 17/19  🏁 Round 18/19  🏁 Round 19/19
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2014.json (466.6 KB)
+
+🏎️  Archiving 2013...
+  📅 19 races
+  🏁 Round 1/19  🏁 Round 2/19  🏁 Round 3/19  🏁 Round 4/19  🏁 Round 5/19  🏁 Round 6/19  🏁 Round 7/19  🏁 Round 8/19  🏁 Round 9/19  🏁 Round 10/19  🏁 Round 11/19  🏁 Round 12/19  🏁 Round 13/19  🏁 Round 14/19  🏁 Round 15/19  🏁 Round 16/19  🏁 Round 17/19  🏁 Round 18/19  🏁 Round 19/19
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2013.json (481.0 KB)
+
+🏎️  Archiving 2012...
+  📅 20 races
+  🏁 Round 1/20  🏁 Round 2/20  🏁 Round 3/20  🏁 Round 4/20  🏁 Round 5/20  🏁 Round 6/20  🏁 Round 7/20  🏁 Round 8/20  🏁 Round 9/20  🏁 Round 10/20  🏁 Round 11/20  🏁 Round 12/20  🏁 Round 13/20  🏁 Round 14/20  🏁 Round 15/20  🏁 Round 16/20  🏁 Round 17/20  🏁 Round 18/20  🏁 Round 19/20  🏁 Round 20/20
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2012.json (539.9 KB)
+
+🏎️  Archiving 2011...
+  📅 19 races
+  🏁 Round 1/19  🏁 Round 2/19  🏁 Round 3/19  🏁 Round 4/19  🏁 Round 5/19  🏁 Round 6/19  🏁 Round 7/19  🏁 Round 8/19  🏁 Round 9/19  🏁 Round 10/19  🏁 Round 11/19  🏁 Round 12/19  🏁 Round 13/19  🏁 Round 14/19  🏁 Round 15/19  🏁 Round 16/19  🏁 Round 17/19  🏁 Round 18/19  🏁 Round 19/19
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2011.json (508.2 KB)
+
+🏎️  Archiving 2010...
+  📅 19 races
+  🏁 Round 1/19  🏁 Round 2/19  🏁 Round 3/19  🏁 Round 4/19  🏁 Round 5/19  🏁 Round 6/19  🏁 Round 7/19  🏁 Round 8/19  🏁 Round 9/19  🏁 Round 10/19  🏁 Round 11/19  🏁 Round 12/19  🏁 Round 13/19  🏁 Round 14/19  🏁 Round 15/19  🏁 Round 16/19  🏁 Round 17/19  🏁 Round 18/19  🏁 Round 19/19
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2010.json (506.7 KB)
+
+🏁 Archive complete!

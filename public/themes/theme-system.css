@@ -462,6 +462,7 @@ nav a:hover {
 }
 
 /* Theme swatches - Accurate representations */
+/* Dark theme swatches */
 .swatch-default { 
   background: linear-gradient(135deg, #e10600 50%, #0a0a0f 50%); 
 }
@@ -469,7 +470,7 @@ nav a:hover {
   background: linear-gradient(135deg, #5BA3D9 50%, #F26522 50%); 
 }
 .swatch-marlboro { 
-  background: linear-gradient(135deg, #EE1C25 50%, #ffffff 50%); 
+  background: linear-gradient(135deg, #EE1C25 50%, #1a1a1a 50%); 
 }
 .swatch-silk-cut { 
   background: linear-gradient(135deg, #9B59B6 50%, #D4AF37 50%); 
@@ -480,6 +481,32 @@ nav a:hover {
 .swatch-rothmans { 
   background: linear-gradient(135deg, #0044AA 50%, #D4AF37 50%); 
 }
+.swatch-jps { 
+  background: linear-gradient(135deg, #000000 50%, #D4AF37 50%); 
+}
+
+/* Light theme swatches */
+.swatch-light { 
+  background: linear-gradient(135deg, #ffffff 50%, #e10600 50%); 
+}
+.swatch-gulf-light { 
+  background: linear-gradient(135deg, #ffffff 50%, #5BA3D9 50%); 
+}
+.swatch-marlboro-light { 
+  background: linear-gradient(135deg, #ffffff 50%, #EE1C25 50%); 
+}
+.swatch-jps-light { 
+  background: linear-gradient(135deg, #fffef8 50%, #D4AF37 50%); 
+}
+.swatch-silk-cut-light { 
+  background: linear-gradient(135deg, #fdfbfe 50%, #9B59B6 50%); 
+}
+.swatch-camel-light { 
+  background: linear-gradient(135deg, #fffef5 50%, #F4C430 50%); 
+}
+.swatch-rothmans-light { 
+  background: linear-gradient(135deg, #f8faff 50%, #0044AA 50%); 
+}
 .swatch-martini { 
   background: linear-gradient(135deg, 
     #FFFFFF 0%, #FFFFFF 33%,
@@ -487,9 +514,6 @@ nav a:hover {
     #CE1126 50%, #CE1126 67%,
     #FFFFFF 67%, #FFFFFF 100%
   ); 
-}
-.swatch-jps { 
-  background: linear-gradient(135deg, #000000 50%, #D4AF37 50%); 
 }
 
 /* ============================================

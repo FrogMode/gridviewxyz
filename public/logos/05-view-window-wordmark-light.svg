@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none">
+  <!-- The View Window with Wordmark (light mode) -->
+  <rect x="4" y="4" width="56" height="56" rx="6" stroke="#0a0a0f" stroke-width="2.5" fill="none"/>
+  <rect x="14" y="14" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  <rect x="27" y="14" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="40" y="14" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  <rect x="14" y="27" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="27" y="27" width="10" height="10" rx="1.5" fill="#F97316"/>
+  <rect x="40" y="27" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="14" y="40" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  <rect x="27" y="40" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="40" y="40" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  <text x="72" y="42" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="28" fill="#0a0a0f" letter-spacing="-0.5">GRIDVIEW</text>
+</svg>

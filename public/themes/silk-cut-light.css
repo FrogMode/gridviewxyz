@@ -1,0 +1,77 @@
+/**
+ * GridView Theme: Silk Cut Purple (Light)
+ * Jaguar Le Mans - light variant
+ */
+
+[data-theme="silk-cut-light"] {
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 700;
+  --theme-heading-letter-spacing: -0.01em;
+  
+  --theme-primary: #9B59B6;
+  --theme-primary-rgb: 155, 89, 182;
+  --theme-primary-bright: #B370CC;
+  --theme-secondary: #D4AF37;
+  --theme-secondary-rgb: 212, 175, 55;
+  --theme-accent: #D4AF37;
+  --theme-accent-rgb: 212, 175, 55;
+  
+  --theme-bg-base: #fdfbfe;
+  --theme-bg-card: #f8f2fc;
+  --theme-bg-elevated: #fdfbfe;
+  --theme-bg-hover: #f0e6f6;
+  --theme-gradient-body: linear-gradient(180deg, #fdfbfe 0%, #f8f2fc 100%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(155, 89, 182, 0.12) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #fdfbfe 0%, #f8f2fc 100%);
+  
+  --theme-border: #e0c8eb;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(155, 89, 182, 0.2);
+  
+  --theme-text-primary: #2d1f35;
+  --theme-text-secondary: #5c4268;
+  --theme-text-muted: #8a6d9a;
+  --theme-text-accent: var(--theme-secondary);
+  
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #B8962E 100%);
+  --theme-pos-1-text: #000000;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #8a4fa5;
+  --theme-btn-secondary-bg: rgba(155, 89, 182, 0.08);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(155, 89, 182, 0.15);
+  
+  --theme-shadow-card: 0 4px 20px rgba(155, 89, 182, 0.08);
+  --theme-shadow-hover: 0 8px 30px rgba(155, 89, 182, 0.15);
+  --theme-glow: 0 0 25px rgba(155, 89, 182, 0.25);
+  
+  --theme-live-color: #16a34a;
+  --theme-scrollbar-track: #f8f2fc;
+  --theme-scrollbar-thumb: #e0c8eb;
+  --theme-scrollbar-hover: #9B59B6;
+}
+
+[data-theme="silk-cut-light"] header::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(155, 89, 182, 0.15) 0%, transparent 60%);
+}
+
+[data-theme="silk-cut-light"] header::after {
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5) 30%, #D4AF37 50%, rgba(212, 175, 55, 0.5) 70%, transparent);
+}
+
+[data-theme="silk-cut-light"] .text-white { color: #2d1f35 !important; }
+[data-theme="silk-cut-light"] .text-gray-200 { color: #5c4268 !important; }
+[data-theme="silk-cut-light"] .text-gray-400 { color: #8a6d9a !important; }
+[data-theme="silk-cut-light"] .bg-white\/5 { background-color: rgba(155, 89, 182, 0.04) !important; }
+[data-theme="silk-cut-light"] .bg-white\/10 { background-color: rgba(155, 89, 182, 0.08) !important; }
+[data-theme="silk-cut-light"] .border-white\/10 { border-color: rgba(155, 89, 182, 0.12) !important; }
+[data-theme="silk-cut-light"] .bg-racing-card { background-color: #f8f2fc !important; }
+[data-theme="silk-cut-light"] .bg-racing-dark { background-color: #f0e6f6 !important; }

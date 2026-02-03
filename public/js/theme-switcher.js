@@ -7,14 +7,23 @@
 
 const GridViewThemes = {
   themes: [
+    // Dark themes
     { id: 'default', name: 'Midnight Racing', icon: '🌙', description: 'Classic F1 dark' },
-    { id: 'gulf', name: 'Gulf Racing', icon: '🏎️', description: 'Le Mans \'70s legend' },
+    { id: 'gulf', name: 'Gulf Racing', icon: '🏎️', description: 'Le Mans \'70s' },
     { id: 'marlboro', name: 'Marlboro Red', icon: '🔴', description: 'Peak F1 dominance' },
     { id: 'jps', name: 'JPS Black & Gold', icon: '✨', description: 'Lotus elegance' },
     { id: 'silk-cut', name: 'Silk Cut Purple', icon: '💜', description: 'Jaguar Le Mans' },
     { id: 'camel', name: 'Camel Yellow', icon: '🌵', description: 'Desert heat' },
     { id: 'rothmans', name: 'Rothmans Blue', icon: '🔵', description: 'Williams excellence' },
-    { id: 'martini', name: 'Martini Stripes', icon: '🍸', description: 'Italian racing (Light)' }
+    // Light themes
+    { id: 'light', name: 'Daylight', icon: '☀️', description: 'Clean & bright' },
+    { id: 'gulf-light', name: 'Gulf Light', icon: '🌊', description: 'Gulf Racing light' },
+    { id: 'marlboro-light', name: 'Marlboro Light', icon: '🏁', description: 'Marlboro light' },
+    { id: 'jps-light', name: 'JPS Light', icon: '⭐', description: 'JPS cream & gold' },
+    { id: 'silk-cut-light', name: 'Silk Cut Light', icon: '💐', description: 'Purple elegance' },
+    { id: 'camel-light', name: 'Camel Light', icon: '🏜️', description: 'Desert sunrise' },
+    { id: 'rothmans-light', name: 'Rothmans Light', icon: '🌤️', description: 'Williams light' },
+    { id: 'martini', name: 'Martini Stripes', icon: '🍸', description: 'Italian racing' }
   ],
   
   currentTheme: 'default',
@@ -94,7 +103,8 @@ const GridViewThemes = {
     document.documentElement.setAttribute('data-theme', themeId);
     
     // Update body class for light theme detection
-    document.body.classList.toggle('theme-light', themeId === 'martini');
+    const isLight = themeId === 'martini' || themeId.includes('light');
+    document.body.classList.toggle('theme-light', isLight);
     
     // Update meta theme-color for mobile
     this.updateMetaThemeColor(themeId);
@@ -128,13 +138,20 @@ const GridViewThemes = {
   updateMetaThemeColor(themeId) {
     const colors = {
       default: '#e10600',
+      light: '#e10600',
       gulf: '#5BA3D9',
+      'gulf-light': '#5BA3D9',
       marlboro: '#EE1C25',
+      'marlboro-light': '#EE1C25',
       'silk-cut': '#9B59B6',
+      'silk-cut-light': '#9B59B6',
       camel: '#F4C430',
+      'camel-light': '#F4C430',
       rothmans: '#0044AA',
+      'rothmans-light': '#0044AA',
       martini: '#CE1126',
-      jps: '#D4AF37'
+      jps: '#D4AF37',
+      'jps-light': '#D4AF37'
     };
     
     let meta = document.querySelector('meta[name="theme-color"]');
@@ -421,7 +438,7 @@ const GridViewThemes = {
    * Check if current theme is light
    */
   isLightTheme() {
-    return this.currentTheme === 'martini';
+    return this.currentTheme === 'martini' || this.currentTheme.includes('light');
   }
 };
 

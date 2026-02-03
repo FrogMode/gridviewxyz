@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background -->
+  <rect width="64" height="64" fill="#FFFFFF"/>
+  
+  <!-- Checkered Mark - 3x3 grid -->
+  <g transform="translate(8, 12)">
+    <!-- Row 1 -->
+    <rect x="0" y="0" width="14" height="12" fill="#1a1a1a"/>
+    <rect x="17" y="0" width="14" height="12" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="34" y="0" width="14" height="12" fill="#1a1a1a"/>
+    
+    <!-- Row 2 -->
+    <rect x="0" y="15" width="14" height="12" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="17" y="15" width="14" height="12" fill="#E10600"/>
+    <rect x="34" y="15" width="14" height="12" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="1"/>
+    
+    <!-- Row 3 -->
+    <rect x="0" y="30" width="14" height="12" fill="#1a1a1a"/>
+    <rect x="17" y="30" width="14" height="12" fill="#FFFFFF" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="34" y="30" width="14" height="12" fill="#1a1a1a"/>
+  </g>
+  
+  <!-- Racing stripe accent at bottom -->
+  <rect x="0" y="58" width="64" height="6" fill="#E10600"/>
+</svg>

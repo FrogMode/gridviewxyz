@@ -1,0 +1,77 @@
+/**
+ * GridView Theme: Rothmans Blue (Light)
+ * Williams excellence - light variant
+ */
+
+[data-theme="rothmans-light"] {
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 800;
+  --theme-heading-letter-spacing: -0.02em;
+  
+  --theme-primary: #0044AA;
+  --theme-primary-rgb: 0, 68, 170;
+  --theme-primary-bright: #1155CC;
+  --theme-secondary: #D4AF37;
+  --theme-secondary-rgb: 212, 175, 55;
+  --theme-accent: #D4AF37;
+  --theme-accent-rgb: 212, 175, 55;
+  
+  --theme-bg-base: #f8faff;
+  --theme-bg-card: #eef4ff;
+  --theme-bg-elevated: #f8faff;
+  --theme-bg-hover: #e0ecff;
+  --theme-gradient-body: linear-gradient(180deg, #f8faff 0%, #eef4ff 100%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(0, 68, 170, 0.1) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #f8faff 0%, #eef4ff 100%);
+  
+  --theme-border: #b8d0f5;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(0, 68, 170, 0.15);
+  
+  --theme-text-primary: #0a1a30;
+  --theme-text-secondary: #2a4a70;
+  --theme-text-muted: #5a7aa0;
+  --theme-text-accent: var(--theme-secondary);
+  
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #B8962E 100%);
+  --theme-pos-1-text: #0044AA;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #003388;
+  --theme-btn-secondary-bg: rgba(0, 68, 170, 0.08);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(0, 68, 170, 0.15);
+  
+  --theme-shadow-card: 0 4px 20px rgba(0, 68, 170, 0.08);
+  --theme-shadow-hover: 0 8px 30px rgba(0, 68, 170, 0.15);
+  --theme-glow: 0 0 25px rgba(0, 68, 170, 0.25);
+  
+  --theme-live-color: #16a34a;
+  --theme-scrollbar-track: #eef4ff;
+  --theme-scrollbar-thumb: #b8d0f5;
+  --theme-scrollbar-hover: #0044AA;
+}
+
+[data-theme="rothmans-light"] header::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(0, 68, 170, 0.12) 0%, transparent 60%);
+}
+
+[data-theme="rothmans-light"] header::after {
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5) 30%, #D4AF37 50%, rgba(212, 175, 55, 0.5) 70%, transparent);
+}
+
+[data-theme="rothmans-light"] .text-white { color: #0a1a30 !important; }
+[data-theme="rothmans-light"] .text-gray-200 { color: #2a4a70 !important; }
+[data-theme="rothmans-light"] .text-gray-400 { color: #5a7aa0 !important; }
+[data-theme="rothmans-light"] .bg-white\/5 { background-color: rgba(0, 68, 170, 0.04) !important; }
+[data-theme="rothmans-light"] .bg-white\/10 { background-color: rgba(0, 68, 170, 0.08) !important; }
+[data-theme="rothmans-light"] .border-white\/10 { border-color: rgba(0, 68, 170, 0.12) !important; }
+[data-theme="rothmans-light"] .bg-racing-card { background-color: #eef4ff !important; }
+[data-theme="rothmans-light"] .bg-racing-dark { background-color: #e0ecff !important; }

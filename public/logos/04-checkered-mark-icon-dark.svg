@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- The Checkered Mark: Abstracted 5-square checkered pattern -->
+  <rect x="8" y="8" width="16" height="16" rx="2" fill="#6366F1"/>
+  <rect x="40" y="8" width="16" height="16" rx="2" fill="#22D3EE"/>
+  
+  <rect x="24" y="24" width="16" height="16" rx="2" fill="#F97316"/>
+  
+  <rect x="8" y="40" width="16" height="16" rx="2" fill="#22D3EE"/>
+  <rect x="40" y="40" width="16" height="16" rx="2" fill="#6366F1"/>
+</svg>

@@ -1,0 +1,77 @@
+/**
+ * GridView Theme: Marlboro Red (Light)
+ * Peak F1 dominance - light variant
+ */
+
+[data-theme="marlboro-light"] {
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 900;
+  --theme-heading-letter-spacing: -0.03em;
+  
+  --theme-primary: #EE1C25;
+  --theme-primary-rgb: 238, 28, 37;
+  --theme-primary-bright: #FF3040;
+  --theme-secondary: #FFFFFF;
+  --theme-secondary-rgb: 255, 255, 255;
+  --theme-accent: #EE1C25;
+  --theme-accent-rgb: 238, 28, 37;
+  
+  --theme-bg-base: #ffffff;
+  --theme-bg-card: #fef5f5;
+  --theme-bg-elevated: #ffffff;
+  --theme-bg-hover: #fde8e8;
+  --theme-gradient-body: linear-gradient(180deg, #ffffff 0%, #fef5f5 100%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(238, 28, 37, 0.12) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #ffffff 0%, #fef5f5 100%);
+  
+  --theme-border: #f5c5c7;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(238, 28, 37, 0.15);
+  
+  --theme-text-primary: #2d1516;
+  --theme-text-secondary: #6b3a3c;
+  --theme-text-muted: #a06567;
+  --theme-text-accent: var(--theme-primary);
+  
+  --theme-pos-1-bg: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+  --theme-pos-1-text: #000000;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #d11920;
+  --theme-btn-secondary-bg: rgba(238, 28, 37, 0.08);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(238, 28, 37, 0.15);
+  
+  --theme-shadow-card: 0 4px 20px rgba(238, 28, 37, 0.08);
+  --theme-shadow-hover: 0 8px 30px rgba(238, 28, 37, 0.15);
+  --theme-glow: 0 0 25px rgba(238, 28, 37, 0.25);
+  
+  --theme-live-color: #16a34a;
+  --theme-scrollbar-track: #fef5f5;
+  --theme-scrollbar-thumb: #f5c5c7;
+  --theme-scrollbar-hover: #EE1C25;
+}
+
+[data-theme="marlboro-light"] header::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(238, 28, 37, 0.15) 0%, transparent 60%);
+}
+
+[data-theme="marlboro-light"] header::after {
+  background: linear-gradient(90deg, transparent, rgba(238, 28, 37, 0.5) 30%, #EE1C25 50%, rgba(238, 28, 37, 0.5) 70%, transparent);
+}
+
+[data-theme="marlboro-light"] .text-white { color: #2d1516 !important; }
+[data-theme="marlboro-light"] .text-gray-200 { color: #6b3a3c !important; }
+[data-theme="marlboro-light"] .text-gray-400 { color: #a06567 !important; }
+[data-theme="marlboro-light"] .bg-white\/5 { background-color: rgba(238, 28, 37, 0.04) !important; }
+[data-theme="marlboro-light"] .bg-white\/10 { background-color: rgba(238, 28, 37, 0.08) !important; }
+[data-theme="marlboro-light"] .border-white\/10 { border-color: rgba(238, 28, 37, 0.12) !important; }
+[data-theme="marlboro-light"] .bg-racing-card { background-color: #fef5f5 !important; }
+[data-theme="marlboro-light"] .bg-racing-dark { background-color: #fde8e8 !important; }

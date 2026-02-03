@@ -1,0 +1,77 @@
+/**
+ * GridView Theme: Camel Yellow (Light)
+ * Desert heat - light variant
+ */
+
+[data-theme="camel-light"] {
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 800;
+  --theme-heading-letter-spacing: -0.02em;
+  
+  --theme-primary: #F4C430;
+  --theme-primary-rgb: 244, 196, 48;
+  --theme-primary-bright: #FFD54F;
+  --theme-secondary: #1E3A5F;
+  --theme-secondary-rgb: 30, 58, 95;
+  --theme-accent: #1E3A5F;
+  --theme-accent-rgb: 30, 58, 95;
+  
+  --theme-bg-base: #fffef5;
+  --theme-bg-card: #fefae0;
+  --theme-bg-elevated: #fffef5;
+  --theme-bg-hover: #fcf5c8;
+  --theme-gradient-body: linear-gradient(180deg, #fffef5 0%, #fefae0 100%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(244, 196, 48, 0.15) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #fffef5 0%, #fefae0 100%);
+  
+  --theme-border: #ebe0a0;
+  --theme-border-active: var(--theme-secondary);
+  --theme-border-subtle: rgba(244, 196, 48, 0.3);
+  
+  --theme-text-primary: #2a2510;
+  --theme-text-secondary: #5c5230;
+  --theme-text-muted: #8a7f55;
+  --theme-text-accent: var(--theme-secondary);
+  
+  --theme-pos-1-bg: linear-gradient(135deg, #F4C430 0%, #D4A820 100%);
+  --theme-pos-1-text: #1E3A5F;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  --theme-btn-primary-bg: var(--theme-secondary);
+  --theme-btn-primary-text: #F4C430;
+  --theme-btn-primary-hover: #152a45;
+  --theme-btn-secondary-bg: rgba(30, 58, 95, 0.08);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(30, 58, 95, 0.15);
+  
+  --theme-shadow-card: 0 4px 20px rgba(244, 196, 48, 0.15);
+  --theme-shadow-hover: 0 8px 30px rgba(30, 58, 95, 0.15);
+  --theme-glow: 0 0 25px rgba(244, 196, 48, 0.4);
+  
+  --theme-live-color: #16a34a;
+  --theme-scrollbar-track: #fefae0;
+  --theme-scrollbar-thumb: #ebe0a0;
+  --theme-scrollbar-hover: #1E3A5F;
+}
+
+[data-theme="camel-light"] header::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(244, 196, 48, 0.25) 0%, transparent 60%);
+}
+
+[data-theme="camel-light"] header::after {
+  background: linear-gradient(90deg, transparent, rgba(30, 58, 95, 0.5) 30%, #1E3A5F 50%, rgba(30, 58, 95, 0.5) 70%, transparent);
+}
+
+[data-theme="camel-light"] .text-white { color: #2a2510 !important; }
+[data-theme="camel-light"] .text-gray-200 { color: #5c5230 !important; }
+[data-theme="camel-light"] .text-gray-400 { color: #8a7f55 !important; }
+[data-theme="camel-light"] .bg-white\/5 { background-color: rgba(244, 196, 48, 0.08) !important; }
+[data-theme="camel-light"] .bg-white\/10 { background-color: rgba(244, 196, 48, 0.12) !important; }
+[data-theme="camel-light"] .border-white\/10 { border-color: rgba(244, 196, 48, 0.2) !important; }
+[data-theme="camel-light"] .bg-racing-card { background-color: #fefae0 !important; }
+[data-theme="camel-light"] .bg-racing-dark { background-color: #fcf5c8 !important; }

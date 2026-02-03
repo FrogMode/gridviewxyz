@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- The View Window: Grid within a frame/window (light mode) -->
+  <rect x="4" y="4" width="56" height="56" rx="6" stroke="#0a0a0f" stroke-width="2.5" fill="none"/>
+  
+  <!-- Inner grid -->
+  <rect x="14" y="14" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  <rect x="27" y="14" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="40" y="14" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  
+  <rect x="14" y="27" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="27" y="27" width="10" height="10" rx="1.5" fill="#F97316"/>
+  <rect x="40" y="27" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  
+  <rect x="14" y="40" width="10" height="10" rx="1.5" fill="#6366F1"/>
+  <rect x="27" y="40" width="10" height="10" rx="1.5" fill="#22D3EE"/>
+  <rect x="40" y="40" width="10" height="10" rx="1.5" fill="#6366F1"/>
+</svg>

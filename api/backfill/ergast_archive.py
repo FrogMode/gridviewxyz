@@ -23,7 +23,8 @@ from typing import Optional
 import urllib.request
 import urllib.error
 
-ERGAST_BASE = "https://ergast.com/api/f1"
+# Original Ergast is dead - using Jolpica community mirror
+ERGAST_BASE = "https://api.jolpi.ca/ergast/f1"
 ARCHIVE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "archive", "ergast")
 RATE_LIMIT_DELAY = 0.25  # 250ms between requests to be polite
 
