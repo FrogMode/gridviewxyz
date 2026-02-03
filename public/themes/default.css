@@ -37,7 +37,7 @@
   --theme-bg-elevated: #1a1a22;
   --theme-bg-hover: #1f1f28;
   --theme-gradient-body: linear-gradient(180deg, #0a0a0f 0%, #111117 100%);
-  --theme-gradient-hero: linear-gradient(135deg, rgba(225, 6, 0, 0.2) 0%, transparent 60%);
+  --theme-gradient-hero: linear-gradient(180deg, rgba(225, 6, 0, 0.2) 0%, transparent 60%);
   --theme-gradient-card: linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
   
   /* ============================================

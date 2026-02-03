@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="default">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +18,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Theme System -->
+    <link rel="stylesheet" href="/themes/default.css" id="theme-css">
+    <link rel="stylesheet" href="/themes/theme-system.css">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,28 +49,16 @@
     </script>
     
     <style>
-        body {
-            background: linear-gradient(180deg, #0a0a0f 0%, #111117 100%);
-            min-height: 100vh;
-        }
+        /* ============================================
+           THEME-AWARE STYLES
+           These use CSS variables defined in theme files
+           ============================================ */
         
-        /* Card hover effects */
-        .series-card {
-            transition: all 0.25s ease;
-            border: 1px solid transparent;
-        }
-        .series-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(225, 6, 0, 0.3);
-            box-shadow: 0 8px 30px rgba(225, 6, 0, 0.15);
-        }
-        .series-card.active {
-            border-color: #e10600;
-            box-shadow: 0 0 20px rgba(225, 6, 0, 0.3);
-            background: linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
-        }
-        .series-card.active .card-icon {
-            background-color: rgba(225, 6, 0, 0.3) !important;
+        /* Body inherits from theme-system.css */
+        body {
+            background: var(--theme-gradient-body, linear-gradient(180deg, #0a0a0f 0%, #111117 100%));
+            min-height: 100vh;
+            font-family: var(--theme-font-body, 'Inter', system-ui, sans-serif);
         }
         
         /* Series detail panel animation */
@@ -85,89 +77,95 @@
             to { opacity: 0; transform: translateY(-20px); }
         }
         
-        /* Data rows */
-        .data-row {
-            transition: background-color 0.15s ease;
-        }
-        .data-row:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-        }
-        .data-row:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-        
-        /* Position badges */
-        .position-badge {
-            min-width: 2rem;
-            text-align: center;
-        }
-        .position-1 { background: linear-gradient(135deg, #ffd700 0%, #ffb300 100%); color: #000; }
-        .position-2 { background: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%); color: #000; }
-        .position-3 { background: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%); color: #fff; }
-        
-        /* Live indicator pulse */
-        .live-pulse {
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* Ad slots styling */
+        /* Ad slots - now theme-aware */
         .ad-slot {
-            background: linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
-            border: 1px dashed #2a2a35;
+            background: var(--theme-gradient-card, linear-gradient(135deg, #1a1a22 0%, #16161d 100%));
+            border: 1px dashed var(--theme-border, #2a2a35);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #4a4a55;
+            color: var(--theme-text-muted, #4a4a55);
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         
-        /* Scrollbar styling */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0f; }
-        ::-webkit-scrollbar-thumb { background: #2a2a35; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3a3a45; }
-        
-        /* Checkered pattern (subtle) */
+        /* Checkered pattern - uses theme variable */
         .checkered-accent {
-            background-image: 
+            background-image: var(--theme-accent-pattern, 
                 linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
                 linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
                 linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%),
-                linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%);
+                linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%)
+            );
             background-size: 8px 8px;
         }
         
-        /* Tab buttons */
-        .tab-btn {
-            transition: all 0.2s ease;
+        /* Theme option styles for dropdown */
+        .theme-option-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
-        .tab-btn.active {
-            background-color: rgba(225, 6, 0, 0.2);
-            color: #e10600;
-            border-color: #e10600;
+        .theme-option-name {
+            font-weight: 500;
+        }
+        .theme-option-desc {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+        
+        /* Light theme specific overrides for Martini */
+        [data-theme="martini"] .text-white {
+            color: var(--theme-text-primary, #1A1A1A) !important;
+        }
+        [data-theme="martini"] .text-gray-200,
+        [data-theme="martini"] .text-gray-300 {
+            color: #333333 !important;
+        }
+        [data-theme="martini"] .text-gray-400,
+        [data-theme="martini"] .text-gray-500 {
+            color: #666666 !important;
+        }
+        [data-theme="martini"] .bg-racing-card {
+            background-color: #FFFFFF !important;
+        }
+        [data-theme="martini"] .bg-racing-dark {
+            background-color: #F8F6F2 !important;
+        }
+        [data-theme="martini"] .border-racing-border {
+            border-color: rgba(0,0,0,0.1) !important;
+        }
+        [data-theme="martini"] .bg-white\/5 {
+            background-color: rgba(0,0,0,0.05) !important;
+        }
+        [data-theme="martini"] .border-white\/10 {
+            border-color: rgba(0,0,0,0.1) !important;
+        }
+        [data-theme="martini"] .hover\:text-white:hover {
+            color: var(--theme-secondary, #CE1126) !important;
+        }
+        [data-theme="martini"] .from-racing-red\/20 {
+            --tw-gradient-from: transparent !important;
+        }
+        [data-theme="martini"] .from-racing-red\/10 {
+            --tw-gradient-from: transparent !important;
         }
     </style>
 </head>
-<body class="text-white">
-    <!-- Hero Header -->
-    <header class="relative overflow-hidden">
-        <!-- Background gradient -->
-        <div class="absolute inset-0 bg-gradient-to-br from-racing-red/20 via-transparent to-racing-dark"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-racing-red/10 via-transparent to-transparent"></div>
+<body class="text-white" style="color: var(--theme-text-primary);">
+    <!-- Hero Header - Theme-aware backgrounds applied via CSS -->
+    <header class="relative overflow-hidden" style="background: var(--theme-bg-base);">
+        <!-- Background gradient with smooth fade at bottom -->
+        <div class="absolute inset-0" style="background: var(--theme-gradient-hero); pointer-events: none; mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);"></div>
         
         <!-- Nav Bar -->
         <nav class="relative z-10 max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-racing-red rounded flex items-center justify-center">
+                <div class="w-8 h-8 rounded flex items-center justify-center gridview-logo-icon" style="background-color: var(--theme-primary);">
                     <span class="text-sm">🏁</span>
                 </div>
-                <span class="font-bold text-lg">GridView</span>
+                <span class="font-bold text-lg gridview-logo" style="color: var(--theme-text-primary);">GridView</span>
             </div>
             <div class="hidden md:flex items-center gap-6">
                 <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Calendar</a>
@@ -196,23 +194,23 @@
         
         <!-- Hero Content -->
         <div class="relative z-10 max-w-7xl mx-auto px-4 py-16 text-center">
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-4">
-                <span class="bg-gradient-to-r from-white via-white to-gray-400 bg-clip-text text-transparent">All Motorsports.</span>
+            <h1 class="text-5xl md:text-7xl tracking-tight mb-4" style="font-family: var(--theme-font-heading); font-weight: var(--theme-heading-weight, 800); letter-spacing: var(--theme-heading-letter-spacing, -0.02em); text-shadow: var(--theme-heading-shadow, none);">
+                <span style="color: var(--theme-text-primary);">All Motorsports.</span>
                 <br>
-                <span class="bg-gradient-to-r from-racing-red to-racing-orange bg-clip-text text-transparent">One Dashboard.</span>
+                <span style="color: var(--theme-primary); text-shadow: var(--theme-heading-shadow, none);">One Dashboard.</span>
             </h1>
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-8">
+            <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8" style="color: var(--theme-text-secondary);">
                 F1, WRC, NASCAR, IndyCar, IMSA, WEC — real-time results, standings, and schedules in one place.
             </p>
             <div class="flex items-center justify-center gap-4 flex-wrap">
-                <div class="flex items-center gap-2 text-green-400 text-sm">
-                    <span class="w-2 h-2 bg-green-400 rounded-full live-pulse"></span>
+                <div class="flex items-center gap-2 text-sm" style="color: var(--theme-live-color);">
+                    <span class="w-2 h-2 rounded-full live-pulse" style="background-color: var(--theme-live-color);"></span>
                     <span>Live Data</span>
                 </div>
-                <span class="text-gray-600">•</span>
-                <span class="text-gray-400 text-sm">8 Racing Series</span>
-                <span class="text-gray-600">•</span>
-                <span class="text-gray-400 text-sm">Real + Sim Racing</span>
+                <span style="color: var(--theme-text-muted);">•</span>
+                <span class="text-sm" style="color: var(--theme-text-secondary);">8 Racing Series</span>
+                <span style="color: var(--theme-text-muted);">•</span>
+                <span class="text-sm" style="color: var(--theme-text-secondary);">Real + Sim Racing</span>
             </div>
         </div>
         
@@ -1745,5 +1743,8 @@
             }
         });
     </script>
+    
+    <!-- Theme Switcher -->
+    <script src="/js/theme-switcher.js"></script>
 </body>
 </html>

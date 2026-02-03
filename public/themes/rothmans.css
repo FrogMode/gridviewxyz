@@ -43,7 +43,7 @@
     #061530 70%,
     #030A18 100%
   );
-  --theme-gradient-hero: linear-gradient(135deg, 
+  --theme-gradient-hero: linear-gradient(180deg, 
     rgba(0, 68, 170, 0.45) 0%, 
     rgba(0, 51, 153, 0.25) 40%,
     rgba(212, 175, 55, 0.15) 80%,

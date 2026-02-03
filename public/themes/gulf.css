@@ -42,10 +42,11 @@
     #0a2030 40%,
     #0c2538 100%
   );
-  --theme-gradient-hero: linear-gradient(135deg, 
-    rgba(91, 163, 217, 0.4) 0%, 
-    rgba(242, 101, 34, 0.25) 50%,
-    rgba(91, 163, 217, 0.3) 100%
+  --theme-gradient-hero: linear-gradient(180deg, 
+    rgba(91, 163, 217, 0.5) 0%, 
+    rgba(242, 101, 34, 0.3) 30%,
+    rgba(91, 163, 217, 0.2) 60%,
+    transparent 100%
   );
   --theme-gradient-card: linear-gradient(145deg, 
     rgba(91, 163, 217, 0.15) 0%, 

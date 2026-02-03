@@ -156,9 +156,8 @@
 <body class="text-white" style="color: var(--theme-text-primary);">
     <!-- Hero Header - Theme-aware backgrounds applied via CSS -->
     <header class="relative overflow-hidden" style="background: var(--theme-bg-base);">
-        <!-- Background gradient now handled by theme CSS via ::before pseudo-element -->
-        <!-- Legacy fallback gradients -->
-        <div class="absolute inset-0" style="background: var(--theme-gradient-hero); pointer-events: none;"></div>
+        <!-- Background gradient with smooth fade at bottom -->
+        <div class="absolute inset-0" style="background: var(--theme-gradient-hero); pointer-events: none; mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);"></div>
         
         <!-- Nav Bar -->
         <nav class="relative z-10 max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
