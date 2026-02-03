@@ -317,8 +317,10 @@
             // Populate sessions
             let html = '<option value="">Select session...</option>';
             meeting.sessions.forEach(s => {
-                const icon = s.type === 'Race' ? '🏁' : s.type === 'Qualifying' ? '⏱️' : '🔧';
-                html += `<option value="${s.session_key}">${icon} ${s.name}</option>`;
+                const icon = s.type === 'Race' ? '🏁' : s.type === 'Qualifying' ? '⏱️' : s.type === 'Sprint' ? '🏃' : '🔧';
+                // Show type + name for clarity (e.g., "Practice - Day 1" or "Qualifying")
+                const label = s.type === s.name ? s.type : `${s.type} - ${s.name}`;
+                html += `<option value="${s.session_key}">${icon} ${label}</option>`;
             });
             sessionSelect.innerHTML = html;
             sessionSelect.disabled = false;
