@@ -313,12 +313,21 @@
             try {
                 const resp = await fetch('/api/imsa');
                 const data = await resp.json();
-                let html = '<h4 class="font-semibold mb-4">' + (data.event || 'Latest Race') + ' <span class="text-gray-500 font-normal text-sm">' + (data.session || '') + '</span></h4>';
+                if (data.error) {
+                    setSeriesContent('<p class="text-gray-400 text-center py-8">' + data.message + '</p>');
+                    return;
+                }
+                // Show series name if it's not the main WeatherTech series
+                const seriesLabel = data.series && !data.series.includes('WeatherTech') 
+                    ? '<span class="text-amber-500 text-xs font-medium ml-2">' + data.series + '</span>' : '';
+                let html = '<h4 class="font-semibold mb-4">' + (data.event || 'Latest Race') + seriesLabel + 
+                    ' <span class="text-gray-500 font-normal text-sm block mt-1">' + (data.session || '') + '</span></h4>';
                 html += '<div class="grid md:grid-cols-2 gap-3 max-h-96 overflow-y-auto">';
                 (data.results || []).forEach(r => {
+                    const displayName = r.drivers ? r.drivers.split(',')[0] : (r.team || '');
                     html += '<div class="data-row flex items-center gap-3 py-2 px-3 rounded bg-racing-dark/50">' +
                         '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-1 px-2 rounded">' + r.position + '</span>' +
-                        '<div class="flex-1"><p class="font-medium">#' + r.number + ' ' + (r.team || '') + '</p><p class="text-xs text-gray-500">' + (r.class || '') + ' • ' + (r.vehicle || '') + '</p></div>' +
+                        '<div class="flex-1"><p class="font-medium">#' + r.number + ' ' + displayName + '</p><p class="text-xs text-gray-500">' + (r.class || '') + ' • ' + (r.vehicle || '') + '</p></div>' +
                         '<span class="text-sm text-gray-400 font-mono">' + (r.gap || r.time || '') + '</span></div>';
                 });
                 html += '</div>';

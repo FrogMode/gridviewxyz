@@ -72,20 +72,74 @@ def fetch_results_json(url: str) -> dict:
     with urllib.request.urlopen(req, timeout=15) as resp:
         return json.loads(resp.read())
 
-def get_latest_race_results() -> dict:
-    """Get the most recent race results."""
+def get_latest_race_results(series_filter: str = None) -> dict:
+    """Get the most recent race results.
+    
+    Args:
+        series_filter: Optional filter - 'weathertech', 'pilot', 'mx5', or None for main series only
+    """
     events = fetch_available_events()
     
+    # Define series priorities (lower = higher priority)
+    # Use partial matching to handle varying series names
+    SERIES_KEYWORDS = [
+        ("WeatherTech", 1),      # Main IMSA series
+        ("Pilot Challenge", 2),  # Michelin Pilot Challenge
+        ("MX-5 Cup", 3),         # Mazda MX-5 Cup
+    ]
+    
+    def get_series_priority(series_name: str) -> int:
+        """Get priority for a series by keyword matching."""
+        for keyword, priority in SERIES_KEYWORDS:
+            if keyword in series_name:
+                return priority
+        return 99  # Unknown series
+    
+    # Filter and sort events - exclude HSR and other non-main series by default
+    filtered_events = []
+    for event in events:
+        series = event.get("series", "")
+        
+        # Skip HSR and any other non-main series
+        priority = get_series_priority(series)
+        if "Historic" in series or priority == 99:
+            continue
+        
+        # Apply optional series filter
+        if series_filter:
+            if series_filter.lower() == "weathertech" and "WeatherTech" not in series:
+                continue
+            elif series_filter.lower() == "pilot" and "Pilot" not in series:
+                continue
+            elif series_filter.lower() == "mx5" and "MX-5" not in series:
+                continue
+        
+        filtered_events.append(event)
+    
+    # Sort by year (descending) then by series priority
+    filtered_events.sort(key=lambda e: (-e.get("year", 0), get_series_priority(e.get("series", ""))))
+    
     # Find races (not practice/qualifying)
-    for event in reversed(events):  # Most recent first
+    for event in filtered_events:
         sessions = event.get("sessions", {})
         for session_name, docs in sessions.items():
-            if "Race" in session_name:
-                # Find the main results document
-                for doc in docs:
-                    if "03_Results" in doc["doc"] or doc["doc"].startswith("03_"):
+            if "Race" in session_name and "Qualifying Race" not in session_name:
+                # Find the official or main results document
+                for doc in sorted(docs, key=lambda d: (
+                    0 if "Official" in d["doc"] else 
+                    1 if "Provisional" not in d["doc"] else 2
+                )):
+                    if "03_Results" in doc["doc"]:
                         try:
-                            return fetch_results_json(doc["url"])
+                            data = fetch_results_json(doc["url"])
+                            # Attach event metadata so caller knows the source
+                            data["_source"] = {
+                                "series": event.get("series", ""),
+                                "venue": event.get("venue", ""),
+                                "year": event.get("year"),
+                                "session_type": session_name
+                            }
+                            return data
                         except:
                             continue
     return None
@@ -150,19 +204,36 @@ class handler(BaseHTTPRequestHandler):
                 return
             
             # Default: get latest race results
-            data = get_latest_race_results()
+            series_filter = query.get('series', [None])[0]  # Optional: weathertech, pilot, mx5
+            data = get_latest_race_results(series_filter)
             if data:
                 session_info = data.get("session", {})
+                source = data.get("_source", {})
+                
+                # Clean up series name for display
+                series_name = source.get("series", "")
+                if "WeatherTech" in series_name:
+                    series_display = "IMSA WeatherTech SportsCar Championship"
+                elif "Pilot" in series_name:
+                    series_display = "IMSA Michelin Pilot Challenge"
+                elif "MX-5" in series_name:
+                    series_display = "Mazda MX-5 Cup"
+                else:
+                    series_display = series_name.split("_", 1)[-1] if "_" in series_name else series_name
+                
                 response = {
                     "event": session_info.get("event_name"),
-                    "session": session_info.get("session_name"),
+                    "series": series_display,
+                    "session": source.get("session_type") or session_info.get("session_name"),
                     "circuit": session_info.get("circuit", {}).get("name"),
+                    "venue": source.get("venue"),
+                    "year": source.get("year"),
                     "date": session_info.get("session_date"),
                     "fastest_lap": data.get("fastest_lap"),
                     "results": format_classification(data)
                 }
             else:
-                response = {"error": "No race results found"}
+                response = {"error": "No race results found", "message": "The main IMSA WeatherTech race may not have finished yet."}
             
             self._send_json(response)
             
