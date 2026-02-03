@@ -826,6 +826,10 @@
                         <button onclick="switchTab('${series}', 'news')" data-tab="news" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg border border-racing-border hover:border-racing-red/50 transition-all">
                             📰 News
                         </button>
+                        <button onclick="switchTab('${series}', 'live')" data-tab="live" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg border border-racing-border hover:border-racing-red/50 transition-all flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
+                            Live Timing
+                        </button>
                     </div>
                     
                     <!-- Content Area -->
@@ -882,6 +886,9 @@
                         break;
                     case 'news':
                         await loadNews(series, contentEl);
+                        break;
+                    case 'live':
+                        await loadLiveTiming(series, contentEl);
                         break;
                 }
             } catch (e) {
@@ -1127,6 +1134,252 @@
                 `;
             }
         }
+
+        // ============================================
+        // LIVE TIMING
+        // ============================================
+        
+        let liveTimingInterval = null;
+        const LIVE_TIMING_REFRESH_MS = 5000; // 5 seconds
+        
+        // Status color mapping
+        const sessionStatusColors = {
+            'green': 'bg-green-500',
+            'caution': 'bg-yellow-500',
+            'yellow': 'bg-yellow-500',
+            'red': 'bg-red-500',
+            'warm_up': 'bg-orange-400',
+            'checkered': 'bg-white',
+            'white_flag': 'bg-white',
+            'cold': 'bg-gray-500'
+        };
+        
+        function getStatusColor(status) {
+            return sessionStatusColors[status?.toLowerCase()] || 'bg-gray-500';
+        }
+        
+        function formatLapTime(time) {
+            if (!time) return '-';
+            return time;
+        }
+        
+        async function loadLiveTiming(series, el) {
+            // Clear any existing refresh interval
+            if (liveTimingInterval) {
+                clearInterval(liveTimingInterval);
+                liveTimingInterval = null;
+            }
+            
+            // Only F1 and IndyCar have live timing endpoints
+            const supportedSeries = ['f1', 'indycar'];
+            
+            if (!supportedSeries.includes(series)) {
+                el.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-4xl mb-4">📡</div>
+                        <span class="text-gray-400">Live Timing Coming Soon</span>
+                        <p class="text-xs text-gray-500 mt-2">${seriesConfig[series].name} live timing support is in development</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Show loading state
+            el.innerHTML = `
+                <div class="flex items-center justify-center py-12 gap-2">
+                    <div class="w-5 h-5 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-gray-400">Checking for live session...</span>
+                </div>
+            `;
+            
+            try {
+                const endpoint = `/api/timing/${series}`;
+                const data = await fetchLiveTimingData(endpoint);
+                
+                renderLiveTiming(series, el, data);
+                
+                // If session is live, start auto-refresh
+                if (data.is_live) {
+                    liveTimingInterval = setInterval(async () => {
+                        // Only refresh if still on live tab and same series
+                        if (currentTab === 'live' && currentSeries === series) {
+                            try {
+                                const freshData = await fetchLiveTimingData(endpoint);
+                                renderLiveTiming(series, el, freshData);
+                            } catch (e) {
+                                console.warn('[LiveTiming] Refresh error:', e);
+                            }
+                        } else {
+                            clearInterval(liveTimingInterval);
+                            liveTimingInterval = null;
+                        }
+                    }, LIVE_TIMING_REFRESH_MS);
+                }
+                
+            } catch (e) {
+                console.error('[LiveTiming] Error:', e);
+                el.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="text-red-400">⚠️ Unable to fetch live timing</span>
+                        <p class="text-xs text-gray-500 mt-2">${e.message}</p>
+                        <button onclick="loadLiveTiming('${series}', document.getElementById('series-content'))" 
+                                class="mt-4 px-4 py-2 text-sm bg-racing-dark hover:bg-racing-hover rounded-lg transition-colors">
+                            Retry
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        async function fetchLiveTimingData(endpoint) {
+            const resp = await fetch(endpoint);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            return await resp.json();
+        }
+        
+        function renderLiveTiming(series, el, data) {
+            const isLive = data.is_live;
+            const session = data.session;
+            const entries = data.entries || [];
+            
+            // No live session
+            if (!isLive && entries.length === 0) {
+                el.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-4xl mb-4">📺</div>
+                        <span class="text-gray-400 text-lg">No Live Session</span>
+                        <p class="text-xs text-gray-500 mt-2">Check back during a race or qualifying session</p>
+                        ${session ? `<p class="text-xs text-gray-600 mt-3">Last session: ${session.name || session.event_name || 'Unknown'}</p>` : ''}
+                        <button onclick="loadLiveTiming('${series}', document.getElementById('series-content'))" 
+                                class="mt-4 px-4 py-2 text-sm bg-racing-dark hover:bg-racing-hover rounded-lg transition-colors">
+                            Check Again
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Session header info
+            const sessionName = series === 'f1' 
+                ? `${session?.meeting_name || ''} - ${session?.name || 'Session'}`
+                : `${session?.event_name || ''} ${session?.type ? `- ${session.type}` : ''}`;
+            
+            const sessionStatus = session?.status || session?.status_raw || '';
+            const statusColor = getStatusColor(sessionStatus);
+            const lapInfo = series === 'indycar' 
+                ? (session?.lap_number ? `Lap ${session.lap_number}${session.laps_remaining ? ` / ${session.lap_number + session.laps_remaining}` : ''}` : '')
+                : (session?.type === 'Race' ? '' : '');
+            const timeRemaining = session?.time_remaining || '';
+            
+            let html = `
+                <!-- Session Header -->
+                <div class="mb-4 p-4 rounded-lg bg-racing-dark border border-racing-border">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${seriesConfig[series].icon}</span>
+                            <div>
+                                <h4 class="font-bold">${sessionName || 'Live Session'}</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    ${isLive ? `
+                                        <span class="flex items-center gap-1.5 text-xs">
+                                            <span class="w-2 h-2 ${statusColor} rounded-full ${sessionStatus !== 'checkered' ? 'live-pulse' : ''}"></span>
+                                            <span class="uppercase font-medium ${sessionStatus === 'green' ? 'text-green-400' : sessionStatus === 'yellow' || sessionStatus === 'caution' ? 'text-yellow-400' : sessionStatus === 'red' ? 'text-red-400' : 'text-gray-400'}">${sessionStatus || 'LIVE'}</span>
+                                        </span>
+                                    ` : `
+                                        <span class="text-xs text-gray-500">Session Data</span>
+                                    `}
+                                    ${lapInfo ? `<span class="text-xs text-gray-400">• ${lapInfo}</span>` : ''}
+                                    ${timeRemaining ? `<span class="text-xs text-gray-400">• ${timeRemaining}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
+                            Auto-refresh ${LIVE_TIMING_REFRESH_MS/1000}s
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Timing Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-xs text-gray-500 uppercase tracking-wider border-b border-racing-border">
+                                <th class="py-2 px-2 text-left w-12">Pos</th>
+                                <th class="py-2 px-2 text-left">Driver</th>
+                                <th class="py-2 px-2 text-right">Gap</th>
+                                <th class="py-2 px-2 text-right">Interval</th>
+                                <th class="py-2 px-2 text-right hidden sm:table-cell">Last Lap</th>
+                                ${series === 'indycar' ? '<th class="py-2 px-2 text-right hidden md:table-cell">Pits</th>' : ''}
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            entries.forEach((entry, idx) => {
+                const pos = entry.position || idx + 1;
+                const driverDisplay = entry.driver_code || entry.driver_number || '#' + entry.driver_number;
+                const driverName = entry.driver_name || `Driver ${entry.driver_number}`;
+                const team = entry.team || '';
+                const teamColor = entry.team_color ? `#${entry.team_color}` : '';
+                
+                html += `
+                    <tr class="border-b border-racing-border/50 hover:bg-racing-dark/50 transition-colors ${pos <= 3 ? 'bg-racing-dark/30' : ''}">
+                        <td class="py-3 px-2">
+                            <span class="position-badge ${getPositionClass(pos)} text-xs font-bold py-1 px-2 rounded">${pos}</span>
+                        </td>
+                        <td class="py-3 px-2">
+                            <div class="flex items-center gap-2">
+                                ${teamColor ? `<span class="w-1 h-6 rounded" style="background-color: ${teamColor}"></span>` : ''}
+                                <div class="min-w-0">
+                                    <span class="font-bold text-white">${driverDisplay}</span>
+                                    <span class="text-gray-400 ml-2 hidden sm:inline truncate">${driverName}</span>
+                                    <p class="text-[10px] text-gray-600 truncate sm:hidden">${driverName}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-2 text-right font-mono ${pos === 1 ? 'text-racing-red font-bold' : 'text-gray-300'}">
+                            ${entry.gap_to_leader || (pos === 1 ? 'Leader' : '-')}
+                        </td>
+                        <td class="py-3 px-2 text-right font-mono text-gray-400">
+                            ${entry.interval || '-'}
+                        </td>
+                        <td class="py-3 px-2 text-right font-mono text-gray-400 hidden sm:table-cell">
+                            ${formatLapTime(entry.last_lap)}
+                        </td>
+                        ${series === 'indycar' ? `
+                            <td class="py-3 px-2 text-right text-gray-500 hidden md:table-cell">
+                                ${entry.pit_stops ?? '-'}
+                            </td>
+                        ` : ''}
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Footer -->
+                <div class="mt-4 flex items-center justify-between text-xs text-gray-600">
+                    <span>Source: ${data.source === 'openf1' ? 'OpenF1 API' : data.source === 'azure-blob' ? 'IndyCar Official' : data.source || 'Live Feed'}</span>
+                    <span>Updated: ${new Date(data.timestamp || Date.now()).toLocaleTimeString()}</span>
+                </div>
+            `;
+            
+            el.innerHTML = html;
+        }
+        
+        // Clean up live timing interval when leaving tab or deselecting series
+        const originalDeselectSeries = deselectSeries;
+        deselectSeries = function() {
+            if (liveTimingInterval) {
+                clearInterval(liveTimingInterval);
+                liveTimingInterval = null;
+            }
+            originalDeselectSeries();
+        };
 
         // ============================================
         // LEGACY FUNCTIONS (for backwards compatibility)
