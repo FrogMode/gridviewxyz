@@ -177,45 +177,17 @@
                     </div>
                 </section>
 
-                <section class="grid md:grid-cols-2 gap-6 mb-10">
-                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
-                            <span class="text-xl">🏎️</span>
-                            <h3 class="font-bold text-lg">Formula 1</h3>
+                <!-- Unified Series Detail View -->
+                <section id="series-detail" class="bg-racing-card rounded-xl border border-racing-border overflow-hidden mb-10">
+                    <div id="series-header" class="px-5 py-4 border-b border-racing-border flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span id="series-icon" class="text-2xl">🏁</span>
+                            <h3 id="series-title" class="font-bold text-xl">Select a Series</h3>
                         </div>
-                        <div id="f1-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click F1 card to load</p>
-                        </div>
+                        <div id="series-links" class="flex gap-2 text-sm"></div>
                     </div>
-                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
-                            <span class="text-xl">🌍</span>
-                            <h3 class="font-bold text-lg">World Rally</h3>
-                        </div>
-                        <div id="wrc-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click WRC card to load</p>
-                        </div>
-                    </div>
-                </section>
-                
-                <section class="grid md:grid-cols-2 gap-6 mb-10">
-                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
-                            <span class="text-xl">🏎️</span>
-                            <h3 class="font-bold text-lg">IMSA SportsCar</h3>
-                        </div>
-                        <div id="imsa-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click IMSA card to load</p>
-                        </div>
-                    </div>
-                    <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center gap-3">
-                            <span class="text-xl">🌐</span>
-                            <h3 class="font-bold text-lg">World Endurance</h3>
-                        </div>
-                        <div id="wec-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click WEC card to load</p>
-                        </div>
+                    <div id="series-content" class="p-5">
+                        <p class="text-gray-500 text-center py-12">Click a racing series above to view details</p>
                     </div>
                 </section>
 
@@ -263,6 +235,16 @@
             if (btn) btn.classList.add('active');
         }
         
+        function setSeriesHeader(icon, title, links = '') {
+            document.getElementById('series-icon').textContent = icon;
+            document.getElementById('series-title').textContent = title;
+            document.getElementById('series-links').innerHTML = links;
+        }
+        
+        function setSeriesContent(html) {
+            document.getElementById('series-content').innerHTML = html;
+        }
+        
         async function checkHealth() {
             const el = document.getElementById('api-status');
             try {
@@ -283,87 +265,88 @@
 
         async function loadF1(btn) {
             setActiveCard(btn);
-            const el = document.getElementById('f1-data');
-            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            setSeriesHeader('🏎️', 'Formula 1', '<a href="/results.html" class="text-racing-red hover:underline">Results</a> <a href="/telemetry.html" class="text-gray-400 hover:text-white ml-3">Telemetry</a>');
+            setSeriesContent('<p class="text-gray-400 text-center py-8">Loading...</p>');
             try {
                 const resp = await fetch('/api/f1');
                 const data = await resp.json();
-                let html = '<div class="space-y-2 max-h-80 overflow-y-auto">';
-                (data.events || []).slice(0, 10).forEach((r, i) => {
+                let html = '<h4 class="font-semibold mb-4">2026 Calendar</h4><div class="grid md:grid-cols-2 gap-3 max-h-96 overflow-y-auto">';
+                (data.events || []).forEach((r, i) => {
                     const date = r.date ? new Date(r.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'TBD';
-                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
-                        '<span class="position-badge ' + getPositionClass(i+1) + ' text-xs font-bold py-0.5 rounded">' + (i+1) + '</span>' +
-                        '<div class="flex-1"><p class="font-medium text-sm">' + (r.name||'TBD') + '</p></div>' +
-                        '<span class="text-xs text-gray-400 font-mono">' + date + '</span></div>';
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-3 rounded bg-racing-dark/50">' +
+                        '<span class="position-badge ' + getPositionClass(i+1) + ' text-xs font-bold py-1 px-2 rounded">' + (i+1) + '</span>' +
+                        '<div class="flex-1"><p class="font-medium">' + (r.name||'TBD') + '</p></div>' +
+                        '<span class="text-sm text-gray-400 font-mono">' + date + '</span></div>';
                 });
                 html += '</div>';
-                el.innerHTML = html;
+                setSeriesContent(html);
             } catch (e) {
-                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+                setSeriesContent('<p class="text-red-400 text-center py-8">Error loading data</p>');
             }
         }
 
         async function loadWRC(btn) {
             setActiveCard(btn);
-            const el = document.getElementById('wrc-data');
-            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            setSeriesHeader('🌍', 'World Rally Championship', '');
+            setSeriesContent('<p class="text-gray-400 text-center py-8">Loading...</p>');
             try {
                 const resp = await fetch('/api/wrc');
                 const data = await resp.json();
-                let html = '<h4 class="font-semibold text-sm mb-3">' + (data.event?.name || 'Latest Rally') + '</h4><div class="space-y-2">';
+                let html = '<h4 class="font-semibold mb-4">' + (data.event?.name || 'Latest Rally') + '</h4><div class="space-y-2 max-h-96 overflow-y-auto">';
                 (data.results || []).forEach(r => {
-                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
-                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-0.5 rounded">' + r.position + '</span>' +
-                        '<div class="flex-1"><p class="font-medium text-sm">' + r.driver + '</p></div>' +
-                        '<span class="text-xs text-gray-400 font-mono">' + r.time + '</span></div>';
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-3 rounded bg-racing-dark/50">' +
+                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-1 px-2 rounded">' + r.position + '</span>' +
+                        '<div class="flex-1"><p class="font-medium">' + r.driver + '</p></div>' +
+                        '<span class="text-sm text-gray-400 font-mono">' + r.time + '</span></div>';
                 });
                 html += '</div>';
-                el.innerHTML = html;
+                setSeriesContent(html);
             } catch (e) {
-                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+                setSeriesContent('<p class="text-red-400 text-center py-8">Error loading data</p>');
             }
         }
 
         async function loadIMSA(btn) {
             setActiveCard(btn);
-            const el = document.getElementById('imsa-data');
-            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            setSeriesHeader('🏎️', 'IMSA SportsCar Championship', '');
+            setSeriesContent('<p class="text-gray-400 text-center py-8">Loading...</p>');
             try {
                 const resp = await fetch('/api/imsa');
                 const data = await resp.json();
-                let html = '<h4 class="font-semibold text-sm mb-3">' + (data.event || 'Latest Race') + '</h4><div class="space-y-2 max-h-64 overflow-y-auto">';
-                (data.results || []).slice(0, 10).forEach(r => {
-                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
-                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-0.5 rounded">' + r.position + '</span>' +
-                        '<div class="flex-1"><p class="font-medium text-sm">#' + r.number + ' ' + (r.team || '') + '</p><p class="text-xs text-gray-500">' + (r.class || '') + '</p></div>' +
-                        '<span class="text-xs text-gray-400 font-mono">' + (r.gap || r.time || '') + '</span></div>';
+                let html = '<h4 class="font-semibold mb-4">' + (data.event || 'Latest Race') + ' <span class="text-gray-500 font-normal text-sm">' + (data.session || '') + '</span></h4>';
+                html += '<div class="grid md:grid-cols-2 gap-3 max-h-96 overflow-y-auto">';
+                (data.results || []).forEach(r => {
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-3 rounded bg-racing-dark/50">' +
+                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-1 px-2 rounded">' + r.position + '</span>' +
+                        '<div class="flex-1"><p class="font-medium">#' + r.number + ' ' + (r.team || '') + '</p><p class="text-xs text-gray-500">' + (r.class || '') + ' • ' + (r.vehicle || '') + '</p></div>' +
+                        '<span class="text-sm text-gray-400 font-mono">' + (r.gap || r.time || '') + '</span></div>';
                 });
                 html += '</div>';
-                el.innerHTML = html;
+                setSeriesContent(html);
             } catch (e) {
-                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+                setSeriesContent('<p class="text-red-400 text-center py-8">Error loading data</p>');
             }
         }
 
         async function loadWEC(btn) {
             setActiveCard(btn);
-            const el = document.getElementById('wec-data');
-            el.innerHTML = '<p class="text-gray-400 text-sm text-center py-8">Loading...</p>';
+            setSeriesHeader('🌐', 'FIA World Endurance Championship', '');
+            setSeriesContent('<p class="text-gray-400 text-center py-8">Loading...</p>');
             try {
                 const resp = await fetch('/api/wec?year=2026');
                 const data = await resp.json();
-                let html = '<h4 class="font-semibold text-sm mb-3">2026 Calendar</h4><div class="space-y-2 max-h-64 overflow-y-auto">';
-                (data.events || []).slice(0, 8).forEach((e, i) => {
+                let html = '<h4 class="font-semibold mb-4">2026 Calendar</h4><div class="grid md:grid-cols-2 gap-3 max-h-96 overflow-y-auto">';
+                (data.events || []).forEach((e, i) => {
                     const date = e.date ? new Date(e.date).toLocaleDateString('en-US', {month:'short', day:'numeric'}) : 'TBD';
-                    html += '<div class="data-row flex items-center gap-3 py-2 px-2 rounded">' +
-                        '<span class="position-badge ' + getPositionClass(i+1) + ' text-xs font-bold py-0.5 rounded">' + (i+1) + '</span>' +
-                        '<div class="flex-1"><p class="font-medium text-sm">' + e.name + '</p><p class="text-xs text-gray-500">' + (e.venue || e.country || '') + '</p></div>' +
-                        '<span class="text-xs text-gray-400 font-mono">' + date + '</span></div>';
+                    html += '<div class="data-row flex items-center gap-3 py-2 px-3 rounded bg-racing-dark/50">' +
+                        '<span class="position-badge ' + getPositionClass(i+1) + ' text-xs font-bold py-1 px-2 rounded">' + (i+1) + '</span>' +
+                        '<div class="flex-1"><p class="font-medium">' + e.name + '</p><p class="text-xs text-gray-500">' + (e.venue || e.country || '') + '</p></div>' +
+                        '<span class="text-sm text-gray-400 font-mono">' + date + '</span></div>';
                 });
                 html += '</div>';
-                el.innerHTML = html;
+                setSeriesContent(html);
             } catch (e) {
-                el.innerHTML = '<p class="text-red-400 text-sm text-center py-8">Error loading data</p>';
+                setSeriesContent('<p class="text-red-400 text-center py-8">Error loading data</p>');
             }
         }
 
@@ -376,6 +359,11 @@
         }
 
         checkHealth();
+        // Auto-load F1 on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const f1Btn = document.querySelector('[onclick="loadF1(this)"]');
+            if (f1Btn) loadF1(f1Btn);
+        });
     </script>
 </body>
 </html>
