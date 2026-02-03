@@ -65,9 +65,9 @@ def fetch_f1_meetings(year: int = None) -> list:
             "date": s.get("date_start")
         })
     
-    # Sort meetings by date (most recent first)
+    # Sort meetings by date (soonest/earliest first)
     result = list(meetings.values())
-    result.sort(key=lambda x: x.get("date") or "", reverse=True)
+    result.sort(key=lambda x: x.get("date") or "")
     
     # Sort sessions within each meeting by date
     for m in result:
