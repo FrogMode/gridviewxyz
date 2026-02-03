@@ -306,6 +306,13 @@ const GridViewThemes = {
     const btn = document.querySelector('.theme-switcher-btn');
     
     if (dropdown) {
+      // Position dropdown below button (fixed positioning)
+      if (this.dropdownOpen && btn) {
+        const rect = btn.getBoundingClientRect();
+        dropdown.style.top = `${rect.bottom + 8}px`;
+        dropdown.style.right = `${window.innerWidth - rect.right}px`;
+      }
+      
       dropdown.classList.toggle('open', this.dropdownOpen);
       
       // Focus first option when opening
