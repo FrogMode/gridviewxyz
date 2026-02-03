@@ -395,10 +395,10 @@ nav a:hover {
   min-width: 220px;
   max-height: 70vh;
   overflow-y: auto;
-  background: var(--theme-bg-elevated);
+  background: var(--theme-bg-base, #0a0a0f);
   border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px) scale(0.95);
