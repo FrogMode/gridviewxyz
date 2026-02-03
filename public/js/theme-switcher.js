@@ -181,6 +181,12 @@ const GridViewThemes = {
       </button>
     `;
     
+    // Create backdrop (click to close)
+    const backdrop = document.createElement('div');
+    backdrop.className = 'theme-backdrop';
+    backdrop.addEventListener('click', () => this.closeDropdown());
+    document.body.appendChild(backdrop);
+    
     // Create dropdown separately and append to body (escapes stacking context)
     const dropdown = document.createElement('div');
     dropdown.className = 'theme-dropdown';
@@ -309,6 +315,7 @@ const GridViewThemes = {
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
     const dropdown = document.querySelector('.theme-dropdown');
+    const backdrop = document.querySelector('.theme-backdrop');
     const btn = document.querySelector('.theme-switcher-btn');
     
     if (dropdown) {
@@ -320,6 +327,7 @@ const GridViewThemes = {
       }
       
       dropdown.classList.toggle('open', this.dropdownOpen);
+      backdrop?.classList.toggle('open', this.dropdownOpen);
       
       // Focus first option when opening
       if (this.dropdownOpen) {
@@ -342,10 +350,14 @@ const GridViewThemes = {
   closeDropdown() {
     this.dropdownOpen = false;
     const dropdown = document.querySelector('.theme-dropdown');
+    const backdrop = document.querySelector('.theme-backdrop');
     const btn = document.querySelector('.theme-switcher-btn');
     
     if (dropdown) {
       dropdown.classList.remove('open');
+    }
+    if (backdrop) {
+      backdrop.classList.remove('open');
     }
     if (btn) {
       btn.setAttribute('aria-expanded', 'false');

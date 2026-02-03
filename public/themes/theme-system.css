@@ -368,6 +368,19 @@ nav a:hover {
   color: var(--theme-text-primary);
 }
 
+/* Backdrop overlay - blocks all content when dropdown is open */
+.theme-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999998;
+  background: transparent;
+  display: none;
+}
+
+.theme-backdrop.open {
+  display: block;
+}
+
 .theme-dropdown {
   position: fixed !important;
   top: auto;
@@ -384,8 +397,7 @@ nav a:hover {
   visibility: hidden;
   transform: translateY(-10px) scale(0.95);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 2147483647 !important;
-  isolation: isolate;
+  z-index: 999999;
 }
 
 .theme-dropdown.open {
