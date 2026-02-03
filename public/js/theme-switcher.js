@@ -1,18 +1,20 @@
 /**
  * GridView Theme Switcher
  * Manages racing livery themes with smooth transitions
+ * 
+ * v2.0 - Enhanced clickability and visual feedback
  */
 
 const GridViewThemes = {
   themes: [
-    { id: 'default', name: 'Midnight Racing', icon: '🌙' },
-    { id: 'gulf', name: 'Gulf Racing', icon: '🏎️' },
-    { id: 'marlboro', name: 'Marlboro Red', icon: '🔴' },
-    { id: 'silk-cut', name: 'Silk Cut Purple', icon: '💜' },
-    { id: 'camel', name: 'Camel Yellow', icon: '🌵' },
-    { id: 'rothmans', name: 'Rothmans Blue', icon: '🔵' },
-    { id: 'martini', name: 'Martini Stripes', icon: '🍸' },
-    { id: 'jps', name: 'JPS Black & Gold', icon: '🖤' }
+    { id: 'default', name: 'Midnight Racing', icon: '🌙', description: 'Classic F1 dark' },
+    { id: 'gulf', name: 'Gulf Racing', icon: '🏎️', description: 'Le Mans \'70s legend' },
+    { id: 'marlboro', name: 'Marlboro Red', icon: '🔴', description: 'Peak F1 dominance' },
+    { id: 'jps', name: 'JPS Black & Gold', icon: '✨', description: 'Lotus elegance' },
+    { id: 'silk-cut', name: 'Silk Cut Purple', icon: '💜', description: 'Jaguar Le Mans' },
+    { id: 'camel', name: 'Camel Yellow', icon: '🌵', description: 'Desert heat' },
+    { id: 'rothmans', name: 'Rothmans Blue', icon: '🔵', description: 'Williams excellence' },
+    { id: 'martini', name: 'Martini Stripes', icon: '🍸', description: 'Italian racing (Light)' }
   ],
   
   currentTheme: 'default',
@@ -56,9 +58,14 @@ const GridViewThemes = {
       if (e.key === 'Escape' && this.dropdownOpen) {
         this.closeDropdown();
       }
+      // T key to cycle themes (when not in input)
+      if (e.key === 't' && !e.target.matches('input, textarea, select')) {
+        this.nextTheme();
+      }
     });
     
-    console.log('🎨 GridView Theme System initialized');
+    console.log('🎨 GridView Theme System v2.0 initialized');
+    console.log('💡 Tip: Press T to cycle through themes!');
   },
   
   /**
@@ -68,7 +75,10 @@ const GridViewThemes = {
    */
   setTheme(themeId, animate = true) {
     const theme = this.themes.find(t => t.id === themeId);
-    if (!theme) return;
+    if (!theme) {
+      console.warn(`Theme "${themeId}" not found, falling back to default`);
+      themeId = 'default';
+    }
     
     // Add transition class for smooth switching
     if (animate) {
@@ -80,6 +90,9 @@ const GridViewThemes = {
     
     // Update data attribute
     document.documentElement.setAttribute('data-theme', themeId);
+    
+    // Update body class for light theme detection
+    document.body.classList.toggle('theme-light', themeId === 'martini');
     
     // Update meta theme-color for mobile
     this.updateMetaThemeColor(themeId);
@@ -100,8 +113,11 @@ const GridViewThemes = {
     
     // Fire custom event
     document.dispatchEvent(new CustomEvent('themechange', { 
-      detail: { theme: themeId } 
+      detail: { theme: themeId, name: theme?.name } 
     }));
+    
+    // Log for debugging
+    console.log(`🎨 Theme changed to: ${theme?.name || themeId}`);
   },
   
   /**
@@ -110,11 +126,11 @@ const GridViewThemes = {
   updateMetaThemeColor(themeId) {
     const colors = {
       default: '#e10600',
-      gulf: '#6CACE4',
+      gulf: '#5BA3D9',
       marlboro: '#EE1C25',
-      'silk-cut': '#7B4397',
+      'silk-cut': '#9B59B6',
       camel: '#F4C430',
-      rothmans: '#003399',
+      rothmans: '#0044AA',
       martini: '#CE1126',
       jps: '#D4AF37'
     };
@@ -135,29 +151,45 @@ const GridViewThemes = {
     // Find the nav container
     const nav = document.querySelector('nav .hidden.md\\:flex');
     if (!nav) {
-      console.warn('Theme switcher: Nav container not found');
+      console.warn('Theme switcher: Nav container not found, retrying...');
+      // Retry after DOM is fully loaded
+      setTimeout(() => this.createSwitcherUI(), 100);
+      return;
+    }
+    
+    // Check if already created
+    if (nav.querySelector('.theme-switcher')) {
       return;
     }
     
     // Create switcher container
     const switcher = document.createElement('div');
     switcher.className = 'theme-switcher relative';
+    
+    const currentTheme = this.themes.find(t => t.id === this.currentTheme);
+    
     switcher.innerHTML = `
-      <button class="theme-switcher-btn" aria-label="Change theme" aria-expanded="false">
-        <span class="theme-icon">🎨</span>
+      <button class="theme-switcher-btn" aria-label="Change theme" aria-expanded="false" aria-haspopup="listbox">
+        <span class="theme-icon">${currentTheme?.icon || '🎨'}</span>
         <span class="theme-name hidden sm:inline">Theme</span>
-        <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
       <div class="theme-dropdown" role="listbox" aria-label="Select theme">
         ${this.themes.map(theme => `
-          <button class="theme-option ${theme.id === this.currentTheme ? 'active' : ''}" 
-                  data-theme="${theme.id}"
-                  role="option"
-                  aria-selected="${theme.id === this.currentTheme}">
+          <button 
+            class="theme-option ${theme.id === this.currentTheme ? 'active' : ''}" 
+            data-theme="${theme.id}"
+            role="option"
+            aria-selected="${theme.id === this.currentTheme}"
+            type="button"
+          >
             <span class="theme-swatch swatch-${theme.id}"></span>
-            <span>${theme.icon} ${theme.name}</span>
+            <span class="theme-option-content">
+              <span class="theme-option-name">${theme.icon} ${theme.name}</span>
+              <span class="theme-option-desc text-xs opacity-60">${theme.description}</span>
+            </span>
           </button>
         `).join('')}
       </div>
@@ -171,22 +203,95 @@ const GridViewThemes = {
       nav.appendChild(switcher);
     }
     
-    // Event listeners
+    // Set up event listeners
+    this.setupEventListeners(switcher);
+  },
+  
+  /**
+   * Set up event listeners for the switcher
+   */
+  setupEventListeners(switcher) {
     const btn = switcher.querySelector('.theme-switcher-btn');
     const dropdown = switcher.querySelector('.theme-dropdown');
     
+    // Toggle button click
     btn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
       this.toggleDropdown();
     });
     
-    // Theme option clicks
-    dropdown.querySelectorAll('.theme-option').forEach(option => {
-      option.addEventListener('click', () => {
+    // Theme option clicks - Using event delegation for reliability
+    dropdown.addEventListener('click', (e) => {
+      const option = e.target.closest('.theme-option');
+      if (option) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         const themeId = option.dataset.theme;
-        this.setTheme(themeId);
-        this.closeDropdown();
+        if (themeId) {
+          // Visual feedback
+          option.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            option.style.transform = '';
+          }, 100);
+          
+          // Apply theme
+          this.setTheme(themeId);
+          
+          // Close dropdown after a tiny delay for visual feedback
+          setTimeout(() => {
+            this.closeDropdown();
+          }, 150);
+        }
+      }
+    });
+    
+    // Also add individual listeners as backup
+    dropdown.querySelectorAll('.theme-option').forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const themeId = option.dataset.theme;
+        if (themeId) {
+          this.setTheme(themeId);
+          setTimeout(() => this.closeDropdown(), 150);
+        }
       });
+      
+      // Touch support
+      option.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const themeId = option.dataset.theme;
+        if (themeId) {
+          this.setTheme(themeId);
+          setTimeout(() => this.closeDropdown(), 150);
+        }
+      });
+    });
+    
+    // Keyboard navigation within dropdown
+    dropdown.addEventListener('keydown', (e) => {
+      const options = [...dropdown.querySelectorAll('.theme-option')];
+      const currentIndex = options.findIndex(opt => opt === document.activeElement);
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = (currentIndex + 1) % options.length;
+        options[nextIndex].focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIndex = (currentIndex - 1 + options.length) % options.length;
+        options[prevIndex].focus();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const focusedOption = document.activeElement;
+        if (focusedOption.classList.contains('theme-option')) {
+          this.setTheme(focusedOption.dataset.theme);
+          this.closeDropdown();
+          btn.focus();
+        }
+      }
     });
   },
   
@@ -200,6 +305,15 @@ const GridViewThemes = {
     
     if (dropdown) {
       dropdown.classList.toggle('open', this.dropdownOpen);
+      
+      // Focus first option when opening
+      if (this.dropdownOpen) {
+        const activeOption = dropdown.querySelector('.theme-option.active') || 
+                           dropdown.querySelector('.theme-option');
+        if (activeOption) {
+          setTimeout(() => activeOption.focus(), 50);
+        }
+      }
     }
     if (btn) {
       btn.setAttribute('aria-expanded', this.dropdownOpen);
@@ -235,7 +349,7 @@ const GridViewThemes = {
       option.setAttribute('aria-selected', isActive);
     });
     
-    // Update button icon
+    // Update button icon and text
     const theme = this.themes.find(t => t.id === this.currentTheme);
     const iconSpan = document.querySelector('.theme-switcher-btn .theme-icon');
     if (iconSpan && theme) {
@@ -253,10 +367,26 @@ const GridViewThemes = {
   },
   
   /**
+   * Cycle to previous theme
+   */
+  prevTheme() {
+    const currentIndex = this.themes.findIndex(t => t.id === this.currentTheme);
+    const prevIndex = (currentIndex - 1 + this.themes.length) % this.themes.length;
+    this.setTheme(this.themes[prevIndex].id);
+  },
+  
+  /**
    * Get current theme info
    */
   getCurrentTheme() {
     return this.themes.find(t => t.id === this.currentTheme);
+  },
+  
+  /**
+   * Check if current theme is light
+   */
+  isLightTheme() {
+    return this.currentTheme === 'martini';
   }
 };
 

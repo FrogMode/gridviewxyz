@@ -1,81 +1,225 @@
 /**
  * GridView Theme: Camel Racing
  * Inspired by Lotus F1 Type 99T - Senna's turbo beast
- * Warm yellow + Racing blue - Desert heat meets track speed
+ * WARM GOLD/YELLOW + DESERT BLUE - Desert heat meets track speed
+ * 
+ * Typography: Bold, warm, slightly condensed feel
  */
 
 :root {
-  /* Core Colors */
+  /* ============================================
+     TYPOGRAPHY - Warm, bold, desert-inspired
+     ============================================ */
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 800;
+  --theme-heading-letter-spacing: -0.01em;
+  --theme-body-letter-spacing: 0;
+  --theme-text-transform: none;
+  --theme-heading-shadow: 0 2px 15px rgba(244, 196, 48, 0.4);
+  
+  /* ============================================
+     CORE COLORS - Warm yellow/gold + deep blue
+     ============================================ */
   --theme-primary: #F4C430;
   --theme-primary-rgb: 244, 196, 48;
+  --theme-primary-bright: #FFD95A;
   --theme-secondary: #1E3A5F;
   --theme-secondary-rgb: 30, 58, 95;
   --theme-accent: #F4C430;
   --theme-accent-rgb: 244, 196, 48;
   
-  /* Backgrounds - Deep warm tones */
-  --theme-bg-base: #0d0a06;
-  --theme-bg-card: #1a150c;
-  --theme-bg-elevated: #252012;
-  --theme-bg-hover: #302a18;
-  --theme-gradient-body: linear-gradient(180deg, #0d0a06 0%, #120e08 100%);
-  --theme-gradient-hero: linear-gradient(135deg, rgba(244, 196, 48, 0.15) 0%, rgba(30, 58, 95, 0.1) 100%);
-  --theme-gradient-card: linear-gradient(135deg, #252012 0%, #1a150c 100%);
+  /* ============================================
+     BACKGROUNDS - Warm, sandy tones
+     ============================================ */
+  --theme-bg-base: #0D0804;
+  --theme-bg-card: rgba(244, 196, 48, 0.08);
+  --theme-bg-elevated: rgba(244, 196, 48, 0.12);
+  --theme-bg-hover: rgba(244, 196, 48, 0.18);
+  --theme-gradient-body: linear-gradient(180deg, 
+    #0D0804 0%, 
+    #14100A 40%,
+    #1A1510 70%,
+    #100C08 100%
+  );
+  --theme-gradient-hero: linear-gradient(135deg, 
+    rgba(244, 196, 48, 0.35) 0%, 
+    rgba(244, 196, 48, 0.15) 40%,
+    rgba(30, 58, 95, 0.2) 80%,
+    transparent 100%
+  );
+  --theme-gradient-card: linear-gradient(145deg, 
+    rgba(244, 196, 48, 0.1) 0%, 
+    rgba(244, 196, 48, 0.04) 50%,
+    rgba(30, 58, 95, 0.05) 100%
+  );
   
-  /* Borders */
-  --theme-border: #3d3520;
+  /* ============================================
+     BORDERS - Warm yellow accent
+     ============================================ */
+  --theme-border: rgba(244, 196, 48, 0.3);
   --theme-border-active: var(--theme-primary);
-  --theme-border-subtle: rgba(244, 196, 48, 0.2);
+  --theme-border-subtle: rgba(244, 196, 48, 0.18);
   
-  /* Text */
-  --theme-text-primary: #ffffff;
-  --theme-text-secondary: #d4c498;
-  --theme-text-muted: #8a7a50;
+  /* ============================================
+     TEXT - Warm tones
+     ============================================ */
+  --theme-text-primary: #FFF8E8;
+  --theme-text-secondary: #DCC898;
+  --theme-text-muted: #A08850;
   --theme-text-accent: var(--theme-primary);
   
-  /* Position Badges - Camel podium */
-  --theme-pos-1-bg: linear-gradient(135deg, #F4C430 0%, #d4a820 100%);
-  --theme-pos-1-text: #0d0a06;
-  --theme-pos-2-bg: linear-gradient(135deg, #1E3A5F 0%, #152a45 100%);
+  /* ============================================
+     POSITION BADGES - Camel gold & blue
+     ============================================ */
+  --theme-pos-1-bg: linear-gradient(135deg, #F4C430 0%, #FFD95A 50%, #F4C430 100%);
+  --theme-pos-1-text: #0D0804;
+  --theme-pos-2-bg: linear-gradient(135deg, #1E3A5F 0%, #2A4A70 50%, #1E3A5F 100%);
   --theme-pos-2-text: #F4C430;
-  --theme-pos-3-bg: linear-gradient(135deg, #3d3520 0%, #252012 100%);
+  --theme-pos-3-bg: linear-gradient(135deg, #2A2015 0%, #3A2A1A 100%);
   --theme-pos-3-text: #F4C430;
   
-  /* Buttons */
-  --theme-btn-primary-bg: var(--theme-primary);
-  --theme-btn-primary-text: #0d0a06;
-  --theme-btn-primary-hover: #d4a820;
-  --theme-btn-secondary-bg: rgba(30, 58, 95, 0.3);
-  --theme-btn-secondary-text: #F4C430;
-  --theme-btn-secondary-hover: rgba(30, 58, 95, 0.5);
+  /* ============================================
+     BUTTONS - Bold yellow
+     ============================================ */
+  --theme-btn-primary-bg: linear-gradient(135deg, #F4C430 0%, #D4A820 100%);
+  --theme-btn-primary-text: #0D0804;
+  --theme-btn-primary-hover: linear-gradient(135deg, #FFD95A 0%, #F4C430 100%);
+  --theme-btn-secondary-bg: rgba(30, 58, 95, 0.4);
+  --theme-btn-secondary-text: var(--theme-primary);
+  --theme-btn-secondary-hover: rgba(30, 58, 95, 0.6);
   
-  /* Shadows & Glows */
-  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --theme-shadow-hover: 0 8px 30px rgba(244, 196, 48, 0.2);
-  --theme-glow: 0 0 25px rgba(244, 196, 48, 0.4);
+  /* ============================================
+     SHADOWS & GLOWS - Desert sun warmth
+     ============================================ */
+  --theme-shadow-card: 0 4px 25px rgba(0, 0, 0, 0.5), 0 0 30px rgba(244, 196, 48, 0.08);
+  --theme-shadow-hover: 0 8px 40px rgba(244, 196, 48, 0.3), 0 0 60px rgba(244, 196, 48, 0.15);
+  --theme-glow: 0 0 40px rgba(244, 196, 48, 0.6), 0 0 80px rgba(244, 196, 48, 0.3);
+  --theme-glow-blue: 0 0 30px rgba(30, 58, 95, 0.5);
   
-  /* Special Effects - Camel warmth */
+  /* ============================================
+     SPECIAL EFFECTS - Desert warmth
+     ============================================ */
   --theme-stripe-pattern: linear-gradient(90deg,
-    transparent 0%, transparent 20%,
-    rgba(30, 58, 95, 0.2) 20%, rgba(30, 58, 95, 0.2) 25%,
-    transparent 25%, transparent 75%,
-    rgba(30, 58, 95, 0.2) 75%, rgba(30, 58, 95, 0.2) 80%,
-    transparent 80%, transparent 100%
+    transparent 0%, transparent 15%,
+    rgba(30, 58, 95, 0.3) 15%, rgba(30, 58, 95, 0.3) 20%,
+    rgba(244, 196, 48, 0.15) 20%, rgba(244, 196, 48, 0.15) 80%,
+    rgba(30, 58, 95, 0.3) 80%, rgba(30, 58, 95, 0.3) 85%,
+    transparent 85%, transparent 100%
   );
   --theme-accent-pattern: 
-    linear-gradient(180deg, rgba(244, 196, 48, 0.03) 0%, transparent 30%),
-    linear-gradient(0deg, rgba(30, 58, 95, 0.05) 0%, transparent 30%);
+    linear-gradient(180deg, rgba(244, 196, 48, 0.08) 0%, transparent 40%),
+    linear-gradient(0deg, rgba(30, 58, 95, 0.1) 0%, transparent 40%);
   
-  /* Live Indicator */
+  /* Sun ray effect */
+  --theme-header-stripe: radial-gradient(ellipse at top,
+    rgba(244, 196, 48, 0.2) 0%,
+    rgba(244, 196, 48, 0.05) 50%,
+    transparent 70%
+  );
+  
+  /* ============================================
+     LIVE INDICATOR
+     ============================================ */
   --theme-live-color: #F4C430;
   
-  /* Scrollbar */
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
   --theme-scrollbar-track: var(--theme-bg-base);
-  --theme-scrollbar-thumb: #3d3520;
+  --theme-scrollbar-thumb: rgba(244, 196, 48, 0.35);
   --theme-scrollbar-hover: var(--theme-primary);
 }
 
-/* Camel desert sun glow effect */
-[data-theme="camel"] header {
-  background-image: radial-gradient(ellipse at top, rgba(244, 196, 48, 0.1) 0%, transparent 60%);
+/* ============================================
+   CAMEL-SPECIFIC OVERRIDES
+   ============================================ */
+
+/* Desert sun glow from top */
+[data-theme="camel"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: 
+    radial-gradient(ellipse at 50% -20%, rgba(244, 196, 48, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(30, 58, 95, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Yellow/gold stripe at top */
+[data-theme="camel"] header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent 15%,
+    #1E3A5F 25%,
+    #F4C430 35%,
+    #FFD95A 50%,
+    #F4C430 65%,
+    #1E3A5F 75%,
+    transparent 85%
+  );
+  z-index: 20;
+}
+
+/* Logo with warm glow */
+[data-theme="camel"] .gridview-logo {
+  color: #FFF8E8;
+  text-shadow: 0 0 25px rgba(244, 196, 48, 0.6);
+}
+
+/* Cards with warm glass effect */
+[data-theme="camel"] .series-card {
+  border: 1px solid rgba(244, 196, 48, 0.2);
+  background: var(--theme-gradient-card);
+}
+
+[data-theme="camel"] .series-card:hover {
+  border-color: rgba(244, 196, 48, 0.5);
+  box-shadow: var(--theme-shadow-hover);
+}
+
+[data-theme="camel"] .series-card.active {
+  border-color: #F4C430;
+  box-shadow: var(--theme-glow);
+  background: linear-gradient(135deg, 
+    rgba(244, 196, 48, 0.2) 0%, 
+    rgba(30, 58, 95, 0.15) 100%
+  );
+}
+
+/* Position badges with warm glow */
+[data-theme="camel"] .position-1 {
+  box-shadow: 0 0 20px rgba(244, 196, 48, 0.8);
+}
+
+[data-theme="camel"] .position-2 {
+  box-shadow: 0 0 15px rgba(30, 58, 95, 0.6);
+}
+
+/* Tab buttons with yellow accent */
+[data-theme="camel"] .tab-btn.active {
+  background: rgba(244, 196, 48, 0.2);
+  border-color: #F4C430;
+  color: #F4C430;
+  box-shadow: 0 0 15px rgba(244, 196, 48, 0.3);
+}
+
+/* Live indicator yellow */
+[data-theme="camel"] .live-pulse {
+  box-shadow: 0 0 12px rgba(244, 196, 48, 0.9);
+}
+
+/* Headings bold and warm */
+[data-theme="camel"] h1,
+[data-theme="camel"] h2 {
+  text-shadow: var(--theme-heading-shadow);
 }

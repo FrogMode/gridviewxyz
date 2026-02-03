@@ -26,7 +26,29 @@ html.theme-transitioning *::after {
 body {
   background: var(--theme-gradient-body);
   color: var(--theme-text-primary);
+  font-family: var(--theme-font-body, 'Inter', system-ui, sans-serif);
+  letter-spacing: var(--theme-body-letter-spacing, 0);
   min-height: 100vh;
+}
+
+/* ============================================
+   TYPOGRAPHY - Theme-aware headings
+   ============================================ */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--theme-font-heading, 'Inter', system-ui, sans-serif);
+  font-weight: var(--theme-heading-weight, 700);
+  letter-spacing: var(--theme-heading-letter-spacing, -0.01em);
+  text-shadow: var(--theme-heading-shadow, none);
+}
+
+/* Hero title special treatment */
+h1 {
+  font-weight: var(--theme-heading-weight, 800);
+}
+
+/* Monospace elements */
+code, pre, .font-mono {
+  font-family: var(--theme-font-mono, 'JetBrains Mono', monospace);
 }
 
 /* ============================================
@@ -34,6 +56,7 @@ body {
    ============================================ */
 header {
   position: relative;
+  background: var(--theme-bg-base);
 }
 
 header::before {
@@ -42,6 +65,11 @@ header::before {
   inset: 0;
   background: var(--theme-gradient-hero);
   pointer-events: none;
+}
+
+nav {
+  position: relative;
+  z-index: 10;
 }
 
 nav a {
@@ -56,6 +84,7 @@ nav a:hover {
 /* Logo styling */
 .gridview-logo {
   color: var(--theme-text-primary);
+  font-weight: 700;
 }
 
 .gridview-logo-icon {
@@ -76,29 +105,31 @@ nav a:hover {
 }
 
 /* ============================================
-   CARDS
+   CARDS - Major visual element
    ============================================ */
 .theme-card {
   background: var(--theme-bg-card);
-  border: 1px solid transparent;
+  border: 1px solid var(--theme-border-subtle);
   transition: all 0.25s ease;
 }
 
 .theme-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(var(--theme-primary-rgb), 0.3);
+  border-color: rgba(var(--theme-primary-rgb), 0.4);
   box-shadow: var(--theme-shadow-hover);
 }
 
-/* Series cards */
+/* Series cards - Primary interaction elements */
 .series-card {
   background: var(--theme-bg-card) !important;
-  border: 1px solid transparent;
+  border: 1px solid var(--theme-border-subtle) !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .series-card:hover {
-  border-color: rgba(var(--theme-primary-rgb), 0.3) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.5) !important;
   box-shadow: var(--theme-shadow-hover) !important;
+  transform: translateY(-4px);
 }
 
 .series-card.active {
@@ -113,6 +144,7 @@ nav a:hover {
 
 .card-icon {
   background-color: var(--theme-bg-base);
+  transition: background-color 0.2s ease;
 }
 
 .series-card:hover .card-icon {
@@ -131,11 +163,11 @@ nav a:hover {
 }
 
 .data-row:nth-child(even) {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(var(--theme-primary-rgb), 0.03);
 }
 
 /* ============================================
-   POSITION BADGES
+   POSITION BADGES - Podium styling
    ============================================ */
 .position-badge {
   min-width: 2rem;
@@ -161,7 +193,7 @@ nav a:hover {
 }
 
 /* ============================================
-   BUTTONS
+   BUTTONS - Primary & Secondary
    ============================================ */
 .btn-primary {
   background: var(--theme-btn-primary-bg);
@@ -186,29 +218,33 @@ nav a:hover {
   border-color: var(--theme-primary);
 }
 
-/* Tab buttons */
+/* Tab buttons - Important for navigation */
 .tab-btn {
   transition: all 0.2s ease;
   border: 1px solid var(--theme-border);
   color: var(--theme-text-secondary);
+  background: transparent;
 }
 
 .tab-btn.active {
   background-color: rgba(var(--theme-primary-rgb), 0.2);
   color: var(--theme-primary);
   border-color: var(--theme-primary);
+  box-shadow: 0 0 10px rgba(var(--theme-primary-rgb), 0.2);
 }
 
 .tab-btn:hover:not(.active) {
   background-color: var(--theme-bg-hover);
+  border-color: rgba(var(--theme-primary-rgb), 0.3);
 }
 
 /* ============================================
-   LIVE INDICATOR
+   LIVE INDICATOR - Attention-grabbing
    ============================================ */
 .live-pulse {
   animation: pulse 2s ease-in-out infinite;
   background-color: var(--theme-live-color) !important;
+  box-shadow: 0 0 8px var(--theme-live-color);
 }
 
 .live-text {
@@ -216,8 +252,14 @@ nav a:hover {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%, 100% { 
+    opacity: 1;
+    box-shadow: 0 0 8px var(--theme-live-color);
+  }
+  50% { 
+    opacity: 0.6;
+    box-shadow: 0 0 15px var(--theme-live-color);
+  }
 }
 
 /* ============================================
@@ -232,7 +274,7 @@ nav a:hover {
 }
 
 /* ============================================
-   TEXT COLORS
+   TEXT COLORS - Theme-aware
    ============================================ */
 .text-theme-primary {
   color: var(--theme-text-primary);
@@ -263,7 +305,7 @@ nav a:hover {
    SCROLLBARS
    ============================================ */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -272,7 +314,7 @@ nav a:hover {
 
 ::-webkit-scrollbar-thumb {
   background: var(--theme-scrollbar-thumb);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -299,10 +341,11 @@ nav a:hover {
 }
 
 /* ============================================
-   THEME SWITCHER UI
+   THEME SWITCHER UI - Critical for usability
    ============================================ */
 .theme-switcher {
   position: relative;
+  z-index: 100;
 }
 
 .theme-switcher-btn {
@@ -322,6 +365,7 @@ nav a:hover {
 .theme-switcher-btn:hover {
   border-color: rgba(var(--theme-primary-rgb), 0.5);
   background: var(--theme-btn-secondary-hover);
+  color: var(--theme-text-primary);
 }
 
 .theme-dropdown {
@@ -329,71 +373,105 @@ nav a:hover {
   top: 100%;
   right: 0;
   margin-top: 0.5rem;
-  min-width: 200px;
+  min-width: 220px;
   background: var(--theme-bg-elevated);
   border: 1px solid var(--theme-border);
   border-radius: 0.75rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s ease;
-  z-index: 100;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
   overflow: hidden;
 }
 
 .theme-dropdown.open {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
+/* THEME OPTIONS - Must be clearly clickable! */
 .theme-option {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1rem;
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
   border: none;
-  background: none;
+  background: transparent;
   width: 100%;
   text-align: left;
   color: var(--theme-text-primary);
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .theme-option:hover {
   background: var(--theme-bg-hover);
+  padding-left: 1.25rem;
+}
+
+.theme-option:active {
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  transform: scale(0.98);
 }
 
 .theme-option.active {
-  background: rgba(var(--theme-primary-rgb), 0.15);
+  background: rgba(var(--theme-primary-rgb), 0.2);
+  border-left: 3px solid var(--theme-primary);
+  padding-left: calc(1rem - 3px);
 }
 
 .theme-option.active::after {
   content: '✓';
   margin-left: auto;
   color: var(--theme-primary);
+  font-weight: 700;
 }
 
+/* Theme swatches - Visual preview */
 .theme-swatch {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid var(--theme-border);
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Theme swatches */
-.swatch-default { background: linear-gradient(135deg, #e10600 50%, #0a0a0f 50%); }
-.swatch-gulf { background: linear-gradient(135deg, #6CACE4 50%, #F26522 50%); }
-.swatch-marlboro { background: linear-gradient(135deg, #EE1C25 50%, #ffffff 50%); }
-.swatch-silk-cut { background: linear-gradient(135deg, #7B4397 50%, #D4AF37 50%); }
-.swatch-camel { background: linear-gradient(135deg, #F4C430 50%, #1E3A5F 50%); }
-.swatch-rothmans { background: linear-gradient(135deg, #003399 50%, #D4AF37 50%); }
-.swatch-martini { background: linear-gradient(135deg, #0033A0 33%, #CE1126 33% 66%, #ffffff 66%); }
-.swatch-jps { background: linear-gradient(135deg, #000000 50%, #D4AF37 50%); }
+/* Theme swatches - Accurate representations */
+.swatch-default { 
+  background: linear-gradient(135deg, #e10600 50%, #0a0a0f 50%); 
+}
+.swatch-gulf { 
+  background: linear-gradient(135deg, #5BA3D9 50%, #F26522 50%); 
+}
+.swatch-marlboro { 
+  background: linear-gradient(135deg, #EE1C25 50%, #ffffff 50%); 
+}
+.swatch-silk-cut { 
+  background: linear-gradient(135deg, #9B59B6 50%, #D4AF37 50%); 
+}
+.swatch-camel { 
+  background: linear-gradient(135deg, #F4C430 50%, #1E3A5F 50%); 
+}
+.swatch-rothmans { 
+  background: linear-gradient(135deg, #0044AA 50%, #D4AF37 50%); 
+}
+.swatch-martini { 
+  background: linear-gradient(135deg, 
+    #FFFFFF 0%, #FFFFFF 33%,
+    #0033A0 33%, #0033A0 50%,
+    #CE1126 50%, #CE1126 67%,
+    #FFFFFF 67%, #FFFFFF 100%
+  ); 
+}
+.swatch-jps { 
+  background: linear-gradient(135deg, #000000 50%, #D4AF37 50%); 
+}
 
 /* ============================================
    RESPONSIVE
@@ -402,10 +480,37 @@ nav a:hover {
   .theme-dropdown {
     right: auto;
     left: 50%;
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateX(-50%) translateY(-10px) scale(0.95);
   }
   
   .theme-dropdown.open {
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
+}
+
+/* ============================================
+   FOCUS STATES - Accessibility
+   ============================================ */
+.theme-option:focus-visible,
+.theme-switcher-btn:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   RACING BACKGROUND PATTERN (optional use)
+   ============================================ */
+.racing-pattern {
+  background-image: var(--theme-accent-pattern);
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+.theme-glow {
+  box-shadow: var(--theme-glow);
+}
+
+.theme-glow-hover:hover {
+  box-shadow: var(--theme-glow);
 }

@@ -1,102 +1,244 @@
 /**
  * GridView Theme: JPS (John Player Special)
  * Inspired by Lotus 79 - Ground effect legend
- * Pure black + Luxurious gold - Timeless sophistication
+ * PURE BLACK + LUXURIOUS GOLD - Timeless sophistication
+ * 
+ * Typography: Elegant, refined, with serif touches
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap');
+
 :root {
-  /* Core Colors */
+  /* ============================================
+     TYPOGRAPHY - Elegant, luxurious, refined
+     ============================================ */
+  --theme-font-heading: 'Playfair Display', Georgia, serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 700;
+  --theme-heading-letter-spacing: 0.02em;
+  --theme-body-letter-spacing: 0.01em;
+  --theme-text-transform: none;
+  --theme-heading-shadow: 0 2px 20px rgba(212, 175, 55, 0.4);
+  
+  /* ============================================
+     CORE COLORS - Rich gold on pure black
+     ============================================ */
   --theme-primary: #D4AF37;
   --theme-primary-rgb: 212, 175, 55;
-  --theme-secondary: #1a1a1a;
-  --theme-secondary-rgb: 26, 26, 26;
+  --theme-primary-bright: #F0D060;
+  --theme-secondary: #000000;
+  --theme-secondary-rgb: 0, 0, 0;
   --theme-accent: #D4AF37;
   --theme-accent-rgb: 212, 175, 55;
   
-  /* Backgrounds - Pure black */
+  /* ============================================
+     BACKGROUNDS - Pure black, inky depths
+     ============================================ */
   --theme-bg-base: #000000;
-  --theme-bg-card: #0a0a0a;
-  --theme-bg-elevated: #121212;
-  --theme-bg-hover: #1a1a1a;
-  --theme-gradient-body: linear-gradient(180deg, #000000 0%, #050505 100%);
-  --theme-gradient-hero: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
-  --theme-gradient-card: linear-gradient(135deg, #121212 0%, #0a0a0a 100%);
+  --theme-bg-card: rgba(212, 175, 55, 0.04);
+  --theme-bg-elevated: rgba(212, 175, 55, 0.07);
+  --theme-bg-hover: rgba(212, 175, 55, 0.12);
+  --theme-gradient-body: linear-gradient(180deg, 
+    #000000 0%, 
+    #050502 50%,
+    #000000 100%
+  );
+  --theme-gradient-hero: radial-gradient(ellipse at top center, 
+    rgba(212, 175, 55, 0.2) 0%, 
+    rgba(212, 175, 55, 0.05) 40%,
+    transparent 70%
+  );
+  --theme-gradient-card: linear-gradient(145deg, 
+    rgba(212, 175, 55, 0.08) 0%, 
+    rgba(212, 175, 55, 0.02) 100%
+  );
   
-  /* Borders */
-  --theme-border: #2a2a2a;
+  /* ============================================
+     BORDERS - Gold accents
+     ============================================ */
+  --theme-border: rgba(212, 175, 55, 0.25);
   --theme-border-active: var(--theme-primary);
-  --theme-border-subtle: rgba(212, 175, 55, 0.2);
+  --theme-border-subtle: rgba(212, 175, 55, 0.15);
   
-  /* Text */
-  --theme-text-primary: #ffffff;
-  --theme-text-secondary: #c0b080;
-  --theme-text-muted: #6a6040;
+  /* ============================================
+     TEXT - Gold highlights on black
+     ============================================ */
+  --theme-text-primary: #F5F0E0;
+  --theme-text-secondary: #C4B080;
+  --theme-text-muted: #806830;
   --theme-text-accent: var(--theme-primary);
   
-  /* Position Badges - JPS luxury */
-  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #f0d060 50%, #D4AF37 100%);
+  /* ============================================
+     POSITION BADGES - Gold royalty
+     ============================================ */
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #F0D060 25%, #D4AF37 50%, #F0D060 75%, #D4AF37 100%);
   --theme-pos-1-text: #000000;
-  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 50%, #c0c0c0 100%);
+  --theme-pos-2-bg: linear-gradient(135deg, #C0C0C0 0%, #E8E8E8 50%, #C0C0C0 100%);
   --theme-pos-2-text: #000000;
-  --theme-pos-3-bg: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  --theme-pos-3-bg: linear-gradient(135deg, #0a0a0a 0%, #151510 100%);
   --theme-pos-3-text: #D4AF37;
   
-  /* Buttons */
+  /* ============================================
+     BUTTONS - Gold outline elegance
+     ============================================ */
   --theme-btn-primary-bg: transparent;
   --theme-btn-primary-text: var(--theme-primary);
-  --theme-btn-primary-hover: rgba(212, 175, 55, 0.1);
+  --theme-btn-primary-hover: rgba(212, 175, 55, 0.15);
   --theme-btn-secondary-bg: transparent;
   --theme-btn-secondary-text: #888888;
   --theme-btn-secondary-hover: rgba(255, 255, 255, 0.05);
   
-  /* Shadows & Glows */
-  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.8);
-  --theme-shadow-hover: 0 8px 30px rgba(212, 175, 55, 0.15);
-  --theme-glow: 0 0 30px rgba(212, 175, 55, 0.4);
+  /* ============================================
+     SHADOWS & GLOWS - Golden aura
+     ============================================ */
+  --theme-shadow-card: 0 4px 30px rgba(0, 0, 0, 0.8);
+  --theme-shadow-hover: 0 8px 40px rgba(212, 175, 55, 0.25), 0 0 60px rgba(212, 175, 55, 0.15);
+  --theme-glow: 0 0 40px rgba(212, 175, 55, 0.5), 0 0 80px rgba(212, 175, 55, 0.25);
   
-  /* Special Effects - Gold pinstripe elegance */
+  /* ============================================
+     SPECIAL EFFECTS - Gold pinstripe elegance
+     ============================================ */
   --theme-stripe-pattern: linear-gradient(90deg,
     transparent 0%, transparent 48%,
-    rgba(212, 175, 55, 0.4) 48%, rgba(212, 175, 55, 0.4) 52%,
+    rgba(212, 175, 55, 0.5) 48%, rgba(212, 175, 55, 0.5) 52%,
     transparent 52%, transparent 100%
   );
   --theme-accent-pattern: 
     linear-gradient(90deg, 
-      transparent 0%,
-      rgba(212, 175, 55, 0.02) 2%,
-      transparent 4%,
-      transparent 96%,
-      rgba(212, 175, 55, 0.02) 98%,
-      transparent 100%
+      rgba(212, 175, 55, 0.03) 0%,
+      transparent 5%,
+      transparent 95%,
+      rgba(212, 175, 55, 0.03) 100%
     );
   
-  /* Live Indicator */
+  /* Vertical gold lines */
+  --theme-header-stripe: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 100px,
+    rgba(212, 175, 55, 0.08) 100px,
+    rgba(212, 175, 55, 0.08) 101px
+  );
+  
+  /* ============================================
+     LIVE INDICATOR
+     ============================================ */
   --theme-live-color: #D4AF37;
   
-  /* Scrollbar */
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
   --theme-scrollbar-track: #000000;
-  --theme-scrollbar-thumb: #2a2a2a;
+  --theme-scrollbar-thumb: rgba(212, 175, 55, 0.3);
   --theme-scrollbar-hover: var(--theme-primary);
 }
 
-/* JPS gold border treatment */
-[data-theme="jps"] .series-card {
-  border: 1px solid rgba(212, 175, 55, 0.1);
+/* ============================================
+   JPS-SPECIFIC OVERRIDES
+   ============================================ */
+
+/* Subtle gold glow from top */
+[data-theme="jps"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: radial-gradient(ellipse at top, 
+    rgba(212, 175, 55, 0.15) 0%, 
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
-[data-theme="jps"] .series-card:hover {
-  border-color: rgba(212, 175, 55, 0.3);
+/* Thin gold line at top */
+[data-theme="jps"] header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%,
+    rgba(212, 175, 55, 0.3) 20%,
+    #D4AF37 50%,
+    rgba(212, 175, 55, 0.3) 80%,
+    transparent 100%
+  );
+  z-index: 20;
 }
 
-[data-theme="jps"] .series-card.active {
-  border-color: var(--theme-primary);
-  box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1), var(--theme-glow);
-}
-
-/* JPS gold text logo treatment */
+/* Logo gets gold gradient */
 [data-theme="jps"] .gridview-logo {
-  background: linear-gradient(135deg, #D4AF37 0%, #f0d060 50%, #D4AF37 100%);
+  background: linear-gradient(135deg, #D4AF37 0%, #F0D060 40%, #D4AF37 60%, #F0D060 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  text-shadow: none;
+}
+
+/* Cards with gold border treatment */
+[data-theme="jps"] .series-card {
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  background: var(--theme-gradient-card);
+}
+
+[data-theme="jps"] .series-card:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: var(--theme-shadow-hover);
+}
+
+[data-theme="jps"] .series-card.active {
+  border-color: #D4AF37;
+  box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.1), var(--theme-glow);
+  background: linear-gradient(135deg, 
+    rgba(212, 175, 55, 0.12) 0%, 
+    rgba(212, 175, 55, 0.03) 100%
+  );
+}
+
+/* Headings use serif font */
+[data-theme="jps"] h1,
+[data-theme="jps"] h2,
+[data-theme="jps"] h3 {
+  font-family: var(--theme-font-heading);
+  font-weight: var(--theme-heading-weight);
+  letter-spacing: var(--theme-heading-letter-spacing);
+}
+
+/* Position badge with gold shimmer */
+[data-theme="jps"] .position-1 {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+  animation: gold-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes gold-shimmer {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.7); }
+  50% { box-shadow: 0 0 30px rgba(240, 208, 96, 0.9); }
+}
+
+/* Tab buttons - elegant gold outline */
+[data-theme="jps"] .tab-btn {
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+[data-theme="jps"] .tab-btn.active {
+  background: transparent;
+  border-color: #D4AF37;
+  color: #D4AF37;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Primary button gets gold border */
+[data-theme="jps"] .btn-primary {
+  border: 1px solid #D4AF37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Live indicator gold */
+[data-theme="jps"] .live-pulse {
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
 }

@@ -1,90 +1,224 @@
 /**
  * GridView Theme: Marlboro Racing
  * Inspired by McLaren MP4/4 - Senna/Prost era
- * Bold red + Crisp white - The winning combination
+ * AGGRESSIVE RED + PURE WHITE - Peak F1 dominance
+ * 
+ * Typography: Bold, impactful, aggressive
  */
 
 :root {
-  /* Core Colors */
+  /* ============================================
+     TYPOGRAPHY - Bold, aggressive, commanding
+     ============================================ */
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 900;
+  --theme-heading-letter-spacing: -0.03em;
+  --theme-body-letter-spacing: 0.01em;
+  --theme-text-transform: uppercase;
+  --theme-heading-shadow: 0 2px 20px rgba(238, 28, 37, 0.5);
+  
+  /* ============================================
+     CORE COLORS - BOLD Marlboro red
+     ============================================ */
   --theme-primary: #EE1C25;
   --theme-primary-rgb: 238, 28, 37;
+  --theme-primary-bright: #FF3B3B;
   --theme-secondary: #ffffff;
   --theme-secondary-rgb: 255, 255, 255;
   --theme-accent: #EE1C25;
   --theme-accent-rgb: 238, 28, 37;
   
-  /* Backgrounds - Deep red-tinted dark */
-  --theme-bg-base: #120808;
-  --theme-bg-card: #1f1010;
-  --theme-bg-elevated: #2a1515;
-  --theme-bg-hover: #351a1a;
-  --theme-gradient-body: linear-gradient(180deg, #120808 0%, #1a0c0c 100%);
-  --theme-gradient-hero: linear-gradient(135deg, rgba(238, 28, 37, 0.25) 0%, transparent 70%);
-  --theme-gradient-card: linear-gradient(135deg, #2a1515 0%, #1f1010 100%);
+  /* ============================================
+     BACKGROUNDS - Deep red-black, DRAMATIC
+     ============================================ */
+  --theme-bg-base: #0C0404;
+  --theme-bg-card: rgba(238, 28, 37, 0.08);
+  --theme-bg-elevated: rgba(238, 28, 37, 0.12);
+  --theme-bg-hover: rgba(238, 28, 37, 0.18);
+  --theme-gradient-body: linear-gradient(180deg, 
+    #0C0404 0%, 
+    #180808 30%,
+    #200A0A 60%,
+    #140606 100%
+  );
+  --theme-gradient-hero: linear-gradient(135deg, 
+    rgba(238, 28, 37, 0.5) 0%, 
+    rgba(238, 28, 37, 0.2) 40%,
+    transparent 70%
+  );
+  --theme-gradient-card: linear-gradient(145deg, 
+    rgba(238, 28, 37, 0.12) 0%, 
+    rgba(238, 28, 37, 0.05) 100%
+  );
   
-  /* Borders */
-  --theme-border: #4a2020;
+  /* ============================================
+     BORDERS - Red accent
+     ============================================ */
+  --theme-border: rgba(238, 28, 37, 0.35);
   --theme-border-active: var(--theme-primary);
   --theme-border-subtle: rgba(238, 28, 37, 0.2);
   
-  /* Text */
+  /* ============================================
+     TEXT - White on red-black
+     ============================================ */
   --theme-text-primary: #ffffff;
-  --theme-text-secondary: #d4a0a0;
-  --theme-text-muted: #8a6060;
+  --theme-text-secondary: #F5B0B0;
+  --theme-text-muted: #CC7070;
   --theme-text-accent: var(--theme-primary);
   
-  /* Position Badges - Marlboro podium */
-  --theme-pos-1-bg: linear-gradient(135deg, #EE1C25 0%, #cc1520 100%);
+  /* ============================================
+     POSITION BADGES - Marlboro podium
+     ============================================ */
+  --theme-pos-1-bg: linear-gradient(135deg, #EE1C25 0%, #FF4444 50%, #EE1C25 100%);
   --theme-pos-1-text: #ffffff;
-  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-  --theme-pos-2-text: #120808;
-  --theme-pos-3-bg: linear-gradient(135deg, #4a2020 0%, #351a1a 100%);
+  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #F0F0F0 50%, #ffffff 100%);
+  --theme-pos-2-text: #0C0404;
+  --theme-pos-3-bg: linear-gradient(135deg, #2A1010 0%, #3A1515 100%);
   --theme-pos-3-text: #EE1C25;
   
-  /* Buttons */
-  --theme-btn-primary-bg: var(--theme-primary);
+  /* ============================================
+     BUTTONS - Red power
+     ============================================ */
+  --theme-btn-primary-bg: linear-gradient(135deg, #EE1C25 0%, #CC1520 100%);
   --theme-btn-primary-text: #ffffff;
-  --theme-btn-primary-hover: #cc1520;
+  --theme-btn-primary-hover: linear-gradient(135deg, #FF4444 0%, #EE1C25 100%);
   --theme-btn-secondary-bg: rgba(255, 255, 255, 0.1);
   --theme-btn-secondary-text: #ffffff;
-  --theme-btn-secondary-hover: rgba(255, 255, 255, 0.15);
+  --theme-btn-secondary-hover: rgba(255, 255, 255, 0.2);
   
-  /* Shadows & Glows */
-  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --theme-shadow-hover: 0 8px 30px rgba(238, 28, 37, 0.25);
-  --theme-glow: 0 0 25px rgba(238, 28, 37, 0.5);
+  /* ============================================
+     SHADOWS & GLOWS - Aggressive red
+     ============================================ */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(238, 28, 37, 0.15);
+  --theme-shadow-hover: 0 8px 40px rgba(238, 28, 37, 0.4), 0 0 60px rgba(238, 28, 37, 0.2);
+  --theme-glow: 0 0 40px rgba(238, 28, 37, 0.7), 0 0 80px rgba(238, 28, 37, 0.3);
   
-  /* Special Effects - Marlboro chevron feel */
+  /* ============================================
+     SPECIAL EFFECTS - Marlboro chevron
+     ============================================ */
   --theme-stripe-pattern: linear-gradient(135deg, 
-    rgba(238, 28, 37, 0.1) 0%, 
-    transparent 50%,
-    rgba(238, 28, 37, 0.05) 100%
+    rgba(238, 28, 37, 0.4) 0%, 
+    transparent 35%,
+    transparent 65%,
+    rgba(238, 28, 37, 0.4) 100%
   );
   --theme-accent-pattern: 
-    linear-gradient(135deg, rgba(238, 28, 37, 0.02) 0%, transparent 50%),
-    linear-gradient(-135deg, rgba(238, 28, 37, 0.02) 0%, transparent 50%);
+    linear-gradient(135deg, rgba(238, 28, 37, 0.06) 0%, transparent 50%),
+    linear-gradient(-135deg, rgba(238, 28, 37, 0.06) 0%, transparent 50%);
   
-  /* Live Indicator */
+  /* Diagonal red stripes */
+  --theme-header-stripe: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 20px,
+    rgba(238, 28, 37, 0.1) 20px,
+    rgba(238, 28, 37, 0.1) 40px
+  );
+  
+  /* ============================================
+     LIVE INDICATOR
+     ============================================ */
   --theme-live-color: #EE1C25;
   
-  /* Scrollbar */
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
   --theme-scrollbar-track: var(--theme-bg-base);
-  --theme-scrollbar-thumb: #4a2020;
+  --theme-scrollbar-thumb: rgba(238, 28, 37, 0.4);
   --theme-scrollbar-hover: var(--theme-primary);
 }
 
-/* Marlboro-specific header bar */
+/* ============================================
+   MARLBORO-SPECIFIC OVERRIDES
+   ============================================ */
+
+/* Red glow from top */
+[data-theme="marlboro"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: radial-gradient(ellipse at top, 
+    rgba(238, 28, 37, 0.4) 0%, 
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+/* Bold red stripe at top */
 [data-theme="marlboro"] header::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 5px;
   background: linear-gradient(90deg, 
-    transparent 0%, 
-    var(--theme-primary) 20%, 
-    var(--theme-primary) 80%, 
-    transparent 100%
+    transparent 10%,
+    #EE1C25 30%,
+    #FF4444 50%,
+    #EE1C25 70%,
+    transparent 90%
   );
+  z-index: 20;
+}
+
+/* Logo gets red treatment */
+[data-theme="marlboro"] .gridview-logo {
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(238, 28, 37, 0.8);
+}
+
+/* Cards - red-tinted glass effect */
+[data-theme="marlboro"] .series-card {
+  border: 1px solid rgba(238, 28, 37, 0.25);
+  background: var(--theme-gradient-card);
+}
+
+[data-theme="marlboro"] .series-card:hover {
+  border-color: rgba(238, 28, 37, 0.6);
+  box-shadow: var(--theme-shadow-hover);
+  transform: translateY(-4px) scale(1.02);
+}
+
+[data-theme="marlboro"] .series-card.active {
+  border-color: #EE1C25;
+  box-shadow: var(--theme-glow);
+  background: linear-gradient(135deg, 
+    rgba(238, 28, 37, 0.25) 0%, 
+    rgba(238, 28, 37, 0.1) 100%
+  );
+}
+
+/* Position badges with glow */
+[data-theme="marlboro"] .position-1 {
+  box-shadow: 0 0 20px rgba(238, 28, 37, 0.8);
+}
+
+[data-theme="marlboro"] .position-2 {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Headings get uppercase treatment */
+[data-theme="marlboro"] h1,
+[data-theme="marlboro"] h2,
+[data-theme="marlboro"] h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Live pulse is red */
+[data-theme="marlboro"] .live-pulse {
+  box-shadow: 0 0 15px rgba(238, 28, 37, 0.9);
+}
+
+/* Tab buttons get aggressive styling */
+[data-theme="marlboro"] .tab-btn.active {
+  background: rgba(238, 28, 37, 0.3);
+  border-color: #EE1C25;
+  box-shadow: 0 0 10px rgba(238, 28, 37, 0.5);
 }

@@ -1,87 +1,228 @@
 /**
  * GridView Theme: Rothmans Racing
  * Inspired by Williams FW14B - Mansell's championship car
- * Royal blue + White/Gold - British racing excellence
+ * ROYAL BLUE + WHITE/GOLD - British racing excellence
+ * 
+ * Typography: Clean, professional, precise
  */
 
 :root {
-  /* Core Colors */
-  --theme-primary: #003399;
-  --theme-primary-rgb: 0, 51, 153;
+  /* ============================================
+     TYPOGRAPHY - Clean, professional, precise
+     ============================================ */
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 700;
+  --theme-heading-letter-spacing: 0;
+  --theme-body-letter-spacing: 0;
+  --theme-text-transform: none;
+  --theme-heading-shadow: 0 2px 20px rgba(0, 51, 153, 0.4);
+  
+  /* ============================================
+     CORE COLORS - Royal blue + gold accent
+     ============================================ */
+  --theme-primary: #0044AA;
+  --theme-primary-rgb: 0, 68, 170;
+  --theme-primary-bright: #2266CC;
   --theme-secondary: #D4AF37;
   --theme-secondary-rgb: 212, 175, 55;
   --theme-accent: #D4AF37;
   --theme-accent-rgb: 212, 175, 55;
   
-  /* Backgrounds - Deep royal blue */
-  --theme-bg-base: #050a14;
-  --theme-bg-card: #0a1525;
-  --theme-bg-elevated: #102035;
-  --theme-bg-hover: #152a45;
-  --theme-gradient-body: linear-gradient(180deg, #050a14 0%, #0a0f1a 100%);
-  --theme-gradient-hero: linear-gradient(135deg, rgba(0, 51, 153, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%);
-  --theme-gradient-card: linear-gradient(135deg, #102035 0%, #0a1525 100%);
+  /* ============================================
+     BACKGROUNDS - Deep royal blue
+     ============================================ */
+  --theme-bg-base: #020812;
+  --theme-bg-card: rgba(0, 68, 170, 0.12);
+  --theme-bg-elevated: rgba(0, 68, 170, 0.18);
+  --theme-bg-hover: rgba(0, 68, 170, 0.25);
+  --theme-gradient-body: linear-gradient(180deg, 
+    #020812 0%, 
+    #041020 40%,
+    #061530 70%,
+    #030A18 100%
+  );
+  --theme-gradient-hero: linear-gradient(135deg, 
+    rgba(0, 68, 170, 0.45) 0%, 
+    rgba(0, 51, 153, 0.25) 40%,
+    rgba(212, 175, 55, 0.15) 80%,
+    transparent 100%
+  );
+  --theme-gradient-card: linear-gradient(145deg, 
+    rgba(0, 68, 170, 0.15) 0%, 
+    rgba(0, 51, 153, 0.08) 50%,
+    rgba(212, 175, 55, 0.03) 100%
+  );
   
-  /* Borders */
-  --theme-border: #1a3060;
+  /* ============================================
+     BORDERS - Blue with gold accent
+     ============================================ */
+  --theme-border: rgba(0, 68, 170, 0.4);
   --theme-border-active: var(--theme-secondary);
-  --theme-border-subtle: rgba(0, 51, 153, 0.3);
+  --theme-border-subtle: rgba(0, 68, 170, 0.25);
   
-  /* Text */
+  /* ============================================
+     TEXT - Clean white/blue
+     ============================================ */
   --theme-text-primary: #ffffff;
-  --theme-text-secondary: #98b4d4;
-  --theme-text-muted: #5080b0;
+  --theme-text-secondary: #A0C4E8;
+  --theme-text-muted: #5080B0;
   --theme-text-accent: var(--theme-secondary);
   
-  /* Position Badges - Rothmans podium */
-  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #b8962e 100%);
-  --theme-pos-1-text: #050a14;
-  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-  --theme-pos-2-text: #003399;
-  --theme-pos-3-bg: linear-gradient(135deg, #003399 0%, #002266 100%);
+  /* ============================================
+     POSITION BADGES - Rothmans podium
+     ============================================ */
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #F0D060 50%, #D4AF37 100%);
+  --theme-pos-1-text: #020812;
+  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #F0F0F0 50%, #ffffff 100%);
+  --theme-pos-2-text: #0044AA;
+  --theme-pos-3-bg: linear-gradient(135deg, #0044AA 0%, #003399 100%);
   --theme-pos-3-text: #ffffff;
   
-  /* Buttons */
-  --theme-btn-primary-bg: var(--theme-primary);
+  /* ============================================
+     BUTTONS - Royal blue power
+     ============================================ */
+  --theme-btn-primary-bg: linear-gradient(135deg, #0044AA 0%, #003399 100%);
   --theme-btn-primary-text: #ffffff;
-  --theme-btn-primary-hover: #002266;
-  --theme-btn-secondary-bg: rgba(212, 175, 55, 0.15);
+  --theme-btn-primary-hover: linear-gradient(135deg, #2266CC 0%, #0044AA 100%);
+  --theme-btn-secondary-bg: rgba(212, 175, 55, 0.2);
   --theme-btn-secondary-text: var(--theme-secondary);
-  --theme-btn-secondary-hover: rgba(212, 175, 55, 0.25);
+  --theme-btn-secondary-hover: rgba(212, 175, 55, 0.35);
   
-  /* Shadows & Glows */
-  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
-  --theme-shadow-hover: 0 8px 30px rgba(0, 51, 153, 0.3);
-  --theme-glow: 0 0 25px rgba(212, 175, 55, 0.3);
+  /* ============================================
+     SHADOWS & GLOWS - Blue and gold
+     ============================================ */
+  --theme-shadow-card: 0 4px 25px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 68, 170, 0.1);
+  --theme-shadow-hover: 0 8px 45px rgba(0, 68, 170, 0.4), 0 0 60px rgba(0, 68, 170, 0.2);
+  --theme-glow: 0 0 35px rgba(212, 175, 55, 0.5), 0 0 70px rgba(0, 68, 170, 0.3);
+  --theme-glow-blue: 0 0 40px rgba(0, 68, 170, 0.6);
   
-  /* Special Effects - Rothmans stripes */
+  /* ============================================
+     SPECIAL EFFECTS - Rothmans stripes
+     ============================================ */
   --theme-stripe-pattern: linear-gradient(90deg,
-    transparent 0%, transparent 10%,
-    rgba(212, 175, 55, 0.15) 10%, rgba(212, 175, 55, 0.15) 15%,
-    rgba(255, 255, 255, 0.1) 15%, rgba(255, 255, 255, 0.1) 18%,
-    transparent 18%, transparent 82%,
-    rgba(255, 255, 255, 0.1) 82%, rgba(255, 255, 255, 0.1) 85%,
-    rgba(212, 175, 55, 0.15) 85%, rgba(212, 175, 55, 0.15) 90%,
-    transparent 90%, transparent 100%
+    transparent 0%, transparent 8%,
+    rgba(212, 175, 55, 0.25) 8%, rgba(212, 175, 55, 0.25) 12%,
+    rgba(255, 255, 255, 0.15) 12%, rgba(255, 255, 255, 0.15) 15%,
+    transparent 15%, transparent 85%,
+    rgba(255, 255, 255, 0.15) 85%, rgba(255, 255, 255, 0.15) 88%,
+    rgba(212, 175, 55, 0.25) 88%, rgba(212, 175, 55, 0.25) 92%,
+    transparent 92%, transparent 100%
   );
   --theme-accent-pattern: 
-    linear-gradient(90deg, rgba(0, 51, 153, 0.05) 0%, transparent 20%, transparent 80%, rgba(0, 51, 153, 0.05) 100%);
+    linear-gradient(90deg, 
+      rgba(0, 68, 170, 0.1) 0%, 
+      transparent 15%, 
+      transparent 85%, 
+      rgba(0, 68, 170, 0.1) 100%
+    );
   
-  /* Live Indicator */
+  /* Side stripes */
+  --theme-header-stripe: var(--theme-stripe-pattern);
+  
+  /* ============================================
+     LIVE INDICATOR
+     ============================================ */
   --theme-live-color: #D4AF37;
   
-  /* Scrollbar */
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
   --theme-scrollbar-track: var(--theme-bg-base);
-  --theme-scrollbar-thumb: #1a3060;
+  --theme-scrollbar-thumb: rgba(0, 68, 170, 0.5);
   --theme-scrollbar-hover: var(--theme-secondary);
 }
 
-/* Rothmans gold pinstripe */
-[data-theme="rothmans"] .series-card.active::before {
+/* ============================================
+   ROTHMANS-SPECIFIC OVERRIDES
+   ============================================ */
+
+/* Blue atmospheric glow */
+[data-theme="rothmans"] header::before {
   content: '';
   position: absolute;
-  inset: -1px;
-  background: linear-gradient(135deg, var(--theme-secondary), var(--theme-primary), var(--theme-secondary));
-  border-radius: inherit;
-  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  background: 
+    radial-gradient(ellipse at 50% 0%, rgba(0, 68, 170, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 40%),
+    radial-gradient(ellipse at 80% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* Rothmans-style stripe at top */
+[data-theme="rothmans"] header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent 5%,
+    #D4AF37 15%,
+    #ffffff 18%,
+    #0044AA 25%,
+    #0044AA 75%,
+    #ffffff 82%,
+    #D4AF37 85%,
+    transparent 95%
+  );
+  z-index: 20;
+}
+
+/* Logo with blue glow */
+[data-theme="rothmans"] .gridview-logo {
+  color: #ffffff;
+  text-shadow: 0 0 25px rgba(0, 68, 170, 0.7);
+}
+
+/* Cards with blue border */
+[data-theme="rothmans"] .series-card {
+  border: 1px solid rgba(0, 68, 170, 0.3);
+  background: var(--theme-gradient-card);
+}
+
+[data-theme="rothmans"] .series-card:hover {
+  border-color: rgba(0, 68, 170, 0.6);
+  box-shadow: var(--theme-shadow-hover);
+}
+
+[data-theme="rothmans"] .series-card.active {
+  border: 2px solid transparent;
+  background: 
+    linear-gradient(#061530, #061530) padding-box,
+    linear-gradient(135deg, #D4AF37 0%, #0044AA 50%, #D4AF37 100%) border-box;
+  box-shadow: var(--theme-glow);
+}
+
+/* Position badges */
+[data-theme="rothmans"] .position-1 {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.7);
+}
+
+[data-theme="rothmans"] .position-3 {
+  box-shadow: 0 0 15px rgba(0, 68, 170, 0.6);
+}
+
+/* Tab buttons with blue accent */
+[data-theme="rothmans"] .tab-btn.active {
+  background: rgba(0, 68, 170, 0.3);
+  border-color: #0044AA;
+  box-shadow: 0 0 15px rgba(0, 68, 170, 0.4);
+}
+
+/* Live indicator gold */
+[data-theme="rothmans"] .live-pulse {
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.9);
+}
+
+/* Professional clean look */
+[data-theme="rothmans"] h1,
+[data-theme="rothmans"] h2,
+[data-theme="rothmans"] h3 {
+  font-weight: 700;
 }

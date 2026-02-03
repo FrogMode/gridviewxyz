@@ -1,104 +1,313 @@
 /**
  * GridView Theme: Martini Racing
  * Inspired by Lancia 037 & Porsche 936 - The iconic stripes
- * Clean white + Red/Blue stripes - Unmistakable elegance
+ * CREAM/WHITE background + RED/BLUE stripes - Unmistakable elegance
+ * 
+ * Typography: Classic, refined, Italian racing heritage
+ * NOTE: This is a LIGHT theme!
  */
 
 :root {
-  /* Core Colors */
+  /* ============================================
+     TYPOGRAPHY - Classic, elegant, refined
+     ============================================ */
+  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-body: 'Inter', system-ui, sans-serif;
+  --theme-font-mono: 'JetBrains Mono', monospace;
+  --theme-heading-weight: 700;
+  --theme-heading-letter-spacing: 0.01em;
+  --theme-body-letter-spacing: 0;
+  --theme-text-transform: none;
+  --theme-heading-shadow: none;
+  
+  /* ============================================
+     CORE COLORS - Martini red/blue on white
+     ============================================ */
   --theme-primary: #0033A0;
   --theme-primary-rgb: 0, 51, 160;
+  --theme-primary-bright: #1155CC;
   --theme-secondary: #CE1126;
   --theme-secondary-rgb: 206, 17, 38;
   --theme-accent: #CE1126;
   --theme-accent-rgb: 206, 17, 38;
   
-  /* Backgrounds - Clean dark with subtle warmth */
-  --theme-bg-base: #0a0a0e;
-  --theme-bg-card: #141418;
-  --theme-bg-elevated: #1c1c22;
-  --theme-bg-hover: #24242c;
-  --theme-gradient-body: linear-gradient(180deg, #0a0a0e 0%, #0f0f14 100%);
-  --theme-gradient-hero: linear-gradient(135deg, 
-    rgba(0, 51, 160, 0.1) 0%, 
-    rgba(206, 17, 38, 0.08) 50%,
-    rgba(0, 51, 160, 0.1) 100%
+  /* ============================================
+     BACKGROUNDS - LIGHT cream/white
+     ============================================ */
+  --theme-bg-base: #F5F3F0;
+  --theme-bg-card: #FFFFFF;
+  --theme-bg-elevated: #FFFFFF;
+  --theme-bg-hover: #F0EDE8;
+  --theme-gradient-body: linear-gradient(180deg, 
+    #FFFFFF 0%, 
+    #F8F6F2 50%,
+    #F0EDE8 100%
   );
-  --theme-gradient-card: linear-gradient(135deg, #1c1c22 0%, #141418 100%);
+  --theme-gradient-hero: linear-gradient(180deg, 
+    #FFFFFF 0%, 
+    #F8F6F2 100%
+  );
+  --theme-gradient-card: linear-gradient(145deg, 
+    #FFFFFF 0%, 
+    #FAFAF8 100%
+  );
   
-  /* Borders */
-  --theme-border: #2a2a35;
+  /* ============================================
+     BORDERS - Subtle gray
+     ============================================ */
+  --theme-border: rgba(0, 0, 0, 0.12);
   --theme-border-active: var(--theme-secondary);
-  --theme-border-subtle: rgba(206, 17, 38, 0.2);
+  --theme-border-subtle: rgba(0, 0, 0, 0.08);
   
-  /* Text */
-  --theme-text-primary: #ffffff;
-  --theme-text-secondary: #b0b0c0;
-  --theme-text-muted: #707080;
+  /* ============================================
+     TEXT - Dark on light
+     ============================================ */
+  --theme-text-primary: #1A1A1A;
+  --theme-text-secondary: #555555;
+  --theme-text-muted: #888888;
   --theme-text-accent: var(--theme-secondary);
   
-  /* Position Badges - Martini podium */
-  --theme-pos-1-bg: linear-gradient(135deg, #CE1126 0%, #a00e1e 100%);
+  /* ============================================
+     POSITION BADGES - Classic Martini
+     ============================================ */
+  --theme-pos-1-bg: linear-gradient(135deg, #CE1126 0%, #E83040 50%, #CE1126 100%);
   --theme-pos-1-text: #ffffff;
-  --theme-pos-2-bg: linear-gradient(135deg, #0033A0 0%, #002880 100%);
+  --theme-pos-2-bg: linear-gradient(135deg, #0033A0 0%, #1155CC 50%, #0033A0 100%);
   --theme-pos-2-text: #ffffff;
-  --theme-pos-3-bg: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-  --theme-pos-3-text: #0033A0;
+  --theme-pos-3-bg: linear-gradient(135deg, #E8E4DC 0%, #D8D4CC 100%);
+  --theme-pos-3-text: #1A1A1A;
   
-  /* Buttons */
-  --theme-btn-primary-bg: var(--theme-secondary);
+  /* ============================================
+     BUTTONS - Red primary, blue secondary
+     ============================================ */
+  --theme-btn-primary-bg: linear-gradient(135deg, #CE1126 0%, #A00E1E 100%);
   --theme-btn-primary-text: #ffffff;
-  --theme-btn-primary-hover: #a00e1e;
-  --theme-btn-secondary-bg: rgba(0, 51, 160, 0.15);
-  --theme-btn-secondary-text: #ffffff;
-  --theme-btn-secondary-hover: rgba(0, 51, 160, 0.25);
+  --theme-btn-primary-hover: linear-gradient(135deg, #E83040 0%, #CE1126 100%);
+  --theme-btn-secondary-bg: rgba(0, 51, 160, 0.1);
+  --theme-btn-secondary-text: var(--theme-primary);
+  --theme-btn-secondary-hover: rgba(0, 51, 160, 0.2);
   
-  /* Shadows & Glows */
-  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --theme-shadow-hover: 0 8px 30px rgba(206, 17, 38, 0.2);
-  --theme-glow: 0 0 20px rgba(0, 51, 160, 0.3);
+  /* ============================================
+     SHADOWS & GLOWS - Soft, elegant
+     ============================================ */
+  --theme-shadow-card: 0 2px 15px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  --theme-shadow-hover: 0 8px 30px rgba(206, 17, 38, 0.15), 0 4px 10px rgba(0, 0, 0, 0.08);
+  --theme-glow: 0 0 25px rgba(206, 17, 38, 0.3), 0 0 50px rgba(0, 51, 160, 0.15);
   
-  /* Special Effects - Martini racing stripes! */
+  /* ============================================
+     SPECIAL EFFECTS - MARTINI RACING STRIPES!
+     ============================================ */
   --theme-stripe-pattern: linear-gradient(90deg,
-    transparent 0%, transparent 35%,
-    #0033A0 35%, #0033A0 38%,
-    #CE1126 38%, #CE1126 50%,
-    #0033A0 50%, #0033A0 53%,
-    transparent 53%, transparent 100%
+    transparent 0%, transparent 30%,
+    #0033A0 30%, #0033A0 35%,
+    #000000 35%, #000000 36%,
+    #CE1126 36%, #CE1126 50%,
+    transparent 50%, transparent 64%,
+    #CE1126 64%, #CE1126 65%,
+    #000000 65%, #000000 70%,
+    #0033A0 70%, #0033A0 75%,
+    transparent 75%, transparent 100%
   );
+  
+  /* Subtle stripe background pattern */
   --theme-accent-pattern: repeating-linear-gradient(
     90deg,
     transparent 0px,
-    transparent 100px,
-    rgba(0, 51, 160, 0.02) 100px,
-    rgba(0, 51, 160, 0.02) 103px,
-    rgba(206, 17, 38, 0.03) 103px,
-    rgba(206, 17, 38, 0.03) 115px,
-    rgba(0, 51, 160, 0.02) 115px,
-    rgba(0, 51, 160, 0.02) 118px,
-    transparent 118px,
-    transparent 218px
+    transparent 150px,
+    rgba(0, 51, 160, 0.03) 150px,
+    rgba(0, 51, 160, 0.03) 153px,
+    rgba(206, 17, 38, 0.04) 153px,
+    rgba(206, 17, 38, 0.04) 165px,
+    rgba(0, 51, 160, 0.03) 165px,
+    rgba(0, 51, 160, 0.03) 168px,
+    transparent 168px,
+    transparent 300px
   );
   
-  /* Live Indicator */
+  /* Racing stripes for header */
+  --theme-header-stripe: var(--theme-stripe-pattern);
+  
+  /* ============================================
+     LIVE INDICATOR
+     ============================================ */
   --theme-live-color: #CE1126;
   
-  /* Scrollbar */
-  --theme-scrollbar-track: var(--theme-bg-base);
-  --theme-scrollbar-thumb: #2a2a35;
+  /* ============================================
+     SCROLLBAR
+     ============================================ */
+  --theme-scrollbar-track: #F0EDE8;
+  --theme-scrollbar-thumb: rgba(0, 0, 0, 0.2);
   --theme-scrollbar-hover: var(--theme-secondary);
 }
 
-/* Martini stripe header decoration */
+/* ============================================
+   MARTINI-SPECIFIC OVERRIDES - LIGHT THEME
+   ============================================ */
+
+/* Full Martini stripe decoration on header */
+[data-theme="martini"] header {
+  background: #FFFFFF;
+  position: relative;
+}
+
 [data-theme="martini"] header::before {
   content: '';
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 200px;
+  width: 400px;
   height: 100%;
-  background: var(--theme-stripe-pattern);
-  opacity: 0.3;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    transparent 20%,
+    #0033A0 20%, #0033A0 27%,
+    #000000 27%, #000000 28%,
+    #CE1126 28%, #CE1126 50%,
+    transparent 50%,
+    transparent 72%,
+    #CE1126 72%, #CE1126 73%,
+    #000000 73%, #000000 80%,
+    #0033A0 80%, #0033A0 100%
+  );
+  opacity: 0.08;
   pointer-events: none;
+}
+
+/* Stripe bar at top */
+[data-theme="martini"] header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg,
+    #F5F3F0 0%, #F5F3F0 35%,
+    #0033A0 35%, #0033A0 40%,
+    #000000 40%, #000000 41%,
+    #CE1126 41%, #CE1126 50%,
+    #000000 50%, #000000 59%,
+    #CE1126 59%, #CE1126 60%,
+    #000000 60%, #000000 65%,
+    #0033A0 65%, #0033A0 70%,
+    #F5F3F0 70%, #F5F3F0 100%
+  );
+  z-index: 20;
+}
+
+/* Logo dark on light */
+[data-theme="martini"] .gridview-logo {
+  color: #1A1A1A;
+}
+
+/* Cards with clean styling */
+[data-theme="martini"] .series-card {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
+  box-shadow: var(--theme-shadow-card);
+}
+
+[data-theme="martini"] .series-card:hover {
+  border-color: rgba(206, 17, 38, 0.4);
+  box-shadow: var(--theme-shadow-hover);
+}
+
+[data-theme="martini"] .series-card.active {
+  border: 2px solid transparent;
+  background: 
+    linear-gradient(#FFFFFF, #FFFFFF) padding-box,
+    linear-gradient(90deg, #0033A0, #CE1126, #0033A0) border-box;
+  box-shadow: var(--theme-glow);
+}
+
+/* Card icons */
+[data-theme="martini"] .card-icon {
+  background-color: #F5F3F0;
+}
+
+[data-theme="martini"] .series-card:hover .card-icon {
+  background-color: rgba(206, 17, 38, 0.1);
+}
+
+/* Override text colors for light theme */
+[data-theme="martini"] body {
+  color: #1A1A1A;
+}
+
+[data-theme="martini"] .text-gray-400,
+[data-theme="martini"] .text-gray-500 {
+  color: #666666 !important;
+}
+
+[data-theme="martini"] .text-gray-200,
+[data-theme="martini"] .text-gray-300 {
+  color: #333333 !important;
+}
+
+[data-theme="martini"] .text-white {
+  color: #1A1A1A !important;
+}
+
+/* Background overrides */
+[data-theme="martini"] .bg-racing-card,
+[data-theme="martini"] .bg-racing-dark {
+  background-color: #FFFFFF !important;
+}
+
+[data-theme="martini"] .bg-racing-dark\/50 {
+  background-color: #F8F6F2 !important;
+}
+
+/* Border overrides */
+[data-theme="martini"] .border-racing-border {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Tab buttons */
+[data-theme="martini"] .tab-btn {
+  color: #555555;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="martini"] .tab-btn.active {
+  background: rgba(206, 17, 38, 0.1);
+  border-color: #CE1126;
+  color: #CE1126;
+}
+
+/* Position badges */
+[data-theme="martini"] .position-1 {
+  box-shadow: 0 0 15px rgba(206, 17, 38, 0.5);
+}
+
+[data-theme="martini"] .position-2 {
+  box-shadow: 0 0 15px rgba(0, 51, 160, 0.5);
+}
+
+/* Live indicator */
+[data-theme="martini"] .live-pulse {
+  box-shadow: 0 0 10px rgba(206, 17, 38, 0.7);
+}
+
+/* Ad slots */
+[data-theme="martini"] .ad-slot {
+  background: #F8F6F2;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #999999;
+}
+
+/* Footer */
+[data-theme="martini"] footer {
+  background: #F8F6F2;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Hover states */
+[data-theme="martini"] .hover\:text-white:hover {
+  color: #CE1126 !important;
+}
+
+[data-theme="martini"] .hover\:bg-racing-hover:hover {
+  background-color: #F0EDE8 !important;
 }
