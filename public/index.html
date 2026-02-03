@@ -308,28 +308,45 @@
 
         async function loadIMSA(btn) {
             setActiveCard(btn);
-            setSeriesHeader('🏎️', 'IMSA SportsCar Championship', '');
+            setSeriesHeader('🏎️', 'IMSA WeatherTech SportsCar Championship', '2026');
             setSeriesContent('<p class="text-gray-400 text-center py-8">Loading...</p>');
             try {
                 const resp = await fetch('/api/imsa');
                 const data = await resp.json();
                 if (data.error) {
-                    setSeriesContent('<p class="text-gray-400 text-center py-8">' + data.message + '</p>');
+                    setSeriesContent('<p class="text-gray-400 text-center py-8">' + data.error + '</p>');
                     return;
                 }
-                // Show series name if it's not the main WeatherTech series
-                const seriesLabel = data.series && !data.series.includes('WeatherTech') 
-                    ? '<span class="text-amber-500 text-xs font-medium ml-2">' + data.series + '</span>' : '';
-                let html = '<h4 class="font-semibold mb-4">' + (data.event || 'Latest Race') + seriesLabel + 
-                    ' <span class="text-gray-500 font-normal text-sm block mt-1">' + (data.session || '') + '</span></h4>';
-                html += '<div class="grid md:grid-cols-2 gap-3 max-h-96 overflow-y-auto">';
-                (data.results || []).forEach(r => {
-                    const displayName = r.drivers ? r.drivers.split(',')[0] : (r.team || '');
-                    html += '<div class="data-row flex items-center gap-3 py-2 px-3 rounded bg-racing-dark/50">' +
-                        '<span class="position-badge ' + getPositionClass(r.position) + ' text-xs font-bold py-1 px-2 rounded">' + r.position + '</span>' +
-                        '<div class="flex-1"><p class="font-medium">#' + r.number + ' ' + displayName + '</p><p class="text-xs text-gray-500">' + (r.class || '') + ' • ' + (r.vehicle || '') + '</p></div>' +
-                        '<span class="text-sm text-gray-400 font-mono">' + (r.gap || r.time || '') + '</span></div>';
+                
+                let html = '<h4 class="font-semibold mb-4">2026 Schedule</h4>';
+                html += '<div class="space-y-2 max-h-96 overflow-y-auto">';
+                
+                (data.schedule || []).forEach((event, i) => {
+                    const startDate = event.start_date ? new Date(event.start_date + 'T12:00:00').toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) : 'TBD';
+                    const endDate = event.end_date && event.end_date !== event.start_date 
+                        ? ' - ' + new Date(event.end_date + 'T12:00:00').toLocaleDateString('en-US', {month: 'short', day: 'numeric'})
+                        : '';
+                    
+                    let statusBadge = '';
+                    let rowClass = 'bg-racing-dark/50';
+                    if (event.status === 'completed') {
+                        statusBadge = '<span class="text-xs text-gray-500 ml-2">✓</span>';
+                        rowClass = 'bg-racing-dark/30 opacity-60';
+                    } else if (event.status === 'live') {
+                        statusBadge = '<span class="text-xs text-green-500 ml-2 animate-pulse">● LIVE</span>';
+                        rowClass = 'bg-green-900/20 border border-green-800/50';
+                    } else if (event.status === 'upcoming' && i === data.schedule.findIndex(e => e.status === 'upcoming')) {
+                        statusBadge = '<span class="text-xs text-amber-500 ml-2">NEXT</span>';
+                        rowClass = 'bg-amber-900/20 border border-amber-800/50';
+                    }
+                    
+                    html += '<div class="data-row flex items-center gap-3 py-3 px-3 rounded ' + rowClass + '">' +
+                        '<span class="text-xs font-mono text-gray-400 w-24">' + startDate + endDate + '</span>' +
+                        '<div class="flex-1"><p class="font-medium">' + (event.name || event.venue) + statusBadge + '</p>' +
+                        '<p class="text-xs text-gray-500">' + event.venue + '</p></div>' +
+                    '</div>';
                 });
+                
                 html += '</div>';
                 setSeriesContent(html);
             } catch (e) {

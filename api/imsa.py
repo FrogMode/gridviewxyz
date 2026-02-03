@@ -53,16 +53,32 @@ def fetch_available_events() -> list:
                     "sessions": {}
                 }
             
-            # Parse session
-            session_match = re.match(r'(\d+)_(.+)', session_part)
+            # Parse session - timestamp format: YYYYMMDDHHMM_SessionName
+            session_match = re.match(r'(\d{12})_(.+)', session_part)
             if session_match:
+                timestamp_str = session_match.group(1)
                 session_name = session_match.group(2)
+                
+                # Parse date from timestamp (YYYYMMDDHHMM)
+                try:
+                    session_date = f"{timestamp_str[:4]}-{timestamp_str[4:6]}-{timestamp_str[6:8]}"
+                except:
+                    session_date = None
+                
                 if session_name not in events[event_key]["sessions"]:
                     events[event_key]["sessions"][session_name] = []
                 events[event_key]["sessions"][session_name].append({
                     "doc": doc_name,
-                    "url": f"{ALKAMEL_BASE}/{link}"
+                    "url": f"{ALKAMEL_BASE}/{link}",
+                    "date": session_date
                 })
+                
+                # Track event date range
+                if session_date:
+                    if "start_date" not in events[event_key] or session_date < events[event_key]["start_date"]:
+                        events[event_key]["start_date"] = session_date
+                    if "end_date" not in events[event_key] or session_date > events[event_key]["end_date"]:
+                        events[event_key]["end_date"] = session_date
     
     return list(events.values())
 
@@ -71,6 +87,92 @@ def fetch_results_json(url: str) -> dict:
     req = urllib.request.Request(url, headers={"User-Agent": "GridView/1.0"})
     with urllib.request.urlopen(req, timeout=15) as resp:
         return json.loads(resp.read())
+
+def get_schedule(year: int = None) -> list:
+    """Get IMSA WeatherTech schedule with recent and upcoming events.
+    
+    Returns events sorted by date, with status (completed/upcoming).
+    """
+    from datetime import datetime, date
+    
+    # 2026 IMSA WeatherTech Calendar (official)
+    IMSA_2026_CALENDAR = [
+        {"venue": "Daytona International Speedway", "name": "Rolex 24 at Daytona", "start_date": "2026-01-24", "end_date": "2026-01-25"},
+        {"venue": "Sebring International Raceway", "name": "12 Hours of Sebring", "start_date": "2026-03-21", "end_date": "2026-03-21"},
+        {"venue": "Long Beach Street Circuit", "name": "Grand Prix of Long Beach", "start_date": "2026-04-18", "end_date": "2026-04-18"},
+        {"venue": "Laguna Seca Raceway", "name": "Monterey SportsCar Championship", "start_date": "2026-05-03", "end_date": "2026-05-03"},
+        {"venue": "Detroit Street Circuit", "name": "Chevrolet Detroit Grand Prix", "start_date": "2026-05-30", "end_date": "2026-05-31"},
+        {"venue": "Watkins Glen International", "name": "Sahlen's Six Hours", "start_date": "2026-06-28", "end_date": "2026-06-28"},
+        {"venue": "Canadian Tire Motorsport Park", "name": "Chevrolet Grand Prix", "start_date": "2026-07-12", "end_date": "2026-07-12"},
+        {"venue": "Road America", "name": "Road America", "start_date": "2026-08-02", "end_date": "2026-08-02"},
+        {"venue": "Virginia International Raceway", "name": "Michelin GT Challenge", "start_date": "2026-08-23", "end_date": "2026-08-23"},
+        {"venue": "Indianapolis Motor Speedway", "name": "Indianapolis 8 Hour", "start_date": "2026-09-05", "end_date": "2026-09-05"},
+        {"venue": "Road Atlanta", "name": "Petit Le Mans", "start_date": "2026-10-10", "end_date": "2026-10-10"},
+    ]
+    
+    events = fetch_available_events()
+    today = date.today().isoformat()
+    target_year = year or 2026
+    
+    # Build a map of venues with actual results data
+    results_by_venue = {}
+    for event in events:
+        series = event.get("series", "")
+        if "WeatherTech" not in series:
+            continue
+        if event.get("year") != target_year:
+            continue
+        
+        venue = event.get("venue", "")
+        sessions = event.get("sessions", {})
+        
+        has_race_results = False
+        for session_name, docs in sessions.items():
+            if "Race" in session_name:
+                for doc in docs:
+                    if "03_Results" in doc.get("doc", ""):
+                        has_race_results = True
+                        break
+        
+        results_by_venue[venue] = {
+            "has_results": has_race_results,
+            "sessions": list(sessions.keys()),
+            "start_date": event.get("start_date"),
+            "end_date": event.get("end_date")
+        }
+    
+    # Build schedule from calendar, enriched with results data
+    schedule = []
+    for cal_event in IMSA_2026_CALENDAR:
+        venue = cal_event["venue"]
+        start_date = cal_event["start_date"]
+        end_date = cal_event["end_date"]
+        
+        # Check if we have results data for this venue
+        results_data = results_by_venue.get(venue, {})
+        has_results = results_data.get("has_results", False)
+        
+        # Determine status
+        if has_results:
+            status = "completed"
+        elif end_date < today:
+            status = "completed"
+        elif start_date <= today <= end_date:
+            status = "live"
+        else:
+            status = "upcoming"
+        
+        schedule.append({
+            "venue": venue,
+            "name": cal_event["name"],
+            "year": target_year,
+            "start_date": start_date,
+            "end_date": end_date,
+            "status": status,
+            "has_results": has_results
+        })
+    
+    return schedule
 
 def get_latest_race_results(series_filter: str = None) -> dict:
     """Get the most recent race results.
@@ -203,37 +305,50 @@ class handler(BaseHTTPRequestHandler):
                 self._send_json(response)
                 return
             
-            # Default: get latest race results
-            series_filter = query.get('series', [None])[0]  # Optional: weathertech, pilot, mx5
-            data = get_latest_race_results(series_filter)
-            if data:
-                session_info = data.get("session", {})
-                source = data.get("_source", {})
-                
-                # Clean up series name for display
-                series_name = source.get("series", "")
-                if "WeatherTech" in series_name:
-                    series_display = "IMSA WeatherTech SportsCar Championship"
-                elif "Pilot" in series_name:
-                    series_display = "IMSA Michelin Pilot Challenge"
-                elif "MX-5" in series_name:
-                    series_display = "Mazda MX-5 Cup"
+            # Check if results are requested
+            if 'results' in query:
+                series_filter = query.get('series', [None])[0]
+                data = get_latest_race_results(series_filter)
+                if data:
+                    session_info = data.get("session", {})
+                    source = data.get("_source", {})
+                    
+                    series_name = source.get("series", "")
+                    if "WeatherTech" in series_name:
+                        series_display = "IMSA WeatherTech SportsCar Championship"
+                    elif "Pilot" in series_name:
+                        series_display = "IMSA Michelin Pilot Challenge"
+                    elif "MX-5" in series_name:
+                        series_display = "Mazda MX-5 Cup"
+                    else:
+                        series_display = series_name.split("_", 1)[-1] if "_" in series_name else series_name
+                    
+                    response = {
+                        "event": session_info.get("event_name"),
+                        "series": series_display,
+                        "session": source.get("session_type") or session_info.get("session_name"),
+                        "circuit": session_info.get("circuit", {}).get("name"),
+                        "venue": source.get("venue"),
+                        "year": source.get("year"),
+                        "date": session_info.get("session_date"),
+                        "fastest_lap": data.get("fastest_lap"),
+                        "results": format_classification(data)
+                    }
                 else:
-                    series_display = series_name.split("_", 1)[-1] if "_" in series_name else series_name
-                
-                response = {
-                    "event": session_info.get("event_name"),
-                    "series": series_display,
-                    "session": source.get("session_type") or session_info.get("session_name"),
-                    "circuit": session_info.get("circuit", {}).get("name"),
-                    "venue": source.get("venue"),
-                    "year": source.get("year"),
-                    "date": session_info.get("session_date"),
-                    "fastest_lap": data.get("fastest_lap"),
-                    "results": format_classification(data)
-                }
-            else:
-                response = {"error": "No race results found", "message": "The main IMSA WeatherTech race may not have finished yet."}
+                    response = {"error": "No race results found"}
+                self._send_json(response)
+                return
+            
+            # Default: return schedule
+            year = query.get('year', [None])[0]
+            year = int(year) if year else None
+            schedule = get_schedule(year)
+            
+            response = {
+                "series": "IMSA WeatherTech SportsCar Championship",
+                "year": year or 2026,
+                "schedule": schedule
+            }
             
             self._send_json(response)
             
