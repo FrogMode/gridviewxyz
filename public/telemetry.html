@@ -275,7 +275,9 @@
                 let html = '<option value="">Select race...</option>';
                 meetingsData.forEach(m => {
                     const flag = getCountryFlag(m.country);
-                    html += `<option value="${m.meeting_key}">${flag} ${m.name} (${m.date})</option>`;
+                    // Format date as American (MM/DD/YYYY)
+                    const date = m.date ? new Date(m.date + 'T00:00:00').toLocaleDateString('en-US') : '';
+                    html += `<option value="${m.meeting_key}">${flag} ${m.name} (${date})</option>`;
                 });
                 select.innerHTML = html;
             } catch (e) {
