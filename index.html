@@ -6,6 +6,14 @@
     <title>GridView - Premium Motorsport Data Hub</title>
     <meta name="description" content="All motorsport data in one place. F1, WRC, NASCAR, IndyCar standings, results, and schedules.">
     
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#e10600">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GridView">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -148,6 +156,11 @@
                     <option value="Europe/London">GMT</option>
                     <option value="Asia/Tokyo">JST</option>
                 </select>
+                <!-- Push Notifications Button -->
+                <button onclick="openNotificationSettings()" id="notification-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-racing-red/50 text-sm transition-all">
+                    <span id="notification-icon">🔔</span>
+                    <span id="notification-text" class="text-gray-400">Alerts</span>
+                </button>
             </div>
         </nav>
         
@@ -420,6 +433,110 @@
                     </div>
                 </div>
             </aside>
+        </div>
+    </div>
+
+    <!-- Notification Settings Modal -->
+    <div id="notification-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-racing-card border border-racing-border rounded-2xl max-w-md w-full overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-racing-border flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🔔</span>
+                    <h2 class="font-bold text-lg">Race Alerts</h2>
+                </div>
+                <button onclick="closeNotificationSettings()" class="text-gray-500 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 space-y-6">
+                <!-- Permission Status -->
+                <div id="notification-status" class="flex items-center gap-3 p-3 rounded-lg bg-racing-dark">
+                    <span id="status-icon" class="text-xl">⏳</span>
+                    <div>
+                        <p id="status-text" class="font-medium text-sm">Checking notification support...</p>
+                        <p id="status-subtext" class="text-xs text-gray-500"></p>
+                    </div>
+                </div>
+                
+                <!-- Enable Button -->
+                <button onclick="enableNotifications()" id="enable-notifications-btn" class="w-full py-3 px-4 bg-racing-red hover:bg-racing-red/90 text-white font-semibold rounded-lg transition-colors hidden">
+                    Enable Push Notifications
+                </button>
+                
+                <!-- Series Selection -->
+                <div id="series-preferences" class="hidden">
+                    <h3 class="font-semibold text-sm text-gray-300 mb-3">Select Series</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-f1" checked class="accent-racing-red">
+                            <span class="text-sm">🏎️ Formula 1</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-wrc" checked class="accent-racing-red">
+                            <span class="text-sm">🌍 WRC</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-nascar" class="accent-racing-red">
+                            <span class="text-sm">🏁 NASCAR</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-indycar" class="accent-racing-red">
+                            <span class="text-sm">🇺🇸 IndyCar</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-imsa" class="accent-racing-red">
+                            <span class="text-sm">🏎️ IMSA</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-wec" class="accent-racing-red">
+                            <span class="text-sm">🌐 WEC</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="pref-motogp" class="accent-racing-red">
+                            <span class="text-sm">🏍️ MotoGP</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Alert Types -->
+                <div id="alert-preferences" class="hidden">
+                    <h3 class="font-semibold text-sm text-gray-300 mb-3">Alert Types</h3>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="alert-race15" checked class="accent-racing-red">
+                            <span class="text-sm">🏁 15 min before race start</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="alert-race1h" class="accent-racing-red">
+                            <span class="text-sm">⏰ 1 hour before race start</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2 rounded-lg bg-racing-dark hover:bg-racing-hover cursor-pointer transition-colors">
+                            <input type="checkbox" id="alert-results" checked class="accent-racing-red">
+                            <span class="text-sm">🏆 Race results available</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Save Button -->
+                <button onclick="saveNotificationPreferences()" id="save-preferences-btn" class="w-full py-3 px-4 bg-racing-red hover:bg-racing-red/90 text-white font-semibold rounded-lg transition-colors hidden">
+                    Save Preferences
+                </button>
+                
+                <!-- Test Button -->
+                <button onclick="testNotification()" id="test-notification-btn" class="w-full py-2 px-4 bg-racing-dark hover:bg-racing-hover text-gray-300 font-medium rounded-lg transition-colors hidden text-sm">
+                    🧪 Send Test Notification
+                </button>
+                
+                <!-- Unsubscribe -->
+                <button onclick="unsubscribeNotifications()" id="unsubscribe-btn" class="w-full py-2 px-4 text-gray-500 hover:text-red-400 font-medium rounded-lg transition-colors hidden text-sm">
+                    Disable Notifications
+                </button>
+            </div>
         </div>
     </div>
 
@@ -785,6 +902,381 @@
         updateSpoilerUI();
         loadSynopses();
         document.getElementById('timezone-picker').value = selectedTimezone;
+        
+        // ============================================
+        // PUSH NOTIFICATIONS
+        // ============================================
+        
+        // VAPID public key - fetched from API
+        let VAPID_PUBLIC_KEY = null;
+        let pushSubscription = null;
+        let swRegistration = null;
+        let notificationReady = false;
+        
+        // Fetch VAPID public key from server
+        async function initNotifications() {
+            try {
+                const response = await fetch('/api/notifications/subscribe');
+                const data = await response.json();
+                if (data.vapidPublicKey && data.ready) {
+                    VAPID_PUBLIC_KEY = data.vapidPublicKey;
+                    notificationReady = true;
+                    console.log('[Push] VAPID key loaded, notifications ready');
+                } else {
+                    console.log('[Push] VAPID keys not configured yet');
+                }
+            } catch (err) {
+                console.log('[Push] Could not fetch VAPID key:', err);
+            }
+        }
+        
+        // Register service worker on load
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('[Push] Service worker registered:', registration.scope);
+                    swRegistration = registration;
+                    return initNotifications();
+                })
+                .then(() => {
+                    updateNotificationUI();
+                })
+                .catch(err => {
+                    console.error('[Push] Service worker registration failed:', err);
+                });
+        }
+        
+        // Convert VAPID key to Uint8Array
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/-/g, '+')
+                .replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+        
+        // Open notification settings modal
+        function openNotificationSettings() {
+            document.getElementById('notification-modal').classList.remove('hidden');
+            updateNotificationUI();
+        }
+        
+        // Close notification settings modal
+        function closeNotificationSettings() {
+            document.getElementById('notification-modal').classList.add('hidden');
+        }
+        
+        // Update notification UI based on current state
+        async function updateNotificationUI() {
+            const statusIcon = document.getElementById('status-icon');
+            const statusText = document.getElementById('status-text');
+            const statusSubtext = document.getElementById('status-subtext');
+            const enableBtn = document.getElementById('enable-notifications-btn');
+            const saveBtn = document.getElementById('save-preferences-btn');
+            const testBtn = document.getElementById('test-notification-btn');
+            const unsubBtn = document.getElementById('unsubscribe-btn');
+            const seriesPrefs = document.getElementById('series-preferences');
+            const alertPrefs = document.getElementById('alert-preferences');
+            const notifIcon = document.getElementById('notification-icon');
+            const notifText = document.getElementById('notification-text');
+            
+            // Check browser support
+            if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+                statusIcon.textContent = '❌';
+                statusText.textContent = 'Push notifications not supported';
+                statusSubtext.textContent = 'Try using Chrome, Firefox, or Safari';
+                enableBtn.classList.add('hidden');
+                return;
+            }
+            
+            // Check permission state
+            const permission = Notification.permission;
+            
+            if (permission === 'denied') {
+                statusIcon.textContent = '🚫';
+                statusText.textContent = 'Notifications blocked';
+                statusSubtext.textContent = 'Enable in browser settings';
+                enableBtn.classList.add('hidden');
+                notifIcon.textContent = '🔕';
+                return;
+            }
+            
+            // Check if already subscribed
+            if (swRegistration) {
+                pushSubscription = await swRegistration.pushManager.getSubscription();
+            }
+            
+            if (pushSubscription) {
+                statusIcon.textContent = '✅';
+                statusText.textContent = 'Notifications enabled';
+                statusSubtext.textContent = 'You\'ll receive race alerts';
+                enableBtn.classList.add('hidden');
+                seriesPrefs.classList.remove('hidden');
+                alertPrefs.classList.remove('hidden');
+                saveBtn.classList.remove('hidden');
+                testBtn.classList.remove('hidden');
+                unsubBtn.classList.remove('hidden');
+                notifIcon.textContent = '🔔';
+                notifText.textContent = 'Alerts On';
+                document.getElementById('notification-btn').classList.add('border-racing-red');
+                
+                // Load saved preferences
+                loadSavedPreferences();
+            } else {
+                statusIcon.textContent = '🔔';
+                statusText.textContent = 'Get race start alerts';
+                statusSubtext.textContent = 'Never miss a race again';
+                enableBtn.classList.remove('hidden');
+                seriesPrefs.classList.add('hidden');
+                alertPrefs.classList.add('hidden');
+                saveBtn.classList.add('hidden');
+                testBtn.classList.add('hidden');
+                unsubBtn.classList.add('hidden');
+                notifIcon.textContent = '🔕';
+                notifText.textContent = 'Alerts';
+                document.getElementById('notification-btn').classList.remove('border-racing-red');
+            }
+        }
+        
+        // Enable push notifications
+        async function enableNotifications() {
+            try {
+                const enableBtn = document.getElementById('enable-notifications-btn');
+                enableBtn.textContent = 'Enabling...';
+                enableBtn.disabled = true;
+                
+                // Check if VAPID key is available
+                if (!VAPID_PUBLIC_KEY || !notificationReady) {
+                    // Try to fetch again
+                    await initNotifications();
+                    if (!VAPID_PUBLIC_KEY) {
+                        throw new Error('Push notifications not configured on server');
+                    }
+                }
+                
+                // Request permission
+                const permission = await Notification.requestPermission();
+                
+                if (permission !== 'granted') {
+                    throw new Error('Permission denied');
+                }
+                
+                // Wait for service worker
+                if (!swRegistration) {
+                    swRegistration = await navigator.serviceWorker.ready;
+                }
+                
+                // Subscribe to push
+                pushSubscription = await swRegistration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
+                
+                console.log('[Push] Subscribed:', pushSubscription.endpoint);
+                
+                // Get preferences
+                const preferences = getPreferences();
+                
+                // Send subscription to server
+                const response = await fetch('/api/notifications/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        subscription: pushSubscription.toJSON(),
+                        preferences: preferences
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Server error');
+                }
+                
+                // Save preferences locally
+                localStorage.setItem('notificationPrefs', JSON.stringify(preferences));
+                
+                updateNotificationUI();
+                
+            } catch (err) {
+                console.error('[Push] Subscribe error:', err);
+                const statusIcon = document.getElementById('status-icon');
+                const statusText = document.getElementById('status-text');
+                statusIcon.textContent = '⚠️';
+                statusText.textContent = 'Failed to enable notifications';
+                
+                const enableBtn = document.getElementById('enable-notifications-btn');
+                enableBtn.textContent = 'Enable Push Notifications';
+                enableBtn.disabled = false;
+            }
+        }
+        
+        // Get current preferences from checkboxes
+        function getPreferences() {
+            return {
+                series: {
+                    f1: document.getElementById('pref-f1').checked,
+                    wrc: document.getElementById('pref-wrc').checked,
+                    nascar: document.getElementById('pref-nascar').checked,
+                    indycar: document.getElementById('pref-indycar').checked,
+                    imsa: document.getElementById('pref-imsa').checked,
+                    wec: document.getElementById('pref-wec').checked,
+                    motogp: document.getElementById('pref-motogp').checked
+                },
+                alerts: {
+                    raceStart15min: document.getElementById('alert-race15').checked,
+                    raceStart1hour: document.getElementById('alert-race1h').checked,
+                    results: document.getElementById('alert-results').checked
+                }
+            };
+        }
+        
+        // Load saved preferences into checkboxes
+        function loadSavedPreferences() {
+            const saved = localStorage.getItem('notificationPrefs');
+            if (!saved) return;
+            
+            try {
+                const prefs = JSON.parse(saved);
+                
+                if (prefs.series) {
+                    document.getElementById('pref-f1').checked = prefs.series.f1 ?? true;
+                    document.getElementById('pref-wrc').checked = prefs.series.wrc ?? true;
+                    document.getElementById('pref-nascar').checked = prefs.series.nascar ?? false;
+                    document.getElementById('pref-indycar').checked = prefs.series.indycar ?? false;
+                    document.getElementById('pref-imsa').checked = prefs.series.imsa ?? false;
+                    document.getElementById('pref-wec').checked = prefs.series.wec ?? false;
+                    document.getElementById('pref-motogp').checked = prefs.series.motogp ?? false;
+                }
+                
+                if (prefs.alerts) {
+                    document.getElementById('alert-race15').checked = prefs.alerts.raceStart15min ?? true;
+                    document.getElementById('alert-race1h').checked = prefs.alerts.raceStart1hour ?? false;
+                    document.getElementById('alert-results').checked = prefs.alerts.results ?? true;
+                }
+            } catch (e) {
+                console.error('[Push] Error loading preferences:', e);
+            }
+        }
+        
+        // Save notification preferences
+        async function saveNotificationPreferences() {
+            const saveBtn = document.getElementById('save-preferences-btn');
+            saveBtn.textContent = 'Saving...';
+            saveBtn.disabled = true;
+            
+            try {
+                const preferences = getPreferences();
+                
+                // Update server
+                if (pushSubscription) {
+                    await fetch('/api/notifications/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            subscription: pushSubscription.toJSON(),
+                            preferences: preferences
+                        })
+                    });
+                }
+                
+                // Save locally
+                localStorage.setItem('notificationPrefs', JSON.stringify(preferences));
+                
+                saveBtn.textContent = '✓ Saved!';
+                setTimeout(() => {
+                    saveBtn.textContent = 'Save Preferences';
+                    saveBtn.disabled = false;
+                }, 1500);
+                
+            } catch (err) {
+                console.error('[Push] Save error:', err);
+                saveBtn.textContent = 'Error saving';
+                setTimeout(() => {
+                    saveBtn.textContent = 'Save Preferences';
+                    saveBtn.disabled = false;
+                }, 1500);
+            }
+        }
+        
+        // Send test notification
+        async function testNotification() {
+            const testBtn = document.getElementById('test-notification-btn');
+            testBtn.textContent = 'Sending...';
+            testBtn.disabled = true;
+            
+            try {
+                // Show notification locally (for demo without VAPID)
+                if (swRegistration) {
+                    await swRegistration.showNotification('🏁 GridView Test', {
+                        body: 'Push notifications are working! 🎉',
+                        icon: '/icons/icon-192.png',
+                        badge: '/icons/badge-72.png',
+                        tag: 'test-notification',
+                        data: { url: '/' }
+                    });
+                }
+                
+                testBtn.textContent = '✓ Sent!';
+                setTimeout(() => {
+                    testBtn.textContent = '🧪 Send Test Notification';
+                    testBtn.disabled = false;
+                }, 1500);
+                
+            } catch (err) {
+                console.error('[Push] Test error:', err);
+                testBtn.textContent = 'Error';
+                setTimeout(() => {
+                    testBtn.textContent = '🧪 Send Test Notification';
+                    testBtn.disabled = false;
+                }, 1500);
+            }
+        }
+        
+        // Unsubscribe from notifications
+        async function unsubscribeNotifications() {
+            const unsubBtn = document.getElementById('unsubscribe-btn');
+            unsubBtn.textContent = 'Disabling...';
+            unsubBtn.disabled = true;
+            
+            try {
+                if (pushSubscription) {
+                    // Notify server
+                    await fetch('/api/notifications/subscribe', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            endpoint: pushSubscription.endpoint
+                        })
+                    });
+                    
+                    // Unsubscribe from push
+                    await pushSubscription.unsubscribe();
+                    pushSubscription = null;
+                }
+                
+                // Clear local storage
+                localStorage.removeItem('notificationPrefs');
+                
+                updateNotificationUI();
+                closeNotificationSettings();
+                
+            } catch (err) {
+                console.error('[Push] Unsubscribe error:', err);
+                unsubBtn.textContent = 'Disable Notifications';
+                unsubBtn.disabled = false;
+            }
+        }
+        
+        // Close modal on outside click
+        document.getElementById('notification-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'notification-modal') {
+                closeNotificationSettings();
+            }
+        });
     </script>
 </body>
 </html>

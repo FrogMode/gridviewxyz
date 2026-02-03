@@ -1,5 +1,38 @@
 # Push Notifications Design Document
 
+## ⚡ Quick Setup (VAPID Keys)
+
+Before push notifications work, you need VAPID keys:
+
+```bash
+# Generate keys (one-time)
+npx web-push generate-vapid-keys
+
+# Example output:
+# Public Key: BNp8x7F...
+# Private Key: X2mK9p3...
+```
+
+**Set these environment variables:**
+
+| Variable | Description | Where |
+|----------|-------------|-------|
+| `VAPID_PUBLIC_KEY` | Your public key | Vercel env vars + `index.html` |
+| `VAPID_PRIVATE_KEY` | Your private key | Vercel env vars only (secret!) |
+| `VAPID_SUBJECT` | Contact URL | Vercel env vars (e.g., `mailto:contact@gridview.xyz`) |
+
+**In `index.html`, update line ~420:**
+```javascript
+const VAPID_PUBLIC_KEY = 'YOUR_ACTUAL_PUBLIC_KEY_HERE';
+```
+
+**In Vercel:**
+1. Go to Project Settings → Environment Variables
+2. Add `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT`
+3. Redeploy
+
+---
+
 ## Overview
 
 This document outlines the implementation plan for PWA (Progressive Web App) push notifications in GridView, enabling race start alerts and other time-sensitive notifications.
