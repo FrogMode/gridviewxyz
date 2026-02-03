@@ -62,7 +62,27 @@
         }
         .series-card.active {
             border-color: #e10600;
-            box-shadow: 0 0 20px rgba(225, 6, 0, 0.2);
+            box-shadow: 0 0 20px rgba(225, 6, 0, 0.3);
+            background: linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
+        }
+        .series-card.active .card-icon {
+            background-color: rgba(225, 6, 0, 0.3) !important;
+        }
+        
+        /* Series detail panel animation */
+        .series-detail-enter {
+            animation: slideDown 0.3s ease-out forwards;
+        }
+        .series-detail-exit {
+            animation: slideUp 0.2s ease-in forwards;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
         }
         
         /* Data rows */
@@ -121,6 +141,16 @@
                 linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%),
                 linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%);
             background-size: 8px 8px;
+        }
+        
+        /* Tab buttons */
+        .tab-btn {
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background-color: rgba(225, 6, 0, 0.2);
+            color: #e10600;
+            border-color: #e10600;
         }
     </style>
 </head>
@@ -200,16 +230,16 @@
             <main class="flex-1 min-w-0">
                 
                 <!-- Series Selection -->
-                <section class="mb-10">
+                <section class="mb-8">
                     <div class="flex items-center justify-between mb-5">
                         <h2 class="text-lg font-semibold text-gray-200">Racing Series</h2>
-                        <span class="text-xs text-gray-500 uppercase tracking-wider">Select to load data</span>
+                        <span id="series-hint" class="text-xs text-gray-500 uppercase tracking-wider">Select a series to view data</span>
                     </div>
                     
                     <div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8 gap-3">
                         <!-- F1 -->
-                        <button onclick="loadF1(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('f1', this)" data-series="f1" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🏎️</span>
                             </div>
                             <h3 class="font-semibold text-sm">F1</h3>
@@ -220,8 +250,8 @@
                         </button>
                         
                         <!-- WRC -->
-                        <button onclick="loadWRC(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('wrc', this)" data-series="wrc" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🌍</span>
                             </div>
                             <h3 class="font-semibold text-sm">WRC</h3>
@@ -232,8 +262,8 @@
                         </button>
                         
                         <!-- NASCAR -->
-                        <button onclick="loadNASCAR(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('nascar', this)" data-series="nascar" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🏁</span>
                             </div>
                             <h3 class="font-semibold text-sm">NASCAR</h3>
@@ -244,8 +274,8 @@
                         </button>
                         
                         <!-- IndyCar -->
-                        <button onclick="loadIndyCar(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('indycar', this)" data-series="indycar" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🇺🇸</span>
                             </div>
                             <h3 class="font-semibold text-sm">IndyCar</h3>
@@ -256,8 +286,8 @@
                         </button>
                         
                         <!-- IMSA -->
-                        <button onclick="loadIMSA(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('imsa', this)" data-series="imsa" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🏎️</span>
                             </div>
                             <h3 class="font-semibold text-sm">IMSA</h3>
@@ -268,8 +298,8 @@
                         </button>
                         
                         <!-- WEC -->
-                        <button onclick="loadWEC(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('wec', this)" data-series="wec" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🌐</span>
                             </div>
                             <h3 class="font-semibold text-sm">WEC</h3>
@@ -280,8 +310,8 @@
                         </button>
                         
                         <!-- MotoGP -->
-                        <button onclick="loadMotoGP(this)" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
-                            <div class="w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
+                        <button onclick="selectSeries('motogp', this)" data-series="motogp" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
+                            <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🏍️</span>
                             </div>
                             <h3 class="font-semibold text-sm">MotoGP</h3>
@@ -293,90 +323,19 @@
                     </div>
                 </section>
 
-                <!-- Data Display Grid -->
-                <section class="grid md:grid-cols-2 gap-6 mb-10">
-                    <!-- F1 Data Panel -->
-                    <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">🏎️</span>
-                                <h3 class="font-bold text-lg">Formula 1</h3>
-                            </div>
-                            <span class="text-xs text-gray-500 font-mono">2025</span>
-                        </div>
-                        <div id="f1-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click F1 card above to load data</p>
-                        </div>
-                    </div>
-                    
-                    <!-- WRC Data Panel -->
-                    <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">🌍</span>
-                                <h3 class="font-bold text-lg">World Rally</h3>
-                            </div>
-                            <span class="text-xs text-gray-500 font-mono">2025</span>
-                        </div>
-                        <div id="wrc-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click WRC card above to load data</p>
-                        </div>
-                    </div>
-                    
-                    <!-- NASCAR Data Panel -->
-                    <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">🏁</span>
-                                <h3 class="font-bold text-lg">NASCAR</h3>
-                            </div>
-                            <span class="text-xs text-gray-500 font-mono">2025</span>
-                        </div>
-                        <div id="nascar-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click NASCAR card above to load data</p>
-                        </div>
-                    </div>
-                    
-                    <!-- IndyCar Data Panel -->
-                    <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">🇺🇸</span>
-                                <h3 class="font-bold text-lg">IndyCar</h3>
-                            </div>
-                            <span class="text-xs text-gray-500 font-mono">2025</span>
-                        </div>
-                        <div id="indycar-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click IndyCar card above to load data</p>
-                        </div>
-                    </div>
-                    
-                    <!-- IMSA Data Panel -->
-                    <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">🏎️</span>
-                                <h3 class="font-bold text-lg">IMSA</h3>
-                            </div>
-                            <span class="text-xs text-gray-500 font-mono">2025</span>
-                        </div>
-                        <div id="imsa-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click IMSA card above to load data</p>
-                        </div>
-                    </div>
-                    
-                    <!-- WEC Data Panel -->
-                    <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
-                        <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xl">🌐</span>
-                                <h3 class="font-bold text-lg">WEC</h3>
-                            </div>
-                            <span class="text-xs text-gray-500 font-mono">2025</span>
-                        </div>
-                        <div id="wec-data" class="p-5">
-                            <p class="text-gray-500 text-sm text-center py-8">Click WEC card above to load data</p>
-                        </div>
+                <!-- Series Detail Panel (Single Focus View) -->
+                <section id="series-detail" class="mb-10 hidden">
+                    <!-- Content populated by JavaScript -->
+                </section>
+                
+                <!-- Default State (when no series selected) -->
+                <section id="default-state" class="mb-10">
+                    <div class="bg-racing-card rounded-xl border border-racing-border p-8 text-center">
+                        <div class="text-4xl mb-4">🏁</div>
+                        <h3 class="text-xl font-bold mb-2">Select a Racing Series</h3>
+                        <p class="text-gray-400 text-sm max-w-md mx-auto">
+                            Click on any series above to view calendar, standings, recent results, and news.
+                        </p>
                     </div>
                 </section>
 
@@ -685,11 +644,430 @@
     </footer>
 
     <script>
-        // Track active series card
-        function setActiveCard(btn) {
+        // ============================================
+        // SERIES SELECTION - SINGLE FOCUS VIEW
+        // ============================================
+        
+        let currentSeries = null;
+        let currentTab = 'calendar';
+        
+        // Series configuration
+        const seriesConfig = {
+            f1: { name: 'Formula 1', icon: '🏎️', color: 'red' },
+            wrc: { name: 'World Rally Championship', icon: '🌍', color: 'blue' },
+            nascar: { name: 'NASCAR Cup Series', icon: '🏁', color: 'yellow' },
+            indycar: { name: 'NTT INDYCAR Series', icon: '🇺🇸', color: 'orange' },
+            imsa: { name: 'IMSA WeatherTech', icon: '🏎️', color: 'green' },
+            wec: { name: 'FIA WEC', icon: '🌐', color: 'purple' },
+            motogp: { name: 'MotoGP', icon: '🏍️', color: 'pink' }
+        };
+        
+        // Select/deselect series
+        function selectSeries(series, btn) {
+            const detailPanel = document.getElementById('series-detail');
+            const defaultState = document.getElementById('default-state');
+            const hint = document.getElementById('series-hint');
+            
+            // If clicking the same series, deselect it
+            if (currentSeries === series) {
+                deselectSeries();
+                return;
+            }
+            
+            // Update active card
             document.querySelectorAll('.series-card').forEach(c => c.classList.remove('active'));
             if (btn) btn.classList.add('active');
+            
+            currentSeries = series;
+            currentTab = 'calendar';
+            
+            // Update hint text
+            hint.textContent = `Viewing ${seriesConfig[series].name}`;
+            
+            // Hide default state, show detail panel
+            defaultState.classList.add('hidden');
+            detailPanel.classList.remove('hidden');
+            detailPanel.classList.remove('series-detail-exit');
+            detailPanel.classList.add('series-detail-enter');
+            
+            // Render the detail panel
+            renderSeriesDetail(series);
         }
+        
+        // Deselect current series
+        function deselectSeries() {
+            const detailPanel = document.getElementById('series-detail');
+            const defaultState = document.getElementById('default-state');
+            const hint = document.getElementById('series-hint');
+            
+            // Remove active state from all cards
+            document.querySelectorAll('.series-card').forEach(c => c.classList.remove('active'));
+            
+            currentSeries = null;
+            
+            // Update hint
+            hint.textContent = 'Select a series to view data';
+            
+            // Animate out, then hide
+            detailPanel.classList.remove('series-detail-enter');
+            detailPanel.classList.add('series-detail-exit');
+            
+            setTimeout(() => {
+                detailPanel.classList.add('hidden');
+                defaultState.classList.remove('hidden');
+            }, 200);
+        }
+        
+        // Render the series detail panel
+        function renderSeriesDetail(series) {
+            const config = seriesConfig[series];
+            const detailPanel = document.getElementById('series-detail');
+            
+            detailPanel.innerHTML = `
+                <div class="bg-racing-card rounded-xl overflow-hidden border border-racing-border">
+                    <!-- Header -->
+                    <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between checkered-accent">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${config.icon}</span>
+                            <div>
+                                <h3 class="font-bold text-lg">${config.name}</h3>
+                                <p class="text-xs text-gray-500">2025 Season</p>
+                            </div>
+                        </div>
+                        <button onclick="deselectSeries()" class="p-2 hover:bg-racing-dark rounded-lg transition-colors text-gray-400 hover:text-white" title="Close">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="px-5 py-3 border-b border-racing-border bg-racing-dark/30 flex gap-2 overflow-x-auto">
+                        <button onclick="switchTab('${series}', 'calendar')" data-tab="calendar" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg border border-racing-border hover:border-racing-red/50 transition-all active">
+                            📅 Calendar
+                        </button>
+                        <button onclick="switchTab('${series}', 'standings')" data-tab="standings" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg border border-racing-border hover:border-racing-red/50 transition-all">
+                            🏆 Standings
+                        </button>
+                        <button onclick="switchTab('${series}', 'results')" data-tab="results" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg border border-racing-border hover:border-racing-red/50 transition-all">
+                            🏁 Results
+                        </button>
+                        <button onclick="switchTab('${series}', 'news')" data-tab="news" class="tab-btn px-4 py-2 text-sm font-medium rounded-lg border border-racing-border hover:border-racing-red/50 transition-all">
+                            📰 News
+                        </button>
+                    </div>
+                    
+                    <!-- Content Area -->
+                    <div id="series-content" class="p-5 min-h-[300px]">
+                        <div class="flex items-center justify-center py-12 gap-2">
+                            <div class="w-5 h-5 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
+                            <span class="text-gray-400">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Load the default tab (calendar)
+            loadSeriesData(series, 'calendar');
+        }
+        
+        // Switch tab
+        function switchTab(series, tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Load data for the tab
+            loadSeriesData(series, tab);
+        }
+        
+        // Load series data based on tab
+        async function loadSeriesData(series, tab) {
+            const contentEl = document.getElementById('series-content');
+            
+            contentEl.innerHTML = `
+                <div class="flex items-center justify-center py-12 gap-2">
+                    <div class="w-5 h-5 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-gray-400">Loading ${tab}...</span>
+                </div>
+            `;
+            
+            try {
+                switch (tab) {
+                    case 'calendar':
+                        await loadCalendar(series, contentEl);
+                        break;
+                    case 'standings':
+                        await loadStandings(series, contentEl);
+                        break;
+                    case 'results':
+                        await loadResults(series, contentEl);
+                        break;
+                    case 'news':
+                        await loadNews(series, contentEl);
+                        break;
+                }
+            } catch (e) {
+                console.error(`[${series}] Error loading ${tab}:`, e);
+                contentEl.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="text-red-400">⚠️ Error loading data</span>
+                        <p class="text-xs text-gray-500 mt-2">Please try again later</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Position badge helper
+        function getPositionClass(pos) {
+            if (pos === 1) return 'position-1';
+            if (pos === 2) return 'position-2';
+            if (pos === 3) return 'position-3';
+            return 'bg-racing-border';
+        }
+        
+        // Load Calendar
+        async function loadCalendar(series, el) {
+            const endpoints = {
+                f1: '/api/f1',
+                wrc: '/api/wrc',
+                nascar: '/api/nascar?upcoming=true&limit=12',
+                indycar: '/api/indycar_live?upcoming&limit=12',
+                imsa: '/api/imsa?events=true',
+                wec: '/api/wec',
+                motogp: '/api/motogp?schedule=true'
+            };
+            
+            const resp = await fetch(endpoints[series] || `/api/${series}`);
+            const data = await resp.json();
+            
+            let events = [];
+            
+            // Normalize data from different APIs
+            if (series === 'f1') events = data.events || [];
+            else if (series === 'wrc') events = data.events || data.results?.map((r, i) => ({ name: data.event?.name, position: i + 1, ...r })) || [];
+            else if (series === 'nascar') events = data.upcoming || [];
+            else if (series === 'indycar') events = data.upcoming || [];
+            else if (series === 'imsa') events = data.events || [];
+            else if (series === 'wec') events = data.events || [];
+            else if (series === 'motogp') events = data.events || [];
+            
+            if (events.length === 0) {
+                el.innerHTML = `<div class="text-center py-12 text-gray-500">No upcoming events found</div>`;
+                return;
+            }
+            
+            let html = `
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="font-semibold text-gray-300">2025 Calendar</h4>
+                    <span class="text-xs text-gray-500">${events.length} events</span>
+                </div>
+                <div class="grid gap-2">
+            `;
+            
+            events.slice(0, 15).forEach((event, idx) => {
+                const name = event.name || event.venue || 'TBD';
+                const location = event.location || event.city || event.track || '';
+                const dateStr = event.date || event.green_flag;
+                const date = dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'TBD';
+                const isPast = dateStr && new Date(dateStr) < new Date();
+                
+                html += `
+                    <div class="data-row flex items-center gap-4 py-3 px-4 rounded-lg ${isPast ? 'opacity-50' : ''}">
+                        <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-1 px-2 rounded">${event.round || idx + 1}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium truncate">${name}</p>
+                            <p class="text-xs text-gray-500 truncate">${location}</p>
+                        </div>
+                        <span class="font-mono text-sm text-gray-400 flex-shrink-0">${date}</span>
+                        ${isPast ? '<span class="text-xs text-gray-600">✓</span>' : ''}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            el.innerHTML = html;
+        }
+        
+        // Load Standings
+        async function loadStandings(series, el) {
+            const endpoints = {
+                f1: '/api/f1/standings',
+                wrc: '/api/wrc/standings',
+                nascar: '/api/nascar/standings',
+                indycar: '/api/indycar/standings',
+                imsa: '/api/imsa/standings',
+                wec: '/api/wec/standings',
+                motogp: '/api/motogp/standings'
+            };
+            
+            try {
+                const resp = await fetch(endpoints[series]);
+                if (!resp.ok) throw new Error('No standings available');
+                const data = await resp.json();
+                
+                const standings = data.standings || data.drivers || [];
+                
+                if (standings.length === 0) {
+                    el.innerHTML = `<div class="text-center py-12 text-gray-500">Standings not available yet</div>`;
+                    return;
+                }
+                
+                let html = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-300">Driver Standings</h4>
+                    </div>
+                    <div class="grid gap-2">
+                `;
+                
+                standings.slice(0, 20).forEach((driver, idx) => {
+                    const pos = driver.position || idx + 1;
+                    html += `
+                        <div class="data-row flex items-center gap-4 py-3 px-4 rounded-lg">
+                            <span class="position-badge ${getPositionClass(pos)} text-xs font-bold py-1 px-2 rounded">${pos}</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium truncate">${driver.name || driver.driver}</p>
+                                <p class="text-xs text-gray-500 truncate">${driver.team || ''}</p>
+                            </div>
+                            <span class="font-mono text-sm font-bold text-racing-red flex-shrink-0">${driver.points || 0} pts</span>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                el.innerHTML = html;
+                
+            } catch (e) {
+                el.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="text-gray-400">📊 Standings coming soon</span>
+                        <p class="text-xs text-gray-500 mt-2">Check back after the season starts</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Load Results
+        async function loadResults(series, el) {
+            const endpoints = {
+                f1: '/api/f1/results',
+                wrc: '/api/wrc',
+                nascar: '/api/nascar/results',
+                indycar: '/api/indycar/results',
+                imsa: '/api/imsa/results',
+                wec: '/api/wec/results',
+                motogp: '/api/motogp/results'
+            };
+            
+            try {
+                const resp = await fetch(endpoints[series]);
+                const data = await resp.json();
+                
+                const results = data.results || data.races || [];
+                
+                if (results.length === 0) {
+                    el.innerHTML = `<div class="text-center py-12 text-gray-500">No recent results</div>`;
+                    return;
+                }
+                
+                let html = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-300">Recent Results</h4>
+                    </div>
+                    <div class="grid gap-2">
+                `;
+                
+                results.slice(0, 15).forEach((result, idx) => {
+                    const pos = result.position || idx + 1;
+                    html += `
+                        <div class="data-row flex items-center gap-4 py-3 px-4 rounded-lg">
+                            <span class="position-badge ${getPositionClass(pos)} text-xs font-bold py-1 px-2 rounded">${pos}</span>
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium truncate">${result.driver || result.name || 'TBD'}</p>
+                                <p class="text-xs text-gray-500 truncate">${result.team || ''}</p>
+                            </div>
+                            <span class="font-mono text-sm text-gray-400 flex-shrink-0">${result.time || result.gap || ''}</span>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                el.innerHTML = html;
+                
+            } catch (e) {
+                el.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="text-gray-400">🏁 Results coming soon</span>
+                        <p class="text-xs text-gray-500 mt-2">Check back after the race</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Load News
+        async function loadNews(series, el) {
+            try {
+                const resp = await fetch(`/api/news?series=${series}&limit=10`);
+                const data = await resp.json();
+                
+                const articles = data.articles || [];
+                
+                if (articles.length === 0) {
+                    el.innerHTML = `
+                        <div class="text-center py-12">
+                            <span class="text-gray-400">📰 No recent news</span>
+                            <p class="text-xs text-gray-500 mt-2">Check back later for updates</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-semibold text-gray-300">Latest News</h4>
+                    </div>
+                    <div class="space-y-3">
+                `;
+                
+                articles.forEach(article => {
+                    html += `
+                        <a href="${article.url}" target="_blank" rel="noopener" class="block p-4 rounded-lg bg-racing-dark hover:bg-racing-hover transition-colors group">
+                            <h5 class="font-medium text-sm group-hover:text-racing-red transition-colors line-clamp-2">${article.title}</h5>
+                            <p class="text-xs text-gray-500 mt-1">${article.source || ''} • ${article.date || ''}</p>
+                        </a>
+                    `;
+                });
+                
+                html += '</div>';
+                el.innerHTML = html;
+                
+            } catch (e) {
+                el.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="text-gray-400">📰 News feed unavailable</span>
+                        <p class="text-xs text-gray-500 mt-2">Check back later</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ============================================
+        // LEGACY FUNCTIONS (for backwards compatibility)
+        // ============================================
+        
+        function loadF1(btn) { selectSeries('f1', btn); }
+        function loadWRC(btn) { selectSeries('wrc', btn); }
+        function loadNASCAR(btn) { selectSeries('nascar', btn); }
+        function loadIndyCar(btn) { selectSeries('indycar', btn); }
+        function loadIMSA(btn) { selectSeries('imsa', btn); }
+        function loadWEC(btn) { selectSeries('wec', btn); }
+        function loadMotoGP(btn) { selectSeries('motogp', btn); }
 
         // Check API health on load
         async function checkHealth() {
@@ -714,379 +1092,6 @@
             }
         }
 
-        // Position badge helper
-        function getPositionClass(pos) {
-            if (pos === 1) return 'position-1';
-            if (pos === 2) return 'position-2';
-            if (pos === 3) return 'position-3';
-            return 'bg-racing-border';
-        }
-
-        // Load F1 Data
-        async function loadF1(btn) {
-            setActiveCard(btn);
-            const el = document.getElementById('f1-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading F1 data...</span>
-                </div>
-            `;
-            
-            try {
-                const resp = await fetch('/api/f1');
-                const data = await resp.json();
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">2025 Race Calendar</h4>
-                        <span class="text-xs text-gray-500">${data.events?.length || 0} races</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const events = data.events || [];
-                events.slice(0, 12).forEach((race, idx) => {
-                    const date = race.date ? new Date(race.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'TBD';
-                    const isPast = race.date && new Date(race.date) < new Date();
-                    
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded ${isPast ? 'opacity-50' : ''}">
-                            <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-0.5 rounded">${idx + 1}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${race.name || 'TBD'}</p>
-                                <p class="text-xs text-gray-500 truncate">${race.location || ''}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${date}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading F1 data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load WRC Data
-        async function loadWRC(btn) {
-            setActiveCard(btn);
-            const el = document.getElementById('wrc-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading WRC data...</span>
-                </div>
-            `;
-            
-            try {
-                const resp = await fetch('/api/wrc');
-                const data = await resp.json();
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">${data.event?.name || 'Latest Rally'}</h4>
-                        <span class="text-xs text-racing-red font-medium">Results</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const results = data.results || [];
-                results.forEach(r => {
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded">
-                            <span class="position-badge ${getPositionClass(r.position)} text-xs font-bold py-0.5 rounded">${r.position}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${r.driver}</p>
-                                <p class="text-xs text-gray-500 truncate">${r.team || ''}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${r.time}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading WRC data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load NASCAR Data
-        async function loadNASCAR(btn) {
-            setActiveCard(btn);
-            const el = document.getElementById('nascar-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading NASCAR data...</span>
-                </div>
-            `;
-            
-            try {
-                const resp = await fetch('/api/nascar?upcoming=true&limit=8');
-                const data = await resp.json();
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">Upcoming Races</h4>
-                        <span class="text-xs text-racing-red font-medium">${data.series || 'Cup Series'}</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const races = data.upcoming || [];
-                races.forEach((race, idx) => {
-                    const date = race.date ? new Date(race.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'TBD';
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded">
-                            <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-0.5 rounded">${idx + 1}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${race.name || 'TBD'}</p>
-                                <p class="text-xs text-gray-500 truncate">${race.track || ''}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${date}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading NASCAR data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load IndyCar Data (uses live Azure Blob data)
-        async function loadIndyCar(btn) {
-            setActiveCard(btn);
-            const el = document.getElementById('indycar-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading IndyCar data...</span>
-                </div>
-            `;
-            
-            try {
-                // Try live API first, fallback to static
-                let resp = await fetch('/api/indycar_live?upcoming&limit=8');
-                let data = await resp.json();
-                
-                // If live API fails, try static
-                if (!data.upcoming || data.upcoming.length === 0) {
-                    resp = await fetch('/api/indycar?upcoming=true&limit=8');
-                    data = await resp.json();
-                }
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">Upcoming Races</h4>
-                        <span class="text-xs text-racing-red font-medium">NTT INDYCAR Series</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const races = data.upcoming || [];
-                races.forEach((race, idx) => {
-                    // Handle both date formats (green_flag from live, date from static)
-                    const dateStr = race.green_flag || race.date;
-                    const date = dateStr ? new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'TBD';
-                    const location = race.city && race.state ? `${race.city}, ${race.state}` : (race.track || race.location || '');
-                    const tv = race.tv ? ` 📺 ${race.tv}` : '';
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded">
-                            <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-0.5 rounded">${idx + 1}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${race.name || 'TBD'}</p>
-                                <p class="text-xs text-gray-500 truncate">${location}${tv}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${date}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading IndyCar data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load IMSA Data
-        async function loadIMSA(btn) {
-            setActiveCard(btn);
-            const el = document.getElementById('imsa-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading IMSA data...</span>
-                </div>
-            `;
-            
-            try {
-                const resp = await fetch('/api/imsa?events=true');
-                const data = await resp.json();
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">Recent Events</h4>
-                        <span class="text-xs text-racing-red font-medium">WeatherTech</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const events = data.events || [];
-                events.slice(0, 8).forEach((event, idx) => {
-                    const sessions = event.sessions ? Object.keys(event.sessions).join(', ') : '';
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded">
-                            <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-0.5 rounded">${idx + 1}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${event.venue || 'Unknown'}</p>
-                                <p class="text-xs text-gray-500 truncate">${event.series || ''} • ${sessions}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${event.year}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading IMSA data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load WEC Data
-        async function loadWEC(btn) {
-            setActiveCard(btn);
-            const el = document.getElementById('wec-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading WEC data...</span>
-                </div>
-            `;
-            
-            try {
-                const resp = await fetch('/api/wec');
-                const data = await resp.json();
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">${data.season || '2025'} Season</h4>
-                        <span class="text-xs text-racing-red font-medium">FIA WEC</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const events = data.events || [];
-                events.slice(0, 10).forEach((event, idx) => {
-                    const date = event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'TBD';
-                    const isPast = event.date && new Date(event.date) < new Date();
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded ${isPast ? 'opacity-50' : ''}">
-                            <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-0.5 rounded">${event.round || idx + 1}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${event.name || 'TBD'}</p>
-                                <p class="text-xs text-gray-500 truncate">${event.venue || event.city || ''}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${date}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading WEC data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Load MotoGP Data
-        async function loadMotoGP(btn) {
-            setActiveCard(btn);
-            // Use WEC panel temporarily for MotoGP (or add a new panel)
-            const el = document.getElementById('wec-data');
-            el.innerHTML = `
-                <div class="flex items-center justify-center py-8 gap-2">
-                    <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                    <span class="text-gray-400 text-sm">Loading MotoGP data...</span>
-                </div>
-            `;
-            
-            try {
-                const resp = await fetch('/api/motogp?schedule=true');
-                const data = await resp.json();
-                
-                let html = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-semibold text-sm text-gray-300">${data.season || '2025'} Season</h4>
-                        <span class="text-xs text-racing-red font-medium">MotoGP</span>
-                    </div>
-                    <div class="max-h-80 overflow-y-auto space-y-1 pr-1">
-                `;
-                
-                const events = data.events || [];
-                events.slice(0, 10).forEach((event, idx) => {
-                    const date = event.date ? new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'TBD';
-                    const isPast = event.date && new Date(event.date) < new Date();
-                    html += `
-                        <div class="data-row flex items-center gap-3 py-2 px-2 rounded ${isPast ? 'opacity-50' : ''}">
-                            <span class="position-badge ${getPositionClass(idx + 1)} text-xs font-bold py-0.5 rounded">${event.round || idx + 1}</span>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-sm truncate">${event.name || 'TBD'}</p>
-                                <p class="text-xs text-gray-500 truncate">${event.circuit || event.location || ''}</p>
-                            </div>
-                            <span class="font-mono text-xs text-gray-400 flex-shrink-0">${date}</span>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                el.innerHTML = html;
-            } catch (e) {
-                el.innerHTML = `
-                    <div class="text-center py-8">
-                        <span class="text-red-400 text-sm">⚠️ Error loading MotoGP data</span>
-                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
-                    </div>
-                `;
-            }
-        }
-
         // Spoiler Mode
         let spoilerMode = localStorage.getItem('spoilerMode') === 'true';
         
@@ -1094,7 +1099,6 @@
             spoilerMode = !spoilerMode;
             localStorage.setItem('spoilerMode', spoilerMode);
             updateSpoilerUI();
-            // Re-render any loaded data
             document.querySelectorAll('[data-spoiler]').forEach(el => {
                 el.style.filter = spoilerMode ? 'blur(8px)' : 'none';
                 el.style.userSelect = spoilerMode ? 'none' : 'auto';
@@ -1126,7 +1130,6 @@
         function setTimezone(tz) {
             selectedTimezone = tz;
             localStorage.setItem('timezone', tz);
-            // Update any displayed times
             document.querySelectorAll('[data-utc]').forEach(el => {
                 const utc = el.getAttribute('data-utc');
                 el.textContent = formatTime(utc);
@@ -1201,7 +1204,6 @@
                             </div>
                             
                             <div id="synopsis-${race.id}" class="hidden">
-                                <!-- Winner (spoiler protected) -->
                                 <div class="px-5 py-3 border-b border-racing-border bg-racing-dark/30" data-spoiler>
                                     <div class="flex items-center gap-2 text-sm">
                                         <span class="text-racing-red">🏆</span>
@@ -1211,7 +1213,6 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Bullet points (spoiler protected) -->
                                 <div class="p-5" data-spoiler>
                                     <ul class="space-y-2">
                                         ${race.bullets?.map(bullet => `
@@ -1241,7 +1242,6 @@
                 
                 container.innerHTML = html;
                 
-                // Apply spoiler mode to newly loaded content
                 if (spoilerMode) {
                     container.querySelectorAll('[data-spoiler]').forEach(el => {
                         el.style.filter = 'blur(8px)';
@@ -1270,7 +1270,6 @@
                 icon.textContent = '▲';
                 text.textContent = 'Hide';
                 
-                // Apply spoiler mode if active
                 if (spoilerMode) {
                     content.querySelectorAll('[data-spoiler]').forEach(el => {
                         el.style.filter = 'blur(8px)';
@@ -1310,7 +1309,6 @@
                 const resp = await fetch(url);
                 const data = await resp.json();
                 
-                // Update sentiment summary
                 if (data.summary) {
                     const score = data.summary.sentimentScore || 0;
                     const scoreEl = document.getElementById('sentiment-score');
@@ -1322,7 +1320,6 @@
                     document.getElementById('sentiment-spikes').textContent = data.summary.spikes || 0;
                 }
                 
-                // Render trending topics
                 if (!data.topics || data.topics.length === 0) {
                     container.innerHTML = `
                         <div class="bg-racing-card rounded-xl border border-racing-border p-6 text-center col-span-2">
@@ -1392,7 +1389,6 @@
             }
         }
         
-        // Auto-refresh trending every 5 minutes
         function startTrendingRefresh() {
             if (trendingRefreshTimer) clearInterval(trendingRefreshTimer);
             trendingRefreshTimer = setInterval(loadTrending, 5 * 60 * 1000);
@@ -1410,13 +1406,11 @@
         // PUSH NOTIFICATIONS
         // ============================================
         
-        // VAPID public key - fetched from API
         let VAPID_PUBLIC_KEY = null;
         let pushSubscription = null;
         let swRegistration = null;
         let notificationReady = false;
         
-        // Fetch VAPID public key from server
         async function initNotifications() {
             try {
                 const response = await fetch('/api/notifications/subscribe');
@@ -1433,7 +1427,6 @@
             }
         }
         
-        // Register service worker on load
         if ('serviceWorker' in navigator && 'PushManager' in window) {
             navigator.serviceWorker.register('/sw.js')
                 .then(registration => {
@@ -1449,7 +1442,6 @@
                 });
         }
         
-        // Convert VAPID key to Uint8Array
         function urlBase64ToUint8Array(base64String) {
             const padding = '='.repeat((4 - base64String.length % 4) % 4);
             const base64 = (base64String + padding)
@@ -1463,18 +1455,15 @@
             return outputArray;
         }
         
-        // Open notification settings modal
         function openNotificationSettings() {
             document.getElementById('notification-modal').classList.remove('hidden');
             updateNotificationUI();
         }
         
-        // Close notification settings modal
         function closeNotificationSettings() {
             document.getElementById('notification-modal').classList.add('hidden');
         }
         
-        // Update notification UI based on current state
         async function updateNotificationUI() {
             const statusIcon = document.getElementById('status-icon');
             const statusText = document.getElementById('status-text');
@@ -1488,7 +1477,6 @@
             const notifIcon = document.getElementById('notification-icon');
             const notifText = document.getElementById('notification-text');
             
-            // Check browser support
             if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
                 statusIcon.textContent = '❌';
                 statusText.textContent = 'Push notifications not supported';
@@ -1497,7 +1485,6 @@
                 return;
             }
             
-            // Check permission state
             const permission = Notification.permission;
             
             if (permission === 'denied') {
@@ -1509,7 +1496,6 @@
                 return;
             }
             
-            // Check if already subscribed
             if (swRegistration) {
                 pushSubscription = await swRegistration.pushManager.getSubscription();
             }
@@ -1528,7 +1514,6 @@
                 notifText.textContent = 'Alerts On';
                 document.getElementById('notification-btn').classList.add('border-racing-red');
                 
-                // Load saved preferences
                 loadSavedPreferences();
             } else {
                 statusIcon.textContent = '🔔';
@@ -1546,35 +1531,29 @@
             }
         }
         
-        // Enable push notifications
         async function enableNotifications() {
             try {
                 const enableBtn = document.getElementById('enable-notifications-btn');
                 enableBtn.textContent = 'Enabling...';
                 enableBtn.disabled = true;
                 
-                // Check if VAPID key is available
                 if (!VAPID_PUBLIC_KEY || !notificationReady) {
-                    // Try to fetch again
                     await initNotifications();
                     if (!VAPID_PUBLIC_KEY) {
                         throw new Error('Push notifications not configured on server');
                     }
                 }
                 
-                // Request permission
                 const permission = await Notification.requestPermission();
                 
                 if (permission !== 'granted') {
                     throw new Error('Permission denied');
                 }
                 
-                // Wait for service worker
                 if (!swRegistration) {
                     swRegistration = await navigator.serviceWorker.ready;
                 }
                 
-                // Subscribe to push
                 pushSubscription = await swRegistration.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
@@ -1582,10 +1561,8 @@
                 
                 console.log('[Push] Subscribed:', pushSubscription.endpoint);
                 
-                // Get preferences
                 const preferences = getPreferences();
                 
-                // Send subscription to server
                 const response = await fetch('/api/notifications/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1599,7 +1576,6 @@
                     throw new Error('Server error');
                 }
                 
-                // Save preferences locally
                 localStorage.setItem('notificationPrefs', JSON.stringify(preferences));
                 
                 updateNotificationUI();
@@ -1617,7 +1593,6 @@
             }
         }
         
-        // Get current preferences from checkboxes
         function getPreferences() {
             return {
                 series: {
@@ -1637,7 +1612,6 @@
             };
         }
         
-        // Load saved preferences into checkboxes
         function loadSavedPreferences() {
             const saved = localStorage.getItem('notificationPrefs');
             if (!saved) return;
@@ -1665,7 +1639,6 @@
             }
         }
         
-        // Save notification preferences
         async function saveNotificationPreferences() {
             const saveBtn = document.getElementById('save-preferences-btn');
             saveBtn.textContent = 'Saving...';
@@ -1674,7 +1647,6 @@
             try {
                 const preferences = getPreferences();
                 
-                // Update server
                 if (pushSubscription) {
                     await fetch('/api/notifications/subscribe', {
                         method: 'POST',
@@ -1686,7 +1658,6 @@
                     });
                 }
                 
-                // Save locally
                 localStorage.setItem('notificationPrefs', JSON.stringify(preferences));
                 
                 saveBtn.textContent = '✓ Saved!';
@@ -1705,14 +1676,12 @@
             }
         }
         
-        // Send test notification
         async function testNotification() {
             const testBtn = document.getElementById('test-notification-btn');
             testBtn.textContent = 'Sending...';
             testBtn.disabled = true;
             
             try {
-                // Show notification locally (for demo without VAPID)
                 if (swRegistration) {
                     await swRegistration.showNotification('🏁 GridView Test', {
                         body: 'Push notifications are working! 🎉',
@@ -1739,7 +1708,6 @@
             }
         }
         
-        // Unsubscribe from notifications
         async function unsubscribeNotifications() {
             const unsubBtn = document.getElementById('unsubscribe-btn');
             unsubBtn.textContent = 'Disabling...';
@@ -1747,7 +1715,6 @@
             
             try {
                 if (pushSubscription) {
-                    // Notify server
                     await fetch('/api/notifications/subscribe', {
                         method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' },
@@ -1756,12 +1723,10 @@
                         })
                     });
                     
-                    // Unsubscribe from push
                     await pushSubscription.unsubscribe();
                     pushSubscription = null;
                 }
                 
-                // Clear local storage
                 localStorage.removeItem('notificationPrefs');
                 
                 updateNotificationUI();
@@ -1774,7 +1739,6 @@
             }
         }
         
-        // Close modal on outside click
         document.getElementById('notification-modal').addEventListener('click', (e) => {
             if (e.target.id === 'notification-modal') {
                 closeNotificationSettings();
