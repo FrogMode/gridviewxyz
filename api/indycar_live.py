@@ -79,27 +79,37 @@ def get_schedule() -> List[Dict[str, Any]]:
         
         results = []
         for race in races:
+            # Safely get nested TV channel
+            tv_data = race.get("tv") or {}
+            listing = tv_data.get("listing") or {}
+            tv_channel = listing.get("channel")
+            
+            # Safely get past winners
+            past_winners_data = race.get("past_winners") or {}
+            past_winners = past_winners_data.get("past_winner") or []
+            
             results.append({
                 "event_id": race.get("eventid"),
                 "name": race.get("name"),
                 "city": race.get("city"),
                 "state": race.get("state"),
                 "country": race.get("country", "USA"),
-                "track_name": race.get("track_name", race.get("name")),
+                "track_name": race.get("track_name") or race.get("name"),
                 "track_length_miles": race.get("track_length"),
                 "laps": race.get("laps"),
                 "green_flag": race.get("green_flag"),
                 "is_complete": race.get("is_complete") == "1",
                 "ticket_url": race.get("ticket_url"),
                 "link_url": race.get("link_url"),
-                "tv": race.get("tv", {}).get("listing", {}).get("channel"),
+                "tv": tv_channel,
                 "winner": race.get("racewinner"),
-                "past_winners": race.get("past_winners", {}).get("past_winner", [])
+                "past_winners": past_winners
             })
         
         return results
     except Exception as e:
-        # Fallback to static data
+        # Log error and fallback to empty list
+        print(f"[IndyCar Live] Schedule fetch error: {e}")
         return []
 
 
