@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 Results - GridView</title>
+    <title>Race Results - GridView</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        racing: { red: '#e10600', orange: '#ff6b35', dark: '#0a0a0f', card: '#16161d', border: '#2a2a35' }
+                        racing: { red: '#e10600', orange: '#ff6b35', dark: '#0a0a0f', card: '#16161d', border: '#2a2a35', hover: '#1e1e28' }
                     },
                     fontFamily: { sans: ['Inter', 'system-ui'], mono: ['JetBrains Mono', 'monospace'] }
                 }
@@ -28,10 +28,9 @@
         .race-card:hover { background: rgba(255,255,255,0.05); }
         .race-card.open { background: rgba(225, 6, 0, 0.1); border-color: rgba(225, 6, 0, 0.3); }
         .results-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        .results-panel.open { max-height: 400px; overflow-y: auto; }
+        .results-panel.open { max-height: 500px; overflow-y: auto; }
         
-        /* Custom select styling */
-        .year-select {
+        .custom-select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -39,15 +38,20 @@
             background-size: 1.25rem;
             padding-right: 2.5rem;
         }
-        .year-select:focus {
+        .custom-select:focus {
             outline: none;
             border-color: #e10600;
             box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.2);
         }
+        
+        .series-btn { transition: all 0.2s; }
+        .series-btn:hover { background: rgba(255,255,255,0.1); }
+        .series-btn.active { background: rgba(225, 6, 0, 0.2); border-color: #e10600; }
     </style>
 </head>
 <body class="text-white">
     <script src="/js/live-banner.js" defer></script>
+    
     <!-- Nav -->
     <nav class="border-b border-racing-border">
         <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -66,31 +70,51 @@
         </div>
     </nav>
 
-    <!-- Header -->
+    <!-- Header with Series Selection -->
     <header class="max-w-5xl mx-auto px-4 py-8">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-            <div class="flex items-center gap-4">
-                <span class="text-4xl">🏎️</span>
-                <div>
-                    <h1 class="text-3xl font-bold">F1 Season Results</h1>
-                    <p class="text-gray-400">Click any race to see full results</p>
-                </div>
-            </div>
-            <!-- Year Selector -->
-            <div class="flex items-center gap-3">
-                <label for="year-select" class="text-gray-400 text-sm font-medium">Season</label>
-                <select 
-                    id="year-select" 
-                    class="year-select bg-racing-card border border-racing-border rounded-lg px-4 py-2.5 font-semibold text-white cursor-pointer transition-all hover:border-gray-500"
-                    onchange="switchYear(this.value)"
-                >
-                    <option value="">Loading...</option>
-                </select>
-            </div>
+        <h1 class="text-3xl font-bold mb-6">Race Results</h1>
+        
+        <!-- Series Selector -->
+        <div class="flex flex-wrap gap-3 mb-6">
+            <button onclick="selectSeries('f1')" id="btn-f1" class="series-btn active flex items-center gap-2 px-4 py-2 bg-racing-card border border-racing-border rounded-lg">
+                <span>🏎️</span>
+                <span class="font-medium">Formula 1</span>
+            </button>
+            <button onclick="selectSeries('wrc')" id="btn-wrc" class="series-btn flex items-center gap-2 px-4 py-2 bg-racing-card border border-racing-border rounded-lg">
+                <span>🌍</span>
+                <span class="font-medium">WRC</span>
+            </button>
+            <button onclick="selectSeries('imsa')" id="btn-imsa" class="series-btn flex items-center gap-2 px-4 py-2 bg-racing-card border border-racing-border rounded-lg">
+                <span>🏎️</span>
+                <span class="font-medium">IMSA</span>
+            </button>
+            <button onclick="selectSeries('wec')" id="btn-wec" class="series-btn flex items-center gap-2 px-4 py-2 bg-racing-card border border-racing-border rounded-lg">
+                <span>🌐</span>
+                <span class="font-medium">WEC</span>
+            </button>
+        </div>
+        
+        <!-- Year/Season Selector -->
+        <div class="flex items-center gap-3">
+            <label class="text-gray-400 text-sm font-medium">Season</label>
+            <select id="year-select" class="custom-select bg-racing-card border border-racing-border rounded-lg px-4 py-2 font-semibold text-white cursor-pointer" onchange="switchYear(this.value)">
+                <option value="2026">2026</option>
+            </select>
         </div>
     </header>
 
-    <!-- Results List -->
+    <!-- Series Info Banner -->
+    <div class="max-w-5xl mx-auto px-4 mb-6">
+        <div id="series-info" class="bg-racing-card border border-racing-border rounded-xl p-4 flex items-center gap-4">
+            <span id="series-icon" class="text-4xl">🏎️</span>
+            <div>
+                <h2 id="series-title" class="text-xl font-bold">Formula 1</h2>
+                <p id="series-subtitle" class="text-gray-400 text-sm">2026 Season</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Races List -->
     <main class="max-w-5xl mx-auto px-4 pb-12">
         <div id="races-list" class="space-y-3">
             <div class="text-center py-12 text-gray-400">
@@ -101,10 +125,43 @@
     </main>
 
     <script>
+        // State
+        let currentSeries = 'f1';
+        let currentYear = 2026;
         let racesData = [];
         let openRace = null;
-        let currentYear = null;
-        let availableYears = [];
+        
+        // Series configuration
+        const SERIES_CONFIG = {
+            f1: {
+                name: 'Formula 1',
+                icon: '🏎️',
+                years: [2024, 2025, 2026],
+                defaultYear: 2026,
+                api: '/api/f1results'
+            },
+            wrc: {
+                name: 'World Rally Championship',
+                icon: '🌍',
+                years: [2024, 2025, 2026],
+                defaultYear: 2026,
+                api: '/api/wrc'
+            },
+            imsa: {
+                name: 'IMSA WeatherTech SportsCar',
+                icon: '🏎️',
+                years: [2026],
+                defaultYear: 2026,
+                api: '/api/imsa'
+            },
+            wec: {
+                name: 'FIA World Endurance Championship',
+                icon: '🌐',
+                years: [2026],
+                defaultYear: 2026,
+                api: '/api/wec'
+            }
+        };
         
         function getPositionClass(pos) {
             if (pos === 1) return 'position-1';
@@ -115,65 +172,120 @@
         
         function formatDate(dateStr) {
             if (!dateStr) return 'TBD';
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const date = new Date(dateStr + 'T12:00:00');
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
-
-        async function init() {
-            try {
-                // Fetch available years
-                const resp = await fetch('/api/f1results?years=true');
-                const data = await resp.json();
-                availableYears = data.years || [];
-                currentYear = data.default || availableYears[0];
-                
-                // Populate dropdown
-                const select = document.getElementById('year-select');
-                select.innerHTML = availableYears.map(year => 
-                    `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`
-                ).join('');
-                
-                // Load races
-                loadRaces();
-            } catch (e) {
-                document.getElementById('races-list').innerHTML = `
-                    <div class="text-center py-12 text-red-400">
-                        Error initializing: ${e.message}
-                    </div>
-                `;
-            }
-        }
-
-        function switchYear(year) {
-            year = parseInt(year);
-            if (year === currentYear || !year) return;
-            currentYear = year;
+        
+        function selectSeries(series) {
+            if (series === currentSeries) return;
+            
+            // Update buttons
+            document.querySelectorAll('.series-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${series}`).classList.add('active');
+            
+            currentSeries = series;
+            const config = SERIES_CONFIG[series];
+            
+            // Update info banner
+            document.getElementById('series-icon').textContent = config.icon;
+            document.getElementById('series-title').textContent = config.name;
+            
+            // Update year selector
+            const select = document.getElementById('year-select');
+            select.innerHTML = config.years.map(y => 
+                `<option value="${y}" ${y === config.defaultYear ? 'selected' : ''}>${y}</option>`
+            ).join('');
+            currentYear = config.defaultYear;
+            
+            document.getElementById('series-subtitle').textContent = `${currentYear} Season`;
+            
             openRace = null;
             loadRaces();
         }
-
+        
+        function switchYear(year) {
+            year = parseInt(year);
+            if (year === currentYear) return;
+            currentYear = year;
+            document.getElementById('series-subtitle').textContent = `${currentYear} Season`;
+            openRace = null;
+            loadRaces();
+        }
+        
         async function loadRaces() {
-            document.getElementById('races-list').innerHTML = `
+            const container = document.getElementById('races-list');
+            container.innerHTML = `
                 <div class="text-center py-12 text-gray-400">
                     <div class="w-8 h-8 border-2 border-racing-red border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    Loading ${currentYear} F1 season...
+                    Loading ${currentYear} ${SERIES_CONFIG[currentSeries].name}...
                 </div>
             `;
             
             try {
-                const resp = await fetch(`/api/f1results?year=${currentYear}`);
+                const config = SERIES_CONFIG[currentSeries];
+                let url = config.api;
+                
+                // Add year param
+                if (currentSeries === 'f1') {
+                    url += `?year=${currentYear}`;
+                } else if (currentSeries === 'wec') {
+                    url += `?year=${currentYear}`;
+                }
+                
+                const resp = await fetch(url);
                 const data = await resp.json();
-                racesData = data.races || [];
+                
+                // Normalize data based on series
+                if (currentSeries === 'f1') {
+                    racesData = (data.races || []).map(r => ({
+                        id: r.session_key,
+                        name: r.name || r.location,
+                        venue: r.circuit || r.location,
+                        country: r.country,
+                        date: r.date,
+                        hasResults: new Date(r.date) < new Date()
+                    }));
+                } else if (currentSeries === 'wrc') {
+                    racesData = (data.rallies || data.events || []).map((r, i) => ({
+                        id: r.id || i,
+                        name: r.name,
+                        venue: r.country,
+                        country: r.country,
+                        date: r.date,
+                        hasResults: r.status === 'completed'
+                    }));
+                } else if (currentSeries === 'imsa') {
+                    racesData = (data.schedule || []).map((r, i) => ({
+                        id: i,
+                        name: r.name,
+                        venue: r.venue,
+                        country: 'USA',
+                        date: r.start_date,
+                        duration: r.duration,
+                        hasResults: r.has_results,
+                        status: r.status
+                    }));
+                } else if (currentSeries === 'wec') {
+                    racesData = (data.events || []).map((r, i) => ({
+                        id: i,
+                        name: r.name,
+                        venue: r.venue,
+                        country: r.country,
+                        date: r.date,
+                        hasResults: false
+                    }));
+                }
+                
                 renderRaces();
             } catch (e) {
-                document.getElementById('races-list').innerHTML = `
+                container.innerHTML = `
                     <div class="text-center py-12 text-red-400">
                         Error loading races: ${e.message}
                     </div>
                 `;
             }
         }
-
+        
         function renderRaces() {
             const container = document.getElementById('races-list');
             
@@ -181,39 +293,46 @@
                 container.innerHTML = `
                     <div class="text-center py-12">
                         <p class="text-gray-400 text-lg mb-2">No races found for ${currentYear}</p>
-                        <p class="text-gray-500 text-sm">The season may not have started yet or data isn't available.</p>
+                        <p class="text-gray-500 text-sm">The season may not have started yet.</p>
                     </div>
                 `;
                 return;
             }
-
+            
             let html = '';
             racesData.forEach((race, idx) => {
                 const raceNum = idx + 1;
-                const isPast = new Date(race.date) < new Date();
+                const statusBadge = race.status === 'completed' || race.hasResults
+                    ? '<span class="text-xs text-gray-500">✓</span>'
+                    : race.status === 'live'
+                    ? '<span class="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded animate-pulse">LIVE</span>'
+                    : race.status === 'upcoming' && idx === racesData.findIndex(r => r.status === 'upcoming')
+                    ? '<span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">NEXT</span>'
+                    : '';
+                
+                const durationText = race.duration ? `<span class="text-gray-600">(${race.duration})</span>` : '';
+                
                 html += `
-                    <div class="race-card bg-racing-card border border-racing-border rounded-xl overflow-hidden" id="race-${race.session_key}">
-                        <button onclick="toggleRace(${race.session_key})" class="w-full px-5 py-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                    <div class="race-card bg-racing-card border border-racing-border rounded-xl overflow-hidden" id="race-${race.id}">
+                        <button onclick="toggleRace('${race.id}')" class="w-full px-5 py-4 flex items-center justify-between hover:bg-white/5 transition-colors">
                             <div class="flex items-center gap-4">
-                                <span class="text-2xl font-bold text-gray-600 w-10">${raceNum}</span>
+                                <span class="text-2xl font-bold text-gray-600 w-8">${raceNum}</span>
                                 <div class="text-left">
-                                    <h3 class="font-semibold text-lg">${race.name || 'Race'}</h3>
-                                    <p class="text-sm text-gray-400">${race.circuit || race.location || ''} • ${race.country || ''}</p>
+                                    <h3 class="font-semibold text-lg">${race.name} ${durationText}</h3>
+                                    <p class="text-sm text-gray-400">${race.venue}${race.country && race.venue !== race.country ? ' • ' + race.country : ''}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                ${!isPast ? '<span class="text-xs bg-racing-red/20 text-racing-red px-2 py-1 rounded font-medium">UPCOMING</span>' : ''}
+                            <div class="flex items-center gap-3">
+                                ${statusBadge}
                                 <span class="text-sm text-gray-500 font-mono">${formatDate(race.date)}</span>
-                                <svg class="w-5 h-5 text-gray-400 transform transition-transform" id="arrow-${race.session_key}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-gray-400 transform transition-transform" id="arrow-${race.id}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </div>
                         </button>
-                        <div class="results-panel border-t border-racing-border" id="results-${race.session_key}">
-                            <div class="p-5">
-                                <div class="text-center py-4 text-gray-400">
-                                    <div class="w-6 h-6 border-2 border-racing-red border-t-transparent rounded-full animate-spin mx-auto"></div>
-                                </div>
+                        <div class="results-panel border-t border-racing-border" id="results-${race.id}">
+                            <div class="p-5 text-center text-gray-400">
+                                <div class="w-6 h-6 border-2 border-racing-red border-t-transparent rounded-full animate-spin mx-auto"></div>
                             </div>
                         </div>
                     </div>
@@ -222,13 +341,13 @@
             
             container.innerHTML = html;
         }
-
-        async function toggleRace(sessionKey) {
-            const panel = document.getElementById(`results-${sessionKey}`);
-            const arrow = document.getElementById(`arrow-${sessionKey}`);
-            const card = document.getElementById(`race-${sessionKey}`);
+        
+        async function toggleRace(raceId) {
+            const panel = document.getElementById(`results-${raceId}`);
+            const arrow = document.getElementById(`arrow-${raceId}`);
+            const card = document.getElementById(`race-${raceId}`);
             
-            if (openRace && openRace !== sessionKey) {
+            if (openRace && openRace !== raceId) {
                 document.getElementById(`results-${openRace}`)?.classList.remove('open');
                 document.getElementById(`arrow-${openRace}`)?.classList.remove('rotate-180');
                 document.getElementById(`race-${openRace}`)?.classList.remove('open');
@@ -245,47 +364,98 @@
                 panel.classList.add('open');
                 arrow.classList.add('rotate-180');
                 card.classList.add('open');
-                openRace = sessionKey;
-                await loadRaceResults(sessionKey);
+                openRace = raceId;
+                await loadRaceResults(raceId);
             }
         }
-
-        async function loadRaceResults(sessionKey) {
-            const panel = document.getElementById(`results-${sessionKey}`);
+        
+        async function loadRaceResults(raceId) {
+            const panel = document.getElementById(`results-${raceId}`);
+            const race = racesData.find(r => String(r.id) === String(raceId));
+            
+            if (!race) {
+                panel.innerHTML = '<div class="p-5 text-gray-400 text-center">Race not found</div>';
+                return;
+            }
+            
+            // Check if results available
+            if (!race.hasResults && race.status !== 'completed') {
+                panel.innerHTML = `
+                    <div class="p-5 text-center">
+                        <p class="text-gray-400 mb-2">Results not yet available</p>
+                        <p class="text-gray-500 text-sm">Race date: ${formatDate(race.date)}</p>
+                    </div>
+                `;
+                return;
+            }
             
             try {
-                const resp = await fetch(`/api/f1results?session=${sessionKey}`);
-                const data = await resp.json();
+                let results = [];
                 
-                if (!data.results || data.results.length === 0) {
-                    panel.innerHTML = '<div class="p-5 text-gray-400 text-center">No results available yet</div>';
+                if (currentSeries === 'f1') {
+                    const resp = await fetch(`/api/f1results?session=${raceId}`);
+                    const data = await resp.json();
+                    results = (data.results || []).map(r => ({
+                        position: r.position,
+                        name: r.driver,
+                        team: r.team,
+                        color: r.team_color ? `#${r.team_color}` : '#666',
+                        time: r.time || '',
+                        points: [25, 18, 15, 12, 10, 8, 6, 4, 2, 1][r.position - 1] || 0
+                    }));
+                } else if (currentSeries === 'wrc') {
+                    // WRC results would go here
+                    panel.innerHTML = '<div class="p-5 text-gray-400 text-center">WRC detailed results coming soon</div>';
+                    return;
+                } else if (currentSeries === 'imsa') {
+                    // Fetch IMSA results
+                    const resp = await fetch(`/api/imsa?results=true`);
+                    const data = await resp.json();
+                    if (data.error) {
+                        panel.innerHTML = '<div class="p-5 text-gray-400 text-center">Results not available yet</div>';
+                        return;
+                    }
+                    results = (data.results || []).slice(0, 20).map(r => ({
+                        position: r.position,
+                        name: `#${r.number} ${r.drivers?.split(',')[0] || r.team}`,
+                        team: r.class,
+                        vehicle: r.vehicle,
+                        color: '#666',
+                        time: r.gap || r.time || ''
+                    }));
+                } else if (currentSeries === 'wec') {
+                    panel.innerHTML = '<div class="p-5 text-gray-400 text-center">WEC detailed results coming soon</div>';
                     return;
                 }
-
-                let html = '<div class="p-5"><div class="grid gap-2">';
-                const points = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
                 
-                data.results.forEach((r, idx) => {
-                    const pts = points[idx] || 0;
-                    const teamColor = r.team_color ? `#${r.team_color}` : '#666';
+                if (results.length === 0) {
+                    panel.innerHTML = '<div class="p-5 text-gray-400 text-center">No results available</div>';
+                    return;
+                }
+                
+                let html = '<div class="p-5"><div class="grid gap-2">';
+                results.forEach(r => {
+                    const vehicleText = r.vehicle ? `<span class="text-gray-600 text-xs ml-1">${r.vehicle}</span>` : '';
+                    const pointsText = r.points !== undefined 
+                        ? `<span class="font-mono text-sm ${r.points > 0 ? 'text-green-400' : 'text-gray-500'}">${r.points > 0 ? '+' + r.points : '0'} pts</span>`
+                        : `<span class="font-mono text-sm text-gray-500">${r.time}</span>`;
                     
                     html += `
                         <div class="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-white/5 transition-colors">
                             <span class="w-8 h-8 flex items-center justify-center rounded font-bold text-sm ${getPositionClass(r.position)}">
                                 ${r.position || '-'}
                             </span>
-                            <div class="w-1 h-8 rounded" style="background: ${teamColor}"></div>
+                            <div class="w-1 h-8 rounded" style="background: ${r.color}"></div>
                             <div class="flex-1">
-                                <p class="font-medium">${r.driver}</p>
+                                <p class="font-medium">${r.name}${vehicleText}</p>
                                 <p class="text-xs text-gray-500">${r.team}</p>
                             </div>
                             <div class="text-right">
-                                <span class="font-mono text-sm ${pts > 0 ? 'text-green-400' : 'text-gray-500'}">${pts > 0 ? '+' + pts : '0'} pts</span>
+                                ${pointsText}
                             </div>
                         </div>
                     `;
                 });
-                
                 html += '</div></div>';
                 panel.innerHTML = html;
                 
@@ -293,9 +463,9 @@
                 panel.innerHTML = `<div class="p-5 text-red-400 text-center">Error loading results</div>`;
             }
         }
-
-        // Initialize on load
-        init();
+        
+        // Initialize
+        selectSeries('f1');
     </script>
 </body>
 </html>
