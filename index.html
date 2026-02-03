@@ -302,6 +302,23 @@
                     <span>Ad Space • 970×250 Billboard</span>
                 </div>
 
+                <!-- Race Synopsis Section -->
+                <section class="mb-10">
+                    <div class="flex items-center justify-between mb-5">
+                        <h2 class="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                            <span class="text-racing-red">📋</span>
+                            Recent Race Synopses
+                        </h2>
+                        <button onclick="loadSynopses()" class="text-xs text-racing-red hover:underline">Refresh</button>
+                    </div>
+                    
+                    <div id="synopses-container" class="space-y-4">
+                        <div class="bg-racing-card rounded-xl border border-racing-border p-6 text-center">
+                            <p class="text-gray-500 text-sm">Loading race synopses...</p>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- API Status -->
                 <section class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
                     <div class="px-5 py-4 border-b border-racing-border">
@@ -625,9 +642,148 @@
             }
         }
         
+        // Load Race Synopses
+        async function loadSynopses() {
+            const container = document.getElementById('synopses-container');
+            container.innerHTML = `
+                <div class="bg-racing-card rounded-xl border border-racing-border p-6 text-center">
+                    <div class="flex items-center justify-center gap-2">
+                        <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
+                        <span class="text-gray-400 text-sm">Loading synopses...</span>
+                    </div>
+                </div>
+            `;
+            
+            try {
+                const resp = await fetch('/api/synopsis?limit=5');
+                const data = await resp.json();
+                
+                if (!data.races || data.races.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-racing-card rounded-xl border border-racing-border p-6 text-center">
+                            <p class="text-gray-500 text-sm">No recent race synopses available</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                data.races.forEach(race => {
+                    const seriesColors = {
+                        'F1': 'bg-red-500',
+                        'WRC': 'bg-blue-500',
+                        'IMSA': 'bg-green-500',
+                        'WEC': 'bg-purple-500',
+                        'NASCAR': 'bg-yellow-500',
+                        'IndyCar': 'bg-orange-500',
+                        'MotoGP': 'bg-pink-500'
+                    };
+                    const seriesColor = seriesColors[race.series] || 'bg-gray-500';
+                    
+                    html += `
+                        <div class="bg-racing-card rounded-xl border border-racing-border overflow-hidden">
+                            <div class="px-5 py-4 border-b border-racing-border flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="${seriesColor} text-white text-xs font-bold px-2 py-1 rounded">${race.series}</span>
+                                    <div>
+                                        <h3 class="font-bold">${race.event}</h3>
+                                        <p class="text-xs text-gray-500">${race.circuit} • ${new Date(race.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                    </div>
+                                </div>
+                                <button onclick="toggleSynopsis('${race.id}')" class="text-xs text-gray-400 hover:text-white transition-colors flex items-center gap-1" id="toggle-${race.id}">
+                                    <span class="synopsis-toggle-icon">▼</span>
+                                    <span class="synopsis-toggle-text">Show</span>
+                                </button>
+                            </div>
+                            
+                            <div id="synopsis-${race.id}" class="hidden">
+                                <!-- Winner (spoiler protected) -->
+                                <div class="px-5 py-3 border-b border-racing-border bg-racing-dark/30" data-spoiler>
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <span class="text-racing-red">🏆</span>
+                                        <span class="font-medium">${race.winner?.team || 'TBD'}</span>
+                                        <span class="text-gray-500">•</span>
+                                        <span class="text-gray-400">${race.winner?.drivers?.join(', ') || ''}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Bullet points (spoiler protected) -->
+                                <div class="p-5" data-spoiler>
+                                    <ul class="space-y-2">
+                                        ${race.bullets?.map(bullet => `
+                                            <li class="flex items-start gap-2 text-sm text-gray-300">
+                                                <span class="text-racing-red mt-0.5">•</span>
+                                                <span>${bullet}</span>
+                                            </li>
+                                        `).join('') || '<li class="text-gray-500 text-sm">No details available</li>'}
+                                    </ul>
+                                </div>
+                                
+                                ${race.stats ? `
+                                <div class="px-5 py-3 border-t border-racing-border bg-racing-dark/30">
+                                    <div class="flex flex-wrap gap-4 text-xs text-gray-500">
+                                        ${race.stats.laps ? `<span>🔄 ${race.stats.laps} laps</span>` : ''}
+                                        ${race.stats.distance_miles ? `<span>📏 ${race.stats.distance_miles.toLocaleString()} mi</span>` : ''}
+                                        ${race.stats.distance_km ? `<span>📏 ${race.stats.distance_km} km</span>` : ''}
+                                        ${race.stats.lead_changes ? `<span>↔️ ${race.stats.lead_changes} lead changes</span>` : ''}
+                                        ${race.stats.stages ? `<span>📍 ${race.stats.stages} stages</span>` : ''}
+                                    </div>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                
+                // Apply spoiler mode to newly loaded content
+                if (spoilerMode) {
+                    container.querySelectorAll('[data-spoiler]').forEach(el => {
+                        el.style.filter = 'blur(8px)';
+                        el.style.userSelect = 'none';
+                    });
+                }
+                
+            } catch (e) {
+                container.innerHTML = `
+                    <div class="bg-racing-card rounded-xl border border-racing-border p-6 text-center">
+                        <span class="text-red-400 text-sm">⚠️ Error loading synopses</span>
+                        <p class="text-xs text-gray-500 mt-1">Please try again later</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function toggleSynopsis(id) {
+            const content = document.getElementById(`synopsis-${id}`);
+            const toggle = document.getElementById(`toggle-${id}`);
+            const icon = toggle.querySelector('.synopsis-toggle-icon');
+            const text = toggle.querySelector('.synopsis-toggle-text');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.textContent = '▲';
+                text.textContent = 'Hide';
+                
+                // Apply spoiler mode if active
+                if (spoilerMode) {
+                    content.querySelectorAll('[data-spoiler]').forEach(el => {
+                        el.style.filter = 'blur(8px)';
+                        el.style.userSelect = 'none';
+                    });
+                }
+            } else {
+                content.classList.add('hidden');
+                icon.textContent = '▼';
+                text.textContent = 'Show';
+            }
+        }
+
         // Initialize
         checkHealth();
         updateSpoilerUI();
+        loadSynopses();
         document.getElementById('timezone-picker').value = selectedTimezone;
     </script>
 </body>
