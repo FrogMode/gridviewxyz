@@ -154,11 +154,11 @@
                             <h3 class="font-semibold text-sm mt-2">IndyCar</h3>
                             <span class="text-[10px] text-amber-500">Soon</span>
                         </div>
-                        <div class="series-card bg-racing-card rounded-xl p-4 text-center opacity-50 cursor-not-allowed">
+                        <button onclick="loadIMSA(this)" class="series-card bg-racing-card rounded-xl p-4 text-center">
                             <span class="text-2xl">🏎️</span>
                             <h3 class="font-semibold text-sm mt-2">IMSA</h3>
-                            <span class="text-[10px] text-amber-500">Soon</span>
-                        </div>
+                            <span class="text-[10px] text-green-500">● Schedule</span>
+                        </button>
                         <button onclick="loadWEC(this)" class="series-card bg-racing-card rounded-xl p-4 text-center">
                             <span class="text-2xl">🌐</span>
                             <h3 class="font-semibold text-sm mt-2">WEC</h3>
@@ -340,9 +340,10 @@
                         rowClass = 'bg-amber-900/20 border border-amber-800/50';
                     }
                     
+                    const duration = event.duration ? '<span class="text-gray-600 ml-2">(' + event.duration + ')</span>' : '';
                     html += '<div class="data-row flex items-center gap-3 py-3 px-3 rounded ' + rowClass + '">' +
                         '<span class="text-xs font-mono text-gray-400 w-24">' + startDate + endDate + '</span>' +
-                        '<div class="flex-1"><p class="font-medium">' + (event.name || event.venue) + statusBadge + '</p>' +
+                        '<div class="flex-1"><p class="font-medium">' + (event.name || event.venue) + duration + statusBadge + '</p>' +
                         '<p class="text-xs text-gray-500">' + event.venue + '</p></div>' +
                     '</div>';
                 });

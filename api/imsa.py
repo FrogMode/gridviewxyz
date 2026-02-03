@@ -95,19 +95,19 @@ def get_schedule(year: int = None) -> list:
     """
     from datetime import datetime, date
     
-    # 2026 IMSA WeatherTech Calendar (official)
+    # 2026 IMSA WeatherTech Calendar (from imsa.com)
     IMSA_2026_CALENDAR = [
-        {"venue": "Daytona International Speedway", "name": "Rolex 24 at Daytona", "start_date": "2026-01-24", "end_date": "2026-01-25"},
-        {"venue": "Sebring International Raceway", "name": "12 Hours of Sebring", "start_date": "2026-03-21", "end_date": "2026-03-21"},
-        {"venue": "Long Beach Street Circuit", "name": "Grand Prix of Long Beach", "start_date": "2026-04-18", "end_date": "2026-04-18"},
-        {"venue": "Laguna Seca Raceway", "name": "Monterey SportsCar Championship", "start_date": "2026-05-03", "end_date": "2026-05-03"},
-        {"venue": "Detroit Street Circuit", "name": "Chevrolet Detroit Grand Prix", "start_date": "2026-05-30", "end_date": "2026-05-31"},
-        {"venue": "Watkins Glen International", "name": "Sahlen's Six Hours", "start_date": "2026-06-28", "end_date": "2026-06-28"},
-        {"venue": "Canadian Tire Motorsport Park", "name": "Chevrolet Grand Prix", "start_date": "2026-07-12", "end_date": "2026-07-12"},
-        {"venue": "Road America", "name": "Road America", "start_date": "2026-08-02", "end_date": "2026-08-02"},
-        {"venue": "Virginia International Raceway", "name": "Michelin GT Challenge", "start_date": "2026-08-23", "end_date": "2026-08-23"},
-        {"venue": "Indianapolis Motor Speedway", "name": "Indianapolis 8 Hour", "start_date": "2026-09-05", "end_date": "2026-09-05"},
-        {"venue": "Road Atlanta", "name": "Petit Le Mans", "start_date": "2026-10-10", "end_date": "2026-10-10"},
+        {"venue": "Daytona International Speedway", "name": "Rolex 24 at Daytona", "start_date": "2026-01-21", "end_date": "2026-01-25", "duration": "24 hours"},
+        {"venue": "Sebring International Raceway", "name": "Mobil 1 Twelve Hours of Sebring", "start_date": "2026-03-18", "end_date": "2026-03-21", "duration": "12 hours"},
+        {"venue": "Long Beach Street Circuit", "name": "Acura Grand Prix of Long Beach", "start_date": "2026-04-17", "end_date": "2026-04-18", "duration": "100 min"},
+        {"venue": "WeatherTech Raceway Laguna Seca", "name": "Motul Course de Monterey", "start_date": "2026-05-01", "end_date": "2026-05-03", "duration": "2h40m"},
+        {"venue": "Detroit Street Circuit", "name": "Chevrolet Detroit Grand Prix", "start_date": "2026-05-29", "end_date": "2026-05-30", "duration": "100 min"},
+        {"venue": "Watkins Glen International", "name": "Sahlen's Six Hours of The Glen", "start_date": "2026-06-11", "end_date": "2026-06-14", "duration": "6 hours"},
+        {"venue": "Canadian Tire Motorsport Park", "name": "Chevrolet Grand Prix", "start_date": "2026-07-10", "end_date": "2026-07-12", "duration": "2h40m"},
+        {"venue": "Road America", "name": "Road America", "start_date": "2026-07-30", "end_date": "2026-08-02", "duration": "2h40m"},
+        {"venue": "Virginia International Raceway", "name": "Michelin GT Challenge at VIR", "start_date": "2026-08-20", "end_date": "2026-08-23", "duration": "2h40m"},
+        {"venue": "Indianapolis Motor Speedway", "name": "TireRack.com Battle on the Bricks", "start_date": "2026-09-18", "end_date": "2026-09-20", "duration": "2h40m"},
+        {"venue": "Michelin Raceway Road Atlanta", "name": "Motul Petit Le Mans", "start_date": "2026-10-01", "end_date": "2026-10-03", "duration": "10 hours"},
     ]
     
     events = fetch_available_events()
@@ -168,6 +168,7 @@ def get_schedule(year: int = None) -> list:
             "year": target_year,
             "start_date": start_date,
             "end_date": end_date,
+            "duration": cal_event.get("duration", ""),
             "status": status,
             "has_results": has_results
         })
