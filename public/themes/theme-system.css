@@ -368,21 +368,27 @@ nav a:hover {
   color: var(--theme-text-primary);
 }
 
-/* Backdrop overlay - blocks all content when dropdown is open */
-.theme-backdrop {
+/* Dialog element - uses browser's top-layer (guaranteed above everything) */
+.theme-dialog {
   position: fixed;
   inset: 0;
-  z-index: 999998;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 0;
+  margin: 0;
+  border: none;
   background: transparent;
-  display: none;
+  overflow: visible;
 }
 
-.theme-backdrop.open {
-  display: block;
+.theme-dialog::backdrop {
+  background: transparent;
 }
 
 .theme-dropdown {
-  position: fixed !important;
+  position: fixed;
   top: auto;
   right: 1rem;
   margin-top: 0.5rem;
@@ -397,7 +403,6 @@ nav a:hover {
   visibility: hidden;
   transform: translateY(-10px) scale(0.95);
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 999999;
 }
 
 .theme-dropdown.open {

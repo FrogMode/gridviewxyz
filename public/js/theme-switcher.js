@@ -181,13 +181,17 @@ const GridViewThemes = {
       </button>
     `;
     
-    // Create backdrop (click to close)
-    const backdrop = document.createElement('div');
-    backdrop.className = 'theme-backdrop';
-    backdrop.addEventListener('click', () => this.closeDropdown());
-    document.body.appendChild(backdrop);
+    // Create dialog element (uses browser's top-layer - guaranteed above everything)
+    const dialog = document.createElement('dialog');
+    dialog.className = 'theme-dialog';
+    dialog.addEventListener('click', (e) => {
+      // Close when clicking backdrop (outside dropdown content)
+      if (e.target === dialog) {
+        this.closeDropdown();
+      }
+    });
     
-    // Create dropdown separately and append to body (escapes stacking context)
+    // Create dropdown inside dialog
     const dropdown = document.createElement('div');
     dropdown.className = 'theme-dropdown';
     dropdown.setAttribute('role', 'listbox');
@@ -207,7 +211,8 @@ const GridViewThemes = {
         </span>
       </button>
     `).join('');
-    document.body.appendChild(dropdown);
+    dialog.appendChild(dropdown);
+    document.body.appendChild(dialog);
     
     // Insert before the notification button
     const notifBtn = nav.querySelector('#notification-btn');
@@ -314,28 +319,31 @@ const GridViewThemes = {
    */
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
+    const dialog = document.querySelector('.theme-dialog');
     const dropdown = document.querySelector('.theme-dropdown');
-    const backdrop = document.querySelector('.theme-backdrop');
     const btn = document.querySelector('.theme-switcher-btn');
     
-    if (dropdown) {
-      // Position dropdown below button (fixed positioning)
-      if (this.dropdownOpen && btn) {
-        const rect = btn.getBoundingClientRect();
-        dropdown.style.top = `${rect.bottom + 8}px`;
-        dropdown.style.right = `${window.innerWidth - rect.right}px`;
-      }
-      
-      dropdown.classList.toggle('open', this.dropdownOpen);
-      backdrop?.classList.toggle('open', this.dropdownOpen);
-      
-      // Focus first option when opening
+    if (dialog && dropdown) {
       if (this.dropdownOpen) {
+        // Position dropdown below button
+        if (btn) {
+          const rect = btn.getBoundingClientRect();
+          dropdown.style.top = `${rect.bottom + 8}px`;
+          dropdown.style.right = `${window.innerWidth - rect.right}px`;
+        }
+        // Show dialog (uses top-layer)
+        dialog.showModal();
+        dropdown.classList.add('open');
+        
+        // Focus first option
         const activeOption = dropdown.querySelector('.theme-option.active') || 
                            dropdown.querySelector('.theme-option');
         if (activeOption) {
           setTimeout(() => activeOption.focus(), 50);
         }
+      } else {
+        dropdown.classList.remove('open');
+        dialog.close();
       }
     }
     if (btn) {
@@ -349,15 +357,15 @@ const GridViewThemes = {
    */
   closeDropdown() {
     this.dropdownOpen = false;
+    const dialog = document.querySelector('.theme-dialog');
     const dropdown = document.querySelector('.theme-dropdown');
-    const backdrop = document.querySelector('.theme-backdrop');
     const btn = document.querySelector('.theme-switcher-btn');
     
     if (dropdown) {
       dropdown.classList.remove('open');
     }
-    if (backdrop) {
-      backdrop.classList.remove('open');
+    if (dialog && dialog.open) {
+      dialog.close();
     }
     if (btn) {
       btn.setAttribute('aria-expanded', 'false');
