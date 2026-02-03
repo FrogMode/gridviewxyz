@@ -1,0 +1,71 @@
+/**
+ * GridView Theme: Default (Midnight Racing)
+ * The classic dark motorsport theme
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #e10600;
+  --theme-primary-rgb: 225, 6, 0;
+  --theme-secondary: #ff6b35;
+  --theme-secondary-rgb: 255, 107, 53;
+  --theme-accent: #e10600;
+  --theme-accent-rgb: 225, 6, 0;
+  
+  /* Backgrounds */
+  --theme-bg-base: #0a0a0f;
+  --theme-bg-card: #16161d;
+  --theme-bg-elevated: #1a1a22;
+  --theme-bg-hover: #1f1f28;
+  --theme-gradient-body: linear-gradient(180deg, #0a0a0f 0%, #111117 100%);
+  --theme-gradient-hero: linear-gradient(135deg, rgba(225, 6, 0, 0.15) 0%, transparent 50%);
+  --theme-gradient-card: linear-gradient(135deg, #1a1a22 0%, #16161d 100%);
+  
+  /* Borders */
+  --theme-border: #2a2a35;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(255, 255, 255, 0.1);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #9ca3af;
+  --theme-text-muted: #6b7280;
+  --theme-text-accent: var(--theme-primary);
+  
+  /* Position Badges */
+  --theme-pos-1-bg: linear-gradient(135deg, #ffd700 0%, #ffb300 100%);
+  --theme-pos-1-text: #000000;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #cd7f32 0%, #b5651d 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #c10500;
+  --theme-btn-secondary-bg: rgba(255, 255, 255, 0.05);
+  --theme-btn-secondary-text: var(--theme-text-secondary);
+  --theme-btn-secondary-hover: rgba(255, 255, 255, 0.1);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --theme-shadow-hover: 0 8px 30px rgba(var(--theme-primary-rgb), 0.15);
+  --theme-glow: 0 0 20px rgba(var(--theme-primary-rgb), 0.3);
+  
+  /* Special Effects */
+  --theme-stripe-pattern: none;
+  --theme-accent-pattern: 
+    linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,0.02) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%);
+  
+  /* Live Indicator */
+  --theme-live-color: #22c55e;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: var(--theme-border);
+  --theme-scrollbar-hover: #3a3a45;
+}

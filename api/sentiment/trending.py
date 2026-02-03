@@ -1,19 +1,28 @@
-"""Trending API - Main endpoint for sentiment-driven recommendations.
+"""Trending API v2 - Enhanced sentiment-driven recommendations.
 
 GET /api/sentiment/trending?series=imsa&limit=10
 
 Returns:
-- Hot topics with sentiment scores
+- Hot topics with multi-dimensional sentiment scores
 - Matched news articles
-- Overall sentiment summary
+- Race weekend detection
+- Controversy alerts
+- Overall sentiment summary with dimension breakdown
 """
 from http.server import BaseHTTPRequestHandler
 import json
 from urllib.parse import urlparse, parse_qs
 
-from .monitor import get_hot_tweets, get_sentiment_summary
-from .topics import extract_topics
+# Use enhanced v2 modules
+from .monitor_v2 import (
+    get_hot_tweets_v2,
+    get_sentiment_summary_v2,
+    detect_race_weekend_spike,
+    SERIES_CONFIG,
+)
+from .topics_v2 import extract_topics_v2
 from .articles import match_articles_to_topics, get_top_articles_for_series
+from .analyzer import detect_controversy_spike
 
 
 class handler(BaseHTTPRequestHandler):
@@ -25,18 +34,27 @@ class handler(BaseHTTPRequestHandler):
             series = query.get('series', [None])[0]
             limit = min(int(query.get('limit', ['10'])[0]), 20)
             include_tweets = query.get('tweets', ['false'])[0].lower() == 'true'
+            include_dimensions = query.get('dimensions', ['true'])[0].lower() == 'true'
             
-            # Get hot tweets
-            tweets = get_hot_tweets(series=series, count=30)
+            # Get hot tweets with enhanced analysis
+            tweets = get_hot_tweets_v2(series=series, count=40)
             
-            # Extract trending topics
-            topics = extract_topics(tweets)[:limit]
+            # Extract trending topics with entity detection
+            topics = extract_topics_v2(tweets)[:limit]
             
             # Match articles to topics
             topics_with_articles = match_articles_to_topics(topics)
             
-            # Get sentiment summary
-            summary = get_sentiment_summary(tweets)
+            # Get enhanced sentiment summary
+            summary = get_sentiment_summary_v2(tweets)
+            
+            # Detect race weekend activity
+            race_weekend = None
+            if series:
+                race_weekend = detect_race_weekend_spike(tweets, series)
+            
+            # Detect controversy spike
+            controversy = detect_controversy_spike(tweets)
             
             # Get top articles for series (if specified)
             series_articles = []
@@ -47,14 +65,44 @@ class handler(BaseHTTPRequestHandler):
             response = {
                 "series": series or "all",
                 "generatedAt": self._get_timestamp(),
+                "apiVersion": "2.0",
                 "summary": summary,
                 "topics": topics_with_articles,
                 "featuredArticles": series_articles,
+                # New in v2
+                "alerts": {
+                    "raceWeekend": race_weekend,
+                    "controversy": controversy,
+                },
             }
             
-            # Optionally include raw tweets
+            # Add sentiment dimension breakdown if requested
+            if include_dimensions:
+                response["sentimentDimensions"] = summary.get("dimensions", {})
+                response["dominantSentiment"] = summary.get("dominantDimension", "informational")
+            
+            # Optionally include raw tweets (with enhanced data)
             if include_tweets:
-                response["tweets"] = tweets[:20]
+                # Return enriched tweet data
+                response["tweets"] = [
+                    {
+                        "id": t["id"],
+                        "text": t["text"],
+                        "author": t["author"],
+                        "authorName": t["authorName"],
+                        "createdAt": t["createdAt"],
+                        "engagement": t["engagement"],
+                        "likes": t["likes"],
+                        "retweets": t["retweets"],
+                        "replies": t["replies"],
+                        "sentiment": t["sentiment"],
+                        "sentimentLabel": t.get("sentimentLabel", ""),
+                        "sentimentDimensions": t.get("sentimentDimensions", {}) if include_dimensions else None,
+                        "hashtags": t.get("hashtags", []),
+                        "hasMedia": t.get("hasMedia", False),
+                    }
+                    for t in tweets[:25]
+                ]
             
             self._send_json(response)
             

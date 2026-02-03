@@ -1,0 +1,102 @@
+/**
+ * GridView Theme: JPS (John Player Special)
+ * Inspired by Lotus 79 - Ground effect legend
+ * Pure black + Luxurious gold - Timeless sophistication
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #D4AF37;
+  --theme-primary-rgb: 212, 175, 55;
+  --theme-secondary: #1a1a1a;
+  --theme-secondary-rgb: 26, 26, 26;
+  --theme-accent: #D4AF37;
+  --theme-accent-rgb: 212, 175, 55;
+  
+  /* Backgrounds - Pure black */
+  --theme-bg-base: #000000;
+  --theme-bg-card: #0a0a0a;
+  --theme-bg-elevated: #121212;
+  --theme-bg-hover: #1a1a1a;
+  --theme-gradient-body: linear-gradient(180deg, #000000 0%, #050505 100%);
+  --theme-gradient-hero: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
+  --theme-gradient-card: linear-gradient(135deg, #121212 0%, #0a0a0a 100%);
+  
+  /* Borders */
+  --theme-border: #2a2a2a;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(212, 175, 55, 0.2);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #c0b080;
+  --theme-text-muted: #6a6040;
+  --theme-text-accent: var(--theme-primary);
+  
+  /* Position Badges - JPS luxury */
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #f0d060 50%, #D4AF37 100%);
+  --theme-pos-1-text: #000000;
+  --theme-pos-2-bg: linear-gradient(135deg, #c0c0c0 0%, #e0e0e0 50%, #c0c0c0 100%);
+  --theme-pos-2-text: #000000;
+  --theme-pos-3-bg: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  --theme-pos-3-text: #D4AF37;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: transparent;
+  --theme-btn-primary-text: var(--theme-primary);
+  --theme-btn-primary-hover: rgba(212, 175, 55, 0.1);
+  --theme-btn-secondary-bg: transparent;
+  --theme-btn-secondary-text: #888888;
+  --theme-btn-secondary-hover: rgba(255, 255, 255, 0.05);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.8);
+  --theme-shadow-hover: 0 8px 30px rgba(212, 175, 55, 0.15);
+  --theme-glow: 0 0 30px rgba(212, 175, 55, 0.4);
+  
+  /* Special Effects - Gold pinstripe elegance */
+  --theme-stripe-pattern: linear-gradient(90deg,
+    transparent 0%, transparent 48%,
+    rgba(212, 175, 55, 0.4) 48%, rgba(212, 175, 55, 0.4) 52%,
+    transparent 52%, transparent 100%
+  );
+  --theme-accent-pattern: 
+    linear-gradient(90deg, 
+      transparent 0%,
+      rgba(212, 175, 55, 0.02) 2%,
+      transparent 4%,
+      transparent 96%,
+      rgba(212, 175, 55, 0.02) 98%,
+      transparent 100%
+    );
+  
+  /* Live Indicator */
+  --theme-live-color: #D4AF37;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: #000000;
+  --theme-scrollbar-thumb: #2a2a2a;
+  --theme-scrollbar-hover: var(--theme-primary);
+}
+
+/* JPS gold border treatment */
+[data-theme="jps"] .series-card {
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+[data-theme="jps"] .series-card:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+[data-theme="jps"] .series-card.active {
+  border-color: var(--theme-primary);
+  box-shadow: inset 0 0 20px rgba(212, 175, 55, 0.1), var(--theme-glow);
+}
+
+/* JPS gold text logo treatment */
+[data-theme="jps"] .gridview-logo {
+  background: linear-gradient(135deg, #D4AF37 0%, #f0d060 50%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

@@ -1,0 +1,104 @@
+/**
+ * GridView Theme: Martini Racing
+ * Inspired by Lancia 037 & Porsche 936 - The iconic stripes
+ * Clean white + Red/Blue stripes - Unmistakable elegance
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #0033A0;
+  --theme-primary-rgb: 0, 51, 160;
+  --theme-secondary: #CE1126;
+  --theme-secondary-rgb: 206, 17, 38;
+  --theme-accent: #CE1126;
+  --theme-accent-rgb: 206, 17, 38;
+  
+  /* Backgrounds - Clean dark with subtle warmth */
+  --theme-bg-base: #0a0a0e;
+  --theme-bg-card: #141418;
+  --theme-bg-elevated: #1c1c22;
+  --theme-bg-hover: #24242c;
+  --theme-gradient-body: linear-gradient(180deg, #0a0a0e 0%, #0f0f14 100%);
+  --theme-gradient-hero: linear-gradient(135deg, 
+    rgba(0, 51, 160, 0.1) 0%, 
+    rgba(206, 17, 38, 0.08) 50%,
+    rgba(0, 51, 160, 0.1) 100%
+  );
+  --theme-gradient-card: linear-gradient(135deg, #1c1c22 0%, #141418 100%);
+  
+  /* Borders */
+  --theme-border: #2a2a35;
+  --theme-border-active: var(--theme-secondary);
+  --theme-border-subtle: rgba(206, 17, 38, 0.2);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #b0b0c0;
+  --theme-text-muted: #707080;
+  --theme-text-accent: var(--theme-secondary);
+  
+  /* Position Badges - Martini podium */
+  --theme-pos-1-bg: linear-gradient(135deg, #CE1126 0%, #a00e1e 100%);
+  --theme-pos-1-text: #ffffff;
+  --theme-pos-2-bg: linear-gradient(135deg, #0033A0 0%, #002880 100%);
+  --theme-pos-2-text: #ffffff;
+  --theme-pos-3-bg: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  --theme-pos-3-text: #0033A0;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-secondary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #a00e1e;
+  --theme-btn-secondary-bg: rgba(0, 51, 160, 0.15);
+  --theme-btn-secondary-text: #ffffff;
+  --theme-btn-secondary-hover: rgba(0, 51, 160, 0.25);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --theme-shadow-hover: 0 8px 30px rgba(206, 17, 38, 0.2);
+  --theme-glow: 0 0 20px rgba(0, 51, 160, 0.3);
+  
+  /* Special Effects - Martini racing stripes! */
+  --theme-stripe-pattern: linear-gradient(90deg,
+    transparent 0%, transparent 35%,
+    #0033A0 35%, #0033A0 38%,
+    #CE1126 38%, #CE1126 50%,
+    #0033A0 50%, #0033A0 53%,
+    transparent 53%, transparent 100%
+  );
+  --theme-accent-pattern: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 100px,
+    rgba(0, 51, 160, 0.02) 100px,
+    rgba(0, 51, 160, 0.02) 103px,
+    rgba(206, 17, 38, 0.03) 103px,
+    rgba(206, 17, 38, 0.03) 115px,
+    rgba(0, 51, 160, 0.02) 115px,
+    rgba(0, 51, 160, 0.02) 118px,
+    transparent 118px,
+    transparent 218px
+  );
+  
+  /* Live Indicator */
+  --theme-live-color: #CE1126;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: #2a2a35;
+  --theme-scrollbar-hover: var(--theme-secondary);
+}
+
+/* Martini stripe header decoration */
+[data-theme="martini"] header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 100%;
+  background: var(--theme-stripe-pattern);
+  opacity: 0.3;
+  pointer-events: none;
+}

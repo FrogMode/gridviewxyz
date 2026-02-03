@@ -1,0 +1,79 @@
+/**
+ * GridView Theme: Silk Cut
+ * Inspired by the Jaguar XJR-9 Le Mans winner
+ * Elegant purple + White/Gold - Sophistication meets speed
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #7B4397;
+  --theme-primary-rgb: 123, 67, 151;
+  --theme-secondary: #D4AF37;
+  --theme-secondary-rgb: 212, 175, 55;
+  --theme-accent: #D4AF37;
+  --theme-accent-rgb: 212, 175, 55;
+  
+  /* Backgrounds - Deep purple-tinted */
+  --theme-bg-base: #0f0a14;
+  --theme-bg-card: #1a1222;
+  --theme-bg-elevated: #241a30;
+  --theme-bg-hover: #2e2040;
+  --theme-gradient-body: linear-gradient(180deg, #0f0a14 0%, #140e1c 100%);
+  --theme-gradient-hero: linear-gradient(135deg, rgba(123, 67, 151, 0.2) 0%, rgba(212, 175, 55, 0.1) 100%);
+  --theme-gradient-card: linear-gradient(135deg, #241a30 0%, #1a1222 100%);
+  
+  /* Borders */
+  --theme-border: #3d2855;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(123, 67, 151, 0.3);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #c4a8d4;
+  --theme-text-muted: #7a6090;
+  --theme-text-accent: var(--theme-secondary);
+  
+  /* Position Badges - Royal elegance */
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #b8962e 100%);
+  --theme-pos-1-text: #0f0a14;
+  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #e8e8e8 100%);
+  --theme-pos-2-text: #7B4397;
+  --theme-pos-3-bg: linear-gradient(135deg, #7B4397 0%, #5a3070 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #5a3070;
+  --theme-btn-secondary-bg: rgba(212, 175, 55, 0.1);
+  --theme-btn-secondary-text: var(--theme-secondary);
+  --theme-btn-secondary-hover: rgba(212, 175, 55, 0.2);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --theme-shadow-hover: 0 8px 30px rgba(123, 67, 151, 0.3);
+  --theme-glow: 0 0 25px rgba(212, 175, 55, 0.3);
+  
+  /* Special Effects - Silk elegance */
+  --theme-stripe-pattern: linear-gradient(90deg,
+    transparent 0%, transparent 45%,
+    rgba(212, 175, 55, 0.1) 45%, rgba(212, 175, 55, 0.1) 55%,
+    transparent 55%, transparent 100%
+  );
+  --theme-accent-pattern: 
+    radial-gradient(ellipse at top, rgba(123, 67, 151, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+  
+  /* Live Indicator */
+  --theme-live-color: #D4AF37;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: #3d2855;
+  --theme-scrollbar-hover: var(--theme-primary);
+}
+
+/* Silk Cut elegance - gold accent line */
+[data-theme="silk-cut"] .series-card.active {
+  border-image: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary)) 1;
+}

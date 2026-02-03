@@ -1,0 +1,87 @@
+/**
+ * GridView Theme: Rothmans Racing
+ * Inspired by Williams FW14B - Mansell's championship car
+ * Royal blue + White/Gold - British racing excellence
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #003399;
+  --theme-primary-rgb: 0, 51, 153;
+  --theme-secondary: #D4AF37;
+  --theme-secondary-rgb: 212, 175, 55;
+  --theme-accent: #D4AF37;
+  --theme-accent-rgb: 212, 175, 55;
+  
+  /* Backgrounds - Deep royal blue */
+  --theme-bg-base: #050a14;
+  --theme-bg-card: #0a1525;
+  --theme-bg-elevated: #102035;
+  --theme-bg-hover: #152a45;
+  --theme-gradient-body: linear-gradient(180deg, #050a14 0%, #0a0f1a 100%);
+  --theme-gradient-hero: linear-gradient(135deg, rgba(0, 51, 153, 0.25) 0%, rgba(212, 175, 55, 0.1) 100%);
+  --theme-gradient-card: linear-gradient(135deg, #102035 0%, #0a1525 100%);
+  
+  /* Borders */
+  --theme-border: #1a3060;
+  --theme-border-active: var(--theme-secondary);
+  --theme-border-subtle: rgba(0, 51, 153, 0.3);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #98b4d4;
+  --theme-text-muted: #5080b0;
+  --theme-text-accent: var(--theme-secondary);
+  
+  /* Position Badges - Rothmans podium */
+  --theme-pos-1-bg: linear-gradient(135deg, #D4AF37 0%, #b8962e 100%);
+  --theme-pos-1-text: #050a14;
+  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  --theme-pos-2-text: #003399;
+  --theme-pos-3-bg: linear-gradient(135deg, #003399 0%, #002266 100%);
+  --theme-pos-3-text: #ffffff;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #002266;
+  --theme-btn-secondary-bg: rgba(212, 175, 55, 0.15);
+  --theme-btn-secondary-text: var(--theme-secondary);
+  --theme-btn-secondary-hover: rgba(212, 175, 55, 0.25);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --theme-shadow-hover: 0 8px 30px rgba(0, 51, 153, 0.3);
+  --theme-glow: 0 0 25px rgba(212, 175, 55, 0.3);
+  
+  /* Special Effects - Rothmans stripes */
+  --theme-stripe-pattern: linear-gradient(90deg,
+    transparent 0%, transparent 10%,
+    rgba(212, 175, 55, 0.15) 10%, rgba(212, 175, 55, 0.15) 15%,
+    rgba(255, 255, 255, 0.1) 15%, rgba(255, 255, 255, 0.1) 18%,
+    transparent 18%, transparent 82%,
+    rgba(255, 255, 255, 0.1) 82%, rgba(255, 255, 255, 0.1) 85%,
+    rgba(212, 175, 55, 0.15) 85%, rgba(212, 175, 55, 0.15) 90%,
+    transparent 90%, transparent 100%
+  );
+  --theme-accent-pattern: 
+    linear-gradient(90deg, rgba(0, 51, 153, 0.05) 0%, transparent 20%, transparent 80%, rgba(0, 51, 153, 0.05) 100%);
+  
+  /* Live Indicator */
+  --theme-live-color: #D4AF37;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: #1a3060;
+  --theme-scrollbar-hover: var(--theme-secondary);
+}
+
+/* Rothmans gold pinstripe */
+[data-theme="rothmans"] .series-card.active::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, var(--theme-secondary), var(--theme-primary), var(--theme-secondary));
+  border-radius: inherit;
+  z-index: -1;
+}

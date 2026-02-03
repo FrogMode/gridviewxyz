@@ -1,0 +1,90 @@
+/**
+ * GridView Theme: Marlboro Racing
+ * Inspired by McLaren MP4/4 - Senna/Prost era
+ * Bold red + Crisp white - The winning combination
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #EE1C25;
+  --theme-primary-rgb: 238, 28, 37;
+  --theme-secondary: #ffffff;
+  --theme-secondary-rgb: 255, 255, 255;
+  --theme-accent: #EE1C25;
+  --theme-accent-rgb: 238, 28, 37;
+  
+  /* Backgrounds - Deep red-tinted dark */
+  --theme-bg-base: #120808;
+  --theme-bg-card: #1f1010;
+  --theme-bg-elevated: #2a1515;
+  --theme-bg-hover: #351a1a;
+  --theme-gradient-body: linear-gradient(180deg, #120808 0%, #1a0c0c 100%);
+  --theme-gradient-hero: linear-gradient(135deg, rgba(238, 28, 37, 0.25) 0%, transparent 70%);
+  --theme-gradient-card: linear-gradient(135deg, #2a1515 0%, #1f1010 100%);
+  
+  /* Borders */
+  --theme-border: #4a2020;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(238, 28, 37, 0.2);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #d4a0a0;
+  --theme-text-muted: #8a6060;
+  --theme-text-accent: var(--theme-primary);
+  
+  /* Position Badges - Marlboro podium */
+  --theme-pos-1-bg: linear-gradient(135deg, #EE1C25 0%, #cc1520 100%);
+  --theme-pos-1-text: #ffffff;
+  --theme-pos-2-bg: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  --theme-pos-2-text: #120808;
+  --theme-pos-3-bg: linear-gradient(135deg, #4a2020 0%, #351a1a 100%);
+  --theme-pos-3-text: #EE1C25;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #cc1520;
+  --theme-btn-secondary-bg: rgba(255, 255, 255, 0.1);
+  --theme-btn-secondary-text: #ffffff;
+  --theme-btn-secondary-hover: rgba(255, 255, 255, 0.15);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --theme-shadow-hover: 0 8px 30px rgba(238, 28, 37, 0.25);
+  --theme-glow: 0 0 25px rgba(238, 28, 37, 0.5);
+  
+  /* Special Effects - Marlboro chevron feel */
+  --theme-stripe-pattern: linear-gradient(135deg, 
+    rgba(238, 28, 37, 0.1) 0%, 
+    transparent 50%,
+    rgba(238, 28, 37, 0.05) 100%
+  );
+  --theme-accent-pattern: 
+    linear-gradient(135deg, rgba(238, 28, 37, 0.02) 0%, transparent 50%),
+    linear-gradient(-135deg, rgba(238, 28, 37, 0.02) 0%, transparent 50%);
+  
+  /* Live Indicator */
+  --theme-live-color: #EE1C25;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: #4a2020;
+  --theme-scrollbar-hover: var(--theme-primary);
+}
+
+/* Marlboro-specific header bar */
+[data-theme="marlboro"] header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--theme-primary) 20%, 
+    var(--theme-primary) 80%, 
+    transparent 100%
+  );
+}

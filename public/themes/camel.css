@@ -1,0 +1,81 @@
+/**
+ * GridView Theme: Camel Racing
+ * Inspired by Lotus F1 Type 99T - Senna's turbo beast
+ * Warm yellow + Racing blue - Desert heat meets track speed
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #F4C430;
+  --theme-primary-rgb: 244, 196, 48;
+  --theme-secondary: #1E3A5F;
+  --theme-secondary-rgb: 30, 58, 95;
+  --theme-accent: #F4C430;
+  --theme-accent-rgb: 244, 196, 48;
+  
+  /* Backgrounds - Deep warm tones */
+  --theme-bg-base: #0d0a06;
+  --theme-bg-card: #1a150c;
+  --theme-bg-elevated: #252012;
+  --theme-bg-hover: #302a18;
+  --theme-gradient-body: linear-gradient(180deg, #0d0a06 0%, #120e08 100%);
+  --theme-gradient-hero: linear-gradient(135deg, rgba(244, 196, 48, 0.15) 0%, rgba(30, 58, 95, 0.1) 100%);
+  --theme-gradient-card: linear-gradient(135deg, #252012 0%, #1a150c 100%);
+  
+  /* Borders */
+  --theme-border: #3d3520;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(244, 196, 48, 0.2);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #d4c498;
+  --theme-text-muted: #8a7a50;
+  --theme-text-accent: var(--theme-primary);
+  
+  /* Position Badges - Camel podium */
+  --theme-pos-1-bg: linear-gradient(135deg, #F4C430 0%, #d4a820 100%);
+  --theme-pos-1-text: #0d0a06;
+  --theme-pos-2-bg: linear-gradient(135deg, #1E3A5F 0%, #152a45 100%);
+  --theme-pos-2-text: #F4C430;
+  --theme-pos-3-bg: linear-gradient(135deg, #3d3520 0%, #252012 100%);
+  --theme-pos-3-text: #F4C430;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-primary);
+  --theme-btn-primary-text: #0d0a06;
+  --theme-btn-primary-hover: #d4a820;
+  --theme-btn-secondary-bg: rgba(30, 58, 95, 0.3);
+  --theme-btn-secondary-text: #F4C430;
+  --theme-btn-secondary-hover: rgba(30, 58, 95, 0.5);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --theme-shadow-hover: 0 8px 30px rgba(244, 196, 48, 0.2);
+  --theme-glow: 0 0 25px rgba(244, 196, 48, 0.4);
+  
+  /* Special Effects - Camel warmth */
+  --theme-stripe-pattern: linear-gradient(90deg,
+    transparent 0%, transparent 20%,
+    rgba(30, 58, 95, 0.2) 20%, rgba(30, 58, 95, 0.2) 25%,
+    transparent 25%, transparent 75%,
+    rgba(30, 58, 95, 0.2) 75%, rgba(30, 58, 95, 0.2) 80%,
+    transparent 80%, transparent 100%
+  );
+  --theme-accent-pattern: 
+    linear-gradient(180deg, rgba(244, 196, 48, 0.03) 0%, transparent 30%),
+    linear-gradient(0deg, rgba(30, 58, 95, 0.05) 0%, transparent 30%);
+  
+  /* Live Indicator */
+  --theme-live-color: #F4C430;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: #3d3520;
+  --theme-scrollbar-hover: var(--theme-primary);
+}
+
+/* Camel desert sun glow effect */
+[data-theme="camel"] header {
+  background-image: radial-gradient(ellipse at top, rgba(244, 196, 48, 0.1) 0%, transparent 60%);
+}

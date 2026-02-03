@@ -1,0 +1,91 @@
+/**
+ * GridView Theme: Gulf Racing
+ * Inspired by the iconic Porsche 917K Gulf livery
+ * Light blue + Orange - Le Mans legend
+ */
+
+:root {
+  /* Core Colors */
+  --theme-primary: #6CACE4;
+  --theme-primary-rgb: 108, 172, 228;
+  --theme-secondary: #F26522;
+  --theme-secondary-rgb: 242, 101, 34;
+  --theme-accent: #F26522;
+  --theme-accent-rgb: 242, 101, 34;
+  
+  /* Backgrounds - Dark with Gulf tint */
+  --theme-bg-base: #0a1520;
+  --theme-bg-card: #122435;
+  --theme-bg-elevated: #1a3245;
+  --theme-bg-hover: #1f3a50;
+  --theme-gradient-body: linear-gradient(180deg, #0a1520 0%, #0d1a28 100%);
+  --theme-gradient-hero: linear-gradient(135deg, rgba(108, 172, 228, 0.2) 0%, rgba(242, 101, 34, 0.1) 100%);
+  --theme-gradient-card: linear-gradient(135deg, #1a3245 0%, #122435 100%);
+  
+  /* Borders */
+  --theme-border: #2a4560;
+  --theme-border-active: var(--theme-primary);
+  --theme-border-subtle: rgba(108, 172, 228, 0.2);
+  
+  /* Text */
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #8bb8d4;
+  --theme-text-muted: #5a8aaa;
+  --theme-text-accent: var(--theme-secondary);
+  
+  /* Position Badges - Gulf styled */
+  --theme-pos-1-bg: linear-gradient(135deg, #F26522 0%, #d45515 100%);
+  --theme-pos-1-text: #ffffff;
+  --theme-pos-2-bg: linear-gradient(135deg, #6CACE4 0%, #5090c0 100%);
+  --theme-pos-2-text: #ffffff;
+  --theme-pos-3-bg: linear-gradient(135deg, #1a3245 0%, #0d1a28 100%);
+  --theme-pos-3-text: #6CACE4;
+  
+  /* Buttons */
+  --theme-btn-primary-bg: var(--theme-secondary);
+  --theme-btn-primary-text: #ffffff;
+  --theme-btn-primary-hover: #d45515;
+  --theme-btn-secondary-bg: rgba(108, 172, 228, 0.1);
+  --theme-btn-secondary-text: var(--theme-primary);
+  --theme-btn-secondary-hover: rgba(108, 172, 228, 0.2);
+  
+  /* Shadows & Glows */
+  --theme-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --theme-shadow-hover: 0 8px 30px rgba(108, 172, 228, 0.2);
+  --theme-glow: 0 0 20px rgba(242, 101, 34, 0.4);
+  
+  /* Special Effects - Gulf stripe */
+  --theme-stripe-pattern: linear-gradient(90deg, 
+    transparent 0%, transparent 30%,
+    #F26522 30%, #F26522 35%,
+    #0a1520 35%, #0a1520 65%,
+    #F26522 65%, #F26522 70%,
+    transparent 70%, transparent 100%
+  );
+  --theme-accent-pattern: 
+    linear-gradient(45deg, rgba(108, 172, 228, 0.03) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(108, 172, 228, 0.03) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(108, 172, 228, 0.03) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(108, 172, 228, 0.03) 75%);
+  
+  /* Live Indicator */
+  --theme-live-color: #F26522;
+  
+  /* Scrollbar */
+  --theme-scrollbar-track: var(--theme-bg-base);
+  --theme-scrollbar-thumb: #2a4560;
+  --theme-scrollbar-hover: var(--theme-primary);
+}
+
+/* Gulf-specific decorative elements */
+[data-theme="gulf"] .hero-decoration::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: var(--theme-secondary);
+  border-radius: 2px;
+}
