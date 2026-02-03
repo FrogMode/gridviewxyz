@@ -170,6 +170,7 @@ const GridViewThemes = {
     
     const currentTheme = this.themes.find(t => t.id === this.currentTheme);
     
+    // Button only in the nav
     switcher.innerHTML = `
       <button class="theme-switcher-btn" aria-label="Change theme" aria-expanded="false" aria-haspopup="listbox">
         <span class="theme-icon">${currentTheme?.icon || '🎨'}</span>
@@ -178,24 +179,29 @@ const GridViewThemes = {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
-      <div class="theme-dropdown" role="listbox" aria-label="Select theme">
-        ${this.themes.map(theme => `
-          <button 
-            class="theme-option ${theme.id === this.currentTheme ? 'active' : ''}" 
-            data-theme="${theme.id}"
-            role="option"
-            aria-selected="${theme.id === this.currentTheme}"
-            type="button"
-          >
-            <span class="theme-swatch swatch-${theme.id}"></span>
-            <span class="theme-option-content">
-              <span class="theme-option-name">${theme.icon} ${theme.name}</span>
-              <span class="theme-option-desc text-xs opacity-60">${theme.description}</span>
-            </span>
-          </button>
-        `).join('')}
-      </div>
     `;
+    
+    // Create dropdown separately and append to body (escapes stacking context)
+    const dropdown = document.createElement('div');
+    dropdown.className = 'theme-dropdown';
+    dropdown.setAttribute('role', 'listbox');
+    dropdown.setAttribute('aria-label', 'Select theme');
+    dropdown.innerHTML = this.themes.map(theme => `
+      <button 
+        class="theme-option ${theme.id === this.currentTheme ? 'active' : ''}" 
+        data-theme="${theme.id}"
+        role="option"
+        aria-selected="${theme.id === this.currentTheme}"
+        type="button"
+      >
+        <span class="theme-swatch swatch-${theme.id}"></span>
+        <span class="theme-option-content">
+          <span class="theme-option-name">${theme.icon} ${theme.name}</span>
+          <span class="theme-option-desc text-xs opacity-60">${theme.description}</span>
+        </span>
+      </button>
+    `).join('');
+    document.body.appendChild(dropdown);
     
     // Insert before the notification button
     const notifBtn = nav.querySelector('#notification-btn');
@@ -214,7 +220,7 @@ const GridViewThemes = {
    */
   setupEventListeners(switcher) {
     const btn = switcher.querySelector('.theme-switcher-btn');
-    const dropdown = switcher.querySelector('.theme-dropdown');
+    const dropdown = document.body.querySelector('.theme-dropdown');
     
     // Toggle button click
     btn.addEventListener('click', (e) => {
