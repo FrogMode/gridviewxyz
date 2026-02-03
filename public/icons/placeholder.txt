@@ -1,0 +1,21 @@
+# GridView PWA Icons
+
+Replace these placeholder files with actual icons:
+
+Required sizes:
+- icon-72.png (72x72)
+- icon-96.png (96x96)
+- icon-128.png (128x128)
+- icon-144.png (144x144)
+- icon-152.png (152x152)
+- icon-192.png (192x192)
+- icon-384.png (384x384)
+- icon-512.png (512x512)
+- badge-72.png (72x72, monochrome for notification badge)
+
+Generate from your logo/icon using a tool like:
+- https://realfavicongenerator.net
+- https://favicon.io
+- ImageMagick: convert logo.png -resize 192x192 icon-192.png
+
+Note: iOS Safari requires apple-touch-icon to be linked in HTML.
