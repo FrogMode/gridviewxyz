@@ -17,8 +17,8 @@ def fetch_f1_sessions(year: int = None) -> list:
     with urllib.request.urlopen(req, timeout=15) as resp:
         sessions = json.loads(resp.read())
     
-    # Return simplified session list
-    return [{
+    # Return simplified session list, sorted by date (most recent first)
+    result = [{
         "session_key": s.get("session_key"),
         "meeting_key": s.get("meeting_key"),
         "name": s.get("session_name"),
@@ -29,6 +29,10 @@ def fetch_f1_sessions(year: int = None) -> list:
         "date": s.get("date_start"),
         "type": s.get("session_type")
     } for s in sessions]
+    
+    # Sort by date, most recent first
+    result.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return result
 
 def fetch_f1_drivers(session_key) -> list:
     """Get drivers for a session."""

@@ -257,7 +257,7 @@
                 const data = await resp.json();
                 
                 // Group by meeting and show recent first
-                const sessions = (data.sessions || []).reverse().slice(0, 50);
+                const sessions = (data.sessions || []).slice(0, 50);  // Already sorted by API (most recent first)
                 
                 let html = '<option value="">Select session...</option>';
                 sessions.forEach(s => {
