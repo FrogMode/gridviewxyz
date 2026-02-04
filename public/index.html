@@ -17,7 +17,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Theme System -->
     <link rel="stylesheet" href="/themes/default.css" id="theme-css">
@@ -77,10 +77,15 @@
             to { opacity: 0; transform: translateY(-20px); }
         }
         
+        /* Mobile menu hamburger */
+        .hamburger-line {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
         /* Ad slots - now theme-aware */
         .ad-slot {
             background: var(--theme-gradient-card, linear-gradient(135deg, #1a1a22 0%, #16161d 100%));
-            border: 1px dashed var(--theme-border, #2a2a35);
+            border: 1px solid var(--theme-border-subtle, #2a2a35);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,6 +93,7 @@
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            opacity: 0.5;
         }
         
         /* Checkered pattern - uses theme variable */
@@ -167,10 +173,18 @@
                 </div>
                 <span class="font-bold text-lg gridview-logo" style="color: var(--theme-text-primary);">GridView</span>
             </div>
+            <!-- Mobile Hamburger -->
+            <button onclick="toggleMobileMenu()" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu" id="hamburger-btn">
+                <span class="hamburger-line w-6 h-0.5 bg-current transition-all"></span>
+                <span class="hamburger-line w-6 h-0.5 bg-current transition-all"></span>
+                <span class="hamburger-line w-6 h-0.5 bg-current transition-all"></span>
+            </button>
             <div class="hidden md:flex items-center gap-6">
-                <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Calendar</a>
-                <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Standings</a>
+                <a href="/" class="text-gray-400 hover:text-white text-sm transition-colors">Home</a>
+                <a href="/calendar.html" class="text-gray-400 hover:text-white text-sm transition-colors">Calendar</a>
                 <a href="/results.html" class="text-gray-400 hover:text-white text-sm transition-colors">Results</a>
+                <a href="/news.html" class="text-gray-400 hover:text-white text-sm transition-colors">News</a>
+                <a href="/telemetry.html" class="text-gray-400 hover:text-white text-sm transition-colors">Telemetry</a>
                 <button onclick="toggleSpoilerMode()" id="spoiler-toggle" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-racing-red/50 text-sm transition-all">
                     <span id="spoiler-icon">👁️</span>
                     <span id="spoiler-text" class="text-gray-400">Spoilers</span>
@@ -192,6 +206,59 @@
             </div>
         </nav>
         
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 z-50 hidden" style="background: var(--theme-bg-base, #0a0a0f);">
+            <div class="flex flex-col h-full">
+                <!-- Mobile Menu Header -->
+                <div class="flex items-center justify-between px-4 py-4 border-b" style="border-color: var(--theme-border);">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded flex items-center justify-center" style="background-color: var(--theme-primary);">
+                            <span class="text-sm">🏁</span>
+                        </div>
+                        <span class="font-bold text-lg" style="color: var(--theme-text-primary);">GridView</span>
+                    </div>
+                    <button onclick="toggleMobileMenu()" class="p-2 text-2xl" aria-label="Close menu">✕</button>
+                </div>
+                <!-- Mobile Menu Links -->
+                <div class="flex flex-col p-4 gap-2">
+                    <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">
+                        🏠 Home
+                    </a>
+                    <a href="/calendar.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">
+                        📅 Calendar
+                    </a>
+                    <a href="/results.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">
+                        🏆 Results
+                    </a>
+                    <a href="/news.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">
+                        📰 News
+                    </a>
+                    <a href="/telemetry.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">
+                        📊 Telemetry
+                    </a>
+                </div>
+                <!-- Mobile Menu Controls -->
+                <div class="flex flex-col p-4 gap-3 border-t mt-auto" style="border-color: var(--theme-border);">
+                    <button onclick="toggleSpoilerMode(); toggleMobileMenu();" class="flex items-center justify-between px-4 py-3 rounded-lg bg-white/5">
+                        <span style="color: var(--theme-text-primary);">Spoiler Mode</span>
+                        <span id="mobile-spoiler-icon">👁️</span>
+                    </button>
+                    <select id="mobile-timezone-picker" onchange="setTimezone(this.value)" class="px-4 py-3 rounded-lg bg-white/5 border-0 text-base" style="color: var(--theme-text-primary);">
+                        <option value="local">Local Time</option>
+                        <option value="UTC">UTC</option>
+                        <option value="America/New_York">ET</option>
+                        <option value="America/Los_Angeles">PT</option>
+                        <option value="Europe/London">GMT</option>
+                        <option value="Asia/Tokyo">JST</option>
+                    </select>
+                    <button onclick="openNotificationSettings(); toggleMobileMenu();" class="flex items-center justify-between px-4 py-3 rounded-lg bg-white/5">
+                        <span style="color: var(--theme-text-primary);">Alerts</span>
+                        <span>🔔</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Hero Content -->
         <div class="relative max-w-7xl mx-auto px-4 py-16 text-center">
             <h1 class="text-5xl md:text-7xl tracking-tight mb-4" style="font-family: var(--theme-font-heading); font-weight: var(--theme-heading-weight, 800); letter-spacing: var(--theme-heading-letter-spacing, -0.02em); text-shadow: var(--theme-heading-shadow, none);">
@@ -207,16 +274,11 @@
                     <span class="w-2 h-2 rounded-full live-pulse" style="background-color: var(--theme-live-color);"></span>
                     <span>Live Data</span>
                 </div>
-                <span style="color: var(--theme-text-muted);">•</span>
-                <span class="text-sm" style="color: var(--theme-text-secondary);">8 Racing Series</span>
-                <span style="color: var(--theme-text-muted);">•</span>
-                <span class="text-sm" style="color: var(--theme-text-secondary);">Real + Sim Racing</span>
             </div>
         </div>
         
         <!-- Ad Banner (below hero) -->
         <div id="ad-leaderboard" class="ad-slot h-[90px] max-w-[728px] mx-auto mb-4 rounded hidden md:flex">
-            <span>Ad Space • 728×90</span>
         </div>
     </header>
 
@@ -230,21 +292,17 @@
                 <!-- Series Selection -->
                 <section class="mb-8">
                     <div class="flex items-center justify-between mb-5">
-                        <h2 class="text-lg font-semibold text-gray-200">Racing Series</h2>
+                        <h2 class="text-xl font-semibold text-gray-200">Racing Series</h2>
                         <span id="series-hint" class="text-xs text-gray-500 uppercase tracking-wider">Select a series to view data</span>
                     </div>
                     
-                    <div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8 gap-3">
+                    <div class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-7 gap-3">
                         <!-- F1 -->
                         <button onclick="selectSeries('f1', this)" data-series="f1" class="series-card bg-racing-card rounded-xl p-4 text-center cursor-pointer group">
                             <div class="card-icon w-12 h-12 mx-auto mb-2 bg-racing-dark rounded-lg flex items-center justify-center group-hover:bg-racing-red/20 transition-colors">
                                 <span class="text-2xl">🏎️</span>
                             </div>
                             <h3 class="font-semibold text-sm">F1</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                         
                         <!-- WRC -->
@@ -253,10 +311,6 @@
                                 <span class="text-2xl">🌍</span>
                             </div>
                             <h3 class="font-semibold text-sm">WRC</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                         
                         <!-- NASCAR -->
@@ -265,10 +319,6 @@
                                 <span class="text-2xl">🏁</span>
                             </div>
                             <h3 class="font-semibold text-sm">NASCAR</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                         
                         <!-- IndyCar -->
@@ -277,10 +327,6 @@
                                 <span class="text-2xl">🇺🇸</span>
                             </div>
                             <h3 class="font-semibold text-sm">IndyCar</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                         
                         <!-- IMSA -->
@@ -289,10 +335,6 @@
                                 <span class="text-2xl">🏎️</span>
                             </div>
                             <h3 class="font-semibold text-sm">IMSA</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                         
                         <!-- WEC -->
@@ -301,10 +343,6 @@
                                 <span class="text-2xl">🌐</span>
                             </div>
                             <h3 class="font-semibold text-sm">WEC</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                         
                         <!-- MotoGP -->
@@ -313,10 +351,6 @@
                                 <span class="text-2xl">🏍️</span>
                             </div>
                             <h3 class="font-semibold text-sm">MotoGP</h3>
-                            <div class="flex items-center justify-center gap-1 mt-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full live-pulse"></span>
-                                <span class="text-[10px] text-green-500 uppercase font-medium">Live</span>
-                            </div>
                         </button>
                     </div>
                 </section>
@@ -326,27 +360,17 @@
                     <!-- Content populated by JavaScript -->
                 </section>
                 
-                <!-- Default State (when no series selected) -->
-                <section id="default-state" class="mb-10">
-                    <div class="bg-racing-card rounded-xl border border-racing-border p-8 text-center">
-                        <div class="text-4xl mb-4">🏁</div>
-                        <h3 class="text-xl font-bold mb-2">Select a Racing Series</h3>
-                        <p class="text-gray-400 text-sm max-w-md mx-auto">
-                            Click on any series above to view calendar, standings, recent results, and news.
-                        </p>
-                    </div>
-                </section>
+                <!-- Default State removed - F1 auto-selected on load -->
 
                 <!-- AD SLOT: Inline Billboard (desktop only, between sections) -->
                 <div id="ad-inline" class="ad-slot h-[250px] max-w-[970px] mx-auto mb-10 rounded-lg hidden lg:flex">
                     <!-- INSERT AD NETWORK CODE HERE -->
-                    <span>Ad Space • 970×250 Billboard</span>
                 </div>
 
                 <!-- Race Synopsis Section -->
                 <section class="mb-10">
                     <div class="flex items-center justify-between mb-5">
-                        <h2 class="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                        <h2 class="text-xl font-semibold text-gray-200 flex items-center gap-2">
                             <span class="text-racing-red">📋</span>
                             Recent Race Synopses
                         </h2>
@@ -363,7 +387,7 @@
                 <!-- 🔥 Trending Section -->
                 <section class="mb-10">
                     <div class="flex items-center justify-between mb-5">
-                        <h2 class="text-lg font-semibold text-gray-200 flex items-center gap-2">
+                        <h2 class="text-xl font-semibold text-gray-200 flex items-center gap-2">
                             <span class="text-orange-500">🔥</span>
                             Trending Now
                         </h2>
@@ -404,10 +428,7 @@
                     <!-- Trending Topics -->
                     <div id="trending-container" class="grid md:grid-cols-2 gap-4">
                         <div class="bg-racing-card rounded-xl border border-racing-border p-6 text-center col-span-2">
-                            <div class="flex items-center justify-center gap-2">
-                                <div class="w-4 h-4 border-2 border-racing-red border-t-transparent rounded-full animate-spin"></div>
-                                <span class="text-gray-400 text-sm">Scanning social buzz...</span>
-                            </div>
+                            <p class="text-gray-400 text-sm">Motorsport social buzz updates during race weekends.</p>
                         </div>
                     </div>
                 </section>
@@ -432,7 +453,6 @@
                 <!-- AD SLOT: Sidebar Top (300x250 Medium Rectangle) -->
                 <div id="ad-sidebar-top" class="ad-slot h-[250px] w-[300px] mx-auto rounded-lg">
                     <!-- INSERT AD NETWORK CODE HERE -->
-                    <span>Ad Space • 300×250</span>
                 </div>
 
                 <!-- Upcoming Events Widget -->
@@ -479,14 +499,13 @@
                         </div>
                     </div>
                     <div class="p-3 border-t border-racing-border">
-                        <a href="#" class="text-racing-red text-xs font-medium hover:underline">View Full Calendar →</a>
+                        <a href="/calendar.html" class="text-racing-red text-xs font-medium hover:underline">View Full Calendar →</a>
                     </div>
                 </div>
 
                 <!-- AD SLOT: Sidebar Middle (300x600 Half Page) -->
                 <div id="ad-sidebar-mid" class="ad-slot h-[600px] w-[300px] mx-auto rounded-lg">
                     <!-- INSERT AD NETWORK CODE HERE -->
-                    <span>Ad Space • 300×600</span>
                 </div>
 
                 <!-- Quick Stats Widget -->
@@ -622,7 +641,7 @@
 
     <!-- Footer -->
     <footer class="border-t border-racing-border mt-12">
-        <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="max-w-7xl mx-auto px-4 py-12">
             <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-2 text-gray-500">
                     <span class="text-lg">🏁</span>
@@ -1090,6 +1109,34 @@
             }
         }
 
+        // Mobile Menu
+        let mobileMenuOpen = false;
+        
+        function toggleMobileMenu() {
+            mobileMenuOpen = !mobileMenuOpen;
+            const menu = document.getElementById('mobile-menu');
+            const body = document.body;
+            
+            if (mobileMenuOpen) {
+                menu.classList.remove('hidden');
+                body.style.overflow = 'hidden';
+                // Sync mobile spoiler icon
+                const mobileIcon = document.getElementById('mobile-spoiler-icon');
+                if (mobileIcon) mobileIcon.textContent = spoilerMode ? '🙈' : '👁️';
+                // Sync mobile timezone
+                const mobileTz = document.getElementById('mobile-timezone-picker');
+                if (mobileTz) mobileTz.value = selectedTimezone;
+            } else {
+                menu.classList.add('hidden');
+                body.style.overflow = '';
+            }
+        }
+        
+        // Close mobile menu on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenuOpen) toggleMobileMenu();
+        });
+
         // Spoiler Mode
         let spoilerMode = localStorage.getItem('spoilerMode') === 'true';
         
@@ -1397,6 +1444,9 @@
         updateSpoilerUI();
         loadSynopses();
         loadTrending();
+        
+        // Auto-select F1 on page load
+        selectSeries('f1', document.querySelector('[data-series="f1"]'));
         startTrendingRefresh();
         document.getElementById('timezone-picker').value = selectedTimezone;
         
@@ -1746,5 +1796,9 @@
     
     <!-- Theme Switcher -->
     <script src="/js/theme-switcher.js?v=4"></script>
+    
+    <!-- Vercel Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>

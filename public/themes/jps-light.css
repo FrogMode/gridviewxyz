@@ -4,11 +4,11 @@
  */
 
 [data-theme="jps-light"] {
-  --theme-font-heading: 'Inter', system-ui, sans-serif;
+  --theme-font-heading: 'Playfair Display', Georgia, serif;
   --theme-font-body: 'Inter', system-ui, sans-serif;
   --theme-font-mono: 'JetBrains Mono', monospace;
   --theme-heading-weight: 700;
-  --theme-heading-letter-spacing: -0.01em;
+  --theme-heading-letter-spacing: 0.02em;
   
   --theme-primary: #D4AF37;
   --theme-primary-rgb: 212, 175, 55;
@@ -75,3 +75,12 @@
 [data-theme="jps-light"] .border-white\/10 { border-color: rgba(212, 175, 55, 0.15) !important; }
 [data-theme="jps-light"] .bg-racing-card { background-color: #fdf9e8 !important; }
 [data-theme="jps-light"] .bg-racing-dark { background-color: #f8f3d8 !important; }
+
+/* Match JPS dark - Playfair Display serif headings */
+[data-theme="jps-light"] h1,
+[data-theme="jps-light"] h2,
+[data-theme="jps-light"] h3 {
+  font-family: var(--theme-font-heading);
+  font-weight: var(--theme-heading-weight);
+  letter-spacing: var(--theme-heading-letter-spacing);
+}

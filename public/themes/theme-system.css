@@ -114,7 +114,7 @@ nav a:hover {
 }
 
 .theme-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   border-color: rgba(var(--theme-primary-rgb), 0.4);
   box-shadow: var(--theme-shadow-hover);
 }
@@ -129,7 +129,7 @@ nav a:hover {
 .series-card:hover {
   border-color: rgba(var(--theme-primary-rgb), 0.5) !important;
   box-shadow: var(--theme-shadow-hover) !important;
-  transform: translateY(-4px);
+  transform: translateY(-2px);
 }
 
 .series-card.active {
@@ -321,6 +321,12 @@ nav a:hover {
   background: var(--theme-scrollbar-hover);
 }
 
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-scrollbar-thumb, #4a4a55) var(--theme-scrollbar-track, #16161d);
+}
+
 /* ============================================
    ACCENT PATTERNS
    ============================================ */
@@ -401,6 +407,16 @@ nav a:hover {
 
 .mode-toggle-btn:hover .mode-icon {
   transform: rotate(15deg);
+}
+
+.mode-icon.mode-transitioning {
+  animation: mode-spin 0.3s ease;
+}
+
+@keyframes mode-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 /* Dialog element - uses browser's top-layer (guaranteed above everything) */
@@ -573,6 +589,23 @@ nav a:hover {
 .theme-switcher-btn:focus-visible {
   outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
+}
+
+/* Global focus-visible styles for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--theme-primary);
+  outline-offset: 2px;
+}
+
+/* Remove default focus ring, use focus-visible only */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+select:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* ============================================

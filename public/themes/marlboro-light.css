@@ -75,3 +75,18 @@
 [data-theme="marlboro-light"] .border-white\/10 { border-color: rgba(238, 28, 37, 0.12) !important; }
 [data-theme="marlboro-light"] .bg-racing-card { background-color: #fef5f5 !important; }
 [data-theme="marlboro-light"] .bg-racing-dark { background-color: #fde8e8 !important; }
+
+/* Match Marlboro dark typography - uppercase aggressive headings */
+[data-theme="marlboro-light"] h1,
+[data-theme="marlboro-light"] h2,
+[data-theme="marlboro-light"] h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 900;
+}
+
+/* Logo matches dark variant styling */
+[data-theme="marlboro-light"] .gridview-logo {
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}

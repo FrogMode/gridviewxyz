@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Calendar - GridView</title>
+    <meta name="description" content="Full motorsport calendar. F1, WRC, NASCAR, IndyCar, MotoGP races all in one view.">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#e10600">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Theme System -->
+    <link rel="stylesheet" href="/themes/default.css" id="theme-css">
+    <link rel="stylesheet" href="/themes/theme-system.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        racing: {
+                            red: '#e10600',
+                            orange: '#ff6b35',
+                            dark: '#0a0a0f',
+                            card: '#16161d',
+                            border: '#2a2a35',
+                            hover: '#1f1f28'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background: var(--theme-gradient-body, linear-gradient(180deg, #0a0a0f 0%, #111117 100%));
+            min-height: 100vh;
+            font-family: var(--theme-font-body, 'Inter', system-ui, sans-serif);
+            color: var(--theme-text-primary, #fff);
+        }
+        
+        /* Calendar Grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--theme-border, #2a2a35);
+            border: 1px solid var(--theme-border, #2a2a35);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .calendar-header {
+            background: var(--theme-bg-card, #16161d);
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--theme-text-muted, #6b7280);
+        }
+        
+        .calendar-day {
+            background: var(--theme-bg-card, #16161d);
+            min-height: 120px;
+            padding: 8px;
+            position: relative;
+            transition: background 0.2s ease;
+        }
+        
+        .calendar-day:hover {
+            background: var(--theme-bg-hover, #1f1f28);
+        }
+        
+        .calendar-day.other-month {
+            opacity: 0.4;
+        }
+        
+        .calendar-day.today {
+            background: rgba(225, 6, 0, 0.1);
+        }
+        
+        .calendar-day.today::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--theme-primary, #e10600);
+        }
+        
+        .day-number {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--theme-text-primary, #fff);
+        }
+        
+        .calendar-day.other-month .day-number {
+            color: var(--theme-text-muted, #6b7280);
+        }
+        
+        /* Race Event Pills */
+        .race-event {
+            font-size: 0.65rem;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        
+        .race-event:hover {
+            transform: translateX(2px);
+            box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+        }
+        
+        /* Series Colors */
+        .race-event.f1 { background: linear-gradient(90deg, #e10600, #ff2a2a); color: #fff; }
+        .race-event.nascar { background: linear-gradient(90deg, #FFD700, #FFA500); color: #000; }
+        .race-event.indycar { background: linear-gradient(90deg, #00BFFF, #1E90FF); color: #fff; }
+        .race-event.wec { background: linear-gradient(90deg, #5BA3D9, #3B82B6); color: #fff; }
+        .race-event.motogp { background: linear-gradient(90deg, #FF6B35, #FF4500); color: #fff; }
+        .race-event.wrc { background: linear-gradient(90deg, #00A651, #008C45); color: #fff; }
+        .race-event.imsa { background: linear-gradient(90deg, #9B59B6, #8E44AD); color: #fff; }
+        .race-event.formula-e { background: linear-gradient(90deg, #00D4AA, #00B894); color: #000; }
+        
+        /* Month Navigation */
+        .month-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        
+        .month-nav button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: var(--theme-bg-card, #16161d);
+            border: 1px solid var(--theme-border, #2a2a35);
+            color: var(--theme-text-primary, #fff);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .month-nav button:hover {
+            background: var(--theme-bg-hover, #1f1f28);
+            border-color: var(--theme-primary, #e10600);
+        }
+        
+        .month-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        /* Series Filter */
+        .series-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .series-filter button {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .series-filter button.active {
+            box-shadow: 0 0 0 2px var(--theme-primary, #e10600);
+        }
+        
+        .series-filter button.inactive {
+            opacity: 0.4;
+        }
+        
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 16px;
+            background: var(--theme-bg-card, #16161d);
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.875rem;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        /* Event Modal */
+        .event-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .event-modal.show {
+            display: flex;
+        }
+        
+        .event-modal-content {
+            background: var(--theme-bg-card, #16161d);
+            border: 1px solid var(--theme-border, #2a2a35);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        /* List View */
+        .list-view {
+            display: none;
+        }
+        
+        .list-view.active {
+            display: block;
+        }
+        
+        .calendar-view.hidden {
+            display: none;
+        }
+        
+        .race-list-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--theme-bg-card, #16161d);
+            border: 1px solid var(--theme-border, #2a2a35);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .race-list-item:hover {
+            border-color: var(--theme-primary, #e10600);
+            transform: translateX(4px);
+        }
+        
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            background: var(--theme-bg-card, #16161d);
+            border-radius: 8px;
+            padding: 4px;
+        }
+        
+        .view-toggle button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--theme-text-muted, #6b7280);
+            border: none;
+        }
+        
+        .view-toggle button.active {
+            background: var(--theme-primary, #e10600);
+            color: #fff;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .calendar-grid {
+                font-size: 0.75rem;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+                padding: 4px;
+            }
+            
+            .day-number {
+                font-size: 0.75rem;
+            }
+            
+            .race-event {
+                font-size: 0.55rem;
+                padding: 2px 4px;
+            }
+            
+            .calendar-header {
+                padding: 8px 4px;
+                font-size: 0.6rem;
+            }
+            
+            .month-title {
+                font-size: 1.25rem;
+            }
+        }
+        
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #2a2a35 25%, #3a3a45 50%, #2a2a35 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Mobile menu */
+        #mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 15, 0.98);
+            z-index: 100;
+            padding: 80px 24px 24px;
+        }
+        #mobile-menu.open { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 border-b backdrop-blur-md" style="background: var(--theme-bg-header, rgba(10, 10, 15, 0.9)); border-color: var(--theme-border);">
+        <nav class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="text-2xl">🏁</span>
+                <span class="font-bold text-xl" style="color: var(--theme-text-primary);">GridView</span>
+            </a>
+            
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center gap-6 text-sm">
+                <a href="/" class="hover:text-white transition-colors" style="color: var(--theme-text-muted);">Dashboard</a>
+                <a href="/calendar.html" class="text-white font-medium" style="color: var(--theme-primary);">Calendar</a>
+                <a href="/results.html" class="hover:text-white transition-colors" style="color: var(--theme-text-muted);">Results</a>
+                <a href="/news.html" class="hover:text-white transition-colors" style="color: var(--theme-text-muted);">News</a>
+                <a href="/telemetry.html" class="hover:text-white transition-colors" style="color: var(--theme-text-muted);">Telemetry</a>
+            </div>
+            
+            <!-- Theme Toggle & Mobile Menu -->
+            <div class="flex items-center gap-3">
+                <button id="theme-toggle" class="p-2 rounded-lg hover:bg-white/10 transition-colors" title="Toggle theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button id="hamburger" class="md:hidden p-2 rounded-lg hover:bg-white/10">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6" class="hamburger-line"/>
+                        <line x1="3" y1="12" x2="21" y2="12" class="hamburger-line"/>
+                        <line x1="3" y1="18" x2="21" y2="18" class="hamburger-line"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu">
+        <div class="flex flex-col gap-4">
+            <a href="/" class="text-xl py-3 border-b border-racing-border">Dashboard</a>
+            <a href="/calendar.html" class="text-xl py-3 border-b border-racing-border text-racing-red">Calendar</a>
+            <a href="/results.html" class="text-xl py-3 border-b border-racing-border">Results</a>
+            <a href="/news.html" class="text-xl py-3 border-b border-racing-border">News</a>
+            <a href="/telemetry.html" class="text-xl py-3 border-b border-racing-border">Telemetry</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold mb-2" style="color: var(--theme-text-primary);">Race Calendar</h1>
+            <p class="text-gray-400">All motorsport events in one view. Click any event for details.</p>
+        </div>
+        
+        <!-- Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button id="btn-calendar-view" class="active">📅 Calendar</button>
+                <button id="btn-list-view">📋 List</button>
+            </div>
+            
+            <!-- Month Navigation (Calendar View) -->
+            <div class="month-nav" id="month-nav">
+                <button id="prev-month">← Prev</button>
+                <div class="month-title" id="month-title">Loading...</div>
+                <button id="next-month">Next →</button>
+            </div>
+        </div>
+        
+        <!-- Series Filter -->
+        <div class="series-filter" id="series-filter">
+            <button class="active" data-series="all" style="background: var(--theme-bg-card); border-color: var(--theme-border); color: var(--theme-text-primary);">All Series</button>
+            <button class="active" data-series="f1" style="background: linear-gradient(90deg, #e10600, #ff2a2a); color: #fff;">🏎️ F1</button>
+            <button class="active" data-series="indycar" style="background: linear-gradient(90deg, #00BFFF, #1E90FF); color: #fff;">🏁 IndyCar</button>
+            <button class="active" data-series="nascar" style="background: linear-gradient(90deg, #FFD700, #FFA500); color: #000;">🏁 NASCAR</button>
+            <button class="active" data-series="wec" style="background: linear-gradient(90deg, #5BA3D9, #3B82B6); color: #fff;">🌐 WEC</button>
+            <button class="active" data-series="motogp" style="background: linear-gradient(90deg, #FF6B35, #FF4500); color: #fff;">🏍️ MotoGP</button>
+            <button class="active" data-series="wrc" style="background: linear-gradient(90deg, #00A651, #008C45); color: #fff;">🚗 WRC</button>
+        </div>
+        
+        <!-- Calendar Grid View -->
+        <div class="calendar-view" id="calendar-view">
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Headers -->
+                <div class="calendar-header">Sun</div>
+                <div class="calendar-header">Mon</div>
+                <div class="calendar-header">Tue</div>
+                <div class="calendar-header">Wed</div>
+                <div class="calendar-header">Thu</div>
+                <div class="calendar-header">Fri</div>
+                <div class="calendar-header">Sat</div>
+                <!-- Days populated by JS -->
+            </div>
+        </div>
+        
+        <!-- List View -->
+        <div class="list-view" id="list-view">
+            <div id="race-list">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background: #e10600;"></div> Formula 1</div>
+            <div class="legend-item"><div class="legend-dot" style="background: #00BFFF;"></div> IndyCar</div>
+            <div class="legend-item"><div class="legend-dot" style="background: #FFD700;"></div> NASCAR</div>
+            <div class="legend-item"><div class="legend-dot" style="background: #5BA3D9;"></div> WEC</div>
+            <div class="legend-item"><div class="legend-dot" style="background: #FF6B35;"></div> MotoGP</div>
+            <div class="legend-item"><div class="legend-dot" style="background: #00A651;"></div> WRC</div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <div class="p-4 rounded-xl" style="background: var(--theme-bg-card); border: 1px solid var(--theme-border);">
+                <div class="text-2xl font-bold" id="stat-total">--</div>
+                <div class="text-sm text-gray-400">Total Races</div>
+            </div>
+            <div class="p-4 rounded-xl" style="background: var(--theme-bg-card); border: 1px solid var(--theme-border);">
+                <div class="text-2xl font-bold" id="stat-month">--</div>
+                <div class="text-sm text-gray-400">This Month</div>
+            </div>
+            <div class="p-4 rounded-xl" style="background: var(--theme-bg-card); border: 1px solid var(--theme-border);">
+                <div class="text-2xl font-bold text-racing-red" id="stat-next">--</div>
+                <div class="text-sm text-gray-400">Next Race</div>
+            </div>
+            <div class="p-4 rounded-xl" style="background: var(--theme-bg-card); border: 1px solid var(--theme-border);">
+                <div class="text-2xl font-bold" id="stat-series">--</div>
+                <div class="text-sm text-gray-400">Series Tracked</div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Event Modal -->
+    <div class="event-modal" id="event-modal">
+        <div class="event-modal-content">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-xl font-bold" id="modal-title">Event Name</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="modal-content">
+                <!-- Event details -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Switcher Script -->
+    <script src="/js/theme-switcher.js?v=5"></script>
+    
+    <script>
+        // ============================================
+        // CALENDAR STATE
+        // ============================================
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        let allEvents = [];
+        let filteredSeries = new Set(['f1', 'indycar', 'nascar', 'wec', 'motogp', 'wrc']);
+        let currentView = 'calendar';
+        
+        // ============================================
+        // API BASE URL (handles local dev vs production)
+        // ============================================
+        const API_BASE = window.location.hostname === 'localhost' 
+            ? 'https://gridview.xyz' 
+            : '';
+        
+        const API_ENDPOINTS = {
+            f1: `${API_BASE}/api/f1?limit=50`,
+            nascar: `${API_BASE}/api/nascar?upcoming=true&limit=50`,
+            indycar: `${API_BASE}/api/indycar_live?upcoming&limit=50`,
+        };
+        
+        // ============================================
+        // DATA LOADING
+        // ============================================
+        async function loadAllEvents() {
+            const events = [];
+            
+            // Load F1
+            try {
+                const f1Res = await fetch(API_ENDPOINTS.f1);
+                const f1Data = await f1Res.json();
+                // Handle both 'events' and 'schedule' response formats
+                const f1Events = f1Data.events || f1Data.schedule || [];
+                f1Events.forEach(race => {
+                    events.push({
+                        id: `f1-${race.round}`,
+                        series: 'f1',
+                        name: race.name || race.race_name,
+                        location: race.location || race.circuit,
+                        country: race.country,
+                        date: new Date(race.date),
+                        time: race.time,
+                        round: race.round
+                    });
+                });
+                console.log(`[Calendar] Loaded ${f1Events.length} F1 events`);
+            } catch (e) { console.warn('F1 API error:', e); }
+            
+            // Load NASCAR
+            try {
+                const nascarRes = await fetch(API_ENDPOINTS.nascar);
+                const nascarData = await nascarRes.json();
+                const nascarEvents = nascarData.upcoming || nascarData.events || [];
+                nascarEvents.forEach(race => {
+                    events.push({
+                        id: `nascar-${race.race_id || race.id}`,
+                        series: 'nascar',
+                        name: race.race_name || race.name,
+                        location: race.track_name || race.location,
+                        date: new Date(race.race_date || race.date),
+                        time: race.race_time || race.time
+                    });
+                });
+                console.log(`[Calendar] Loaded ${nascarEvents.length} NASCAR events`);
+            } catch (e) { console.warn('NASCAR API error:', e); }
+            
+            // Load IndyCar
+            try {
+                const indyRes = await fetch(API_ENDPOINTS.indycar);
+                const indyData = await indyRes.json();
+                const indyEvents = indyData.upcoming || indyData.events || [];
+                indyEvents.forEach(race => {
+                    events.push({
+                        id: `indycar-${race.event_id || race.name}`,
+                        series: 'indycar',
+                        name: race.name || race.event_name,
+                        location: race.track || race.location,
+                        date: new Date(race.date),
+                        time: race.time
+                    });
+                });
+                console.log(`[Calendar] Loaded ${indyEvents.length} IndyCar events`);
+            } catch (e) { console.warn('IndyCar API error:', e); }
+            
+            // Add some sample events for series without live APIs
+            // WRC
+            const wrcEvents = [
+                { name: 'Rallye Monte-Carlo', location: 'Monaco', date: '2026-01-23' },
+                { name: 'Rally Sweden', location: 'Umeå, Sweden', date: '2026-02-13' },
+                { name: 'Safari Rally Kenya', location: 'Naivasha, Kenya', date: '2026-03-20' },
+                { name: 'Rally Croatia', location: 'Zagreb, Croatia', date: '2026-04-24' },
+                { name: 'Rally Portugal', location: 'Porto, Portugal', date: '2026-05-15' },
+            ];
+            wrcEvents.forEach((e, i) => {
+                events.push({
+                    id: `wrc-${i}`,
+                    series: 'wrc',
+                    name: e.name,
+                    location: e.location,
+                    date: new Date(e.date)
+                });
+            });
+            
+            // MotoGP
+            const motogpEvents = [
+                { name: 'Qatar GP', location: 'Losail', date: '2026-03-02' },
+                { name: 'Portuguese GP', location: 'Portimão', date: '2026-03-16' },
+                { name: 'Americas GP', location: 'Austin', date: '2026-04-13' },
+                { name: 'Spanish GP', location: 'Jerez', date: '2026-04-27' },
+                { name: 'French GP', location: 'Le Mans', date: '2026-05-11' },
+            ];
+            motogpEvents.forEach((e, i) => {
+                events.push({
+                    id: `motogp-${i}`,
+                    series: 'motogp',
+                    name: e.name,
+                    location: e.location,
+                    date: new Date(e.date)
+                });
+            });
+            
+            // WEC
+            const wecEvents = [
+                { name: '1000 Miles of Sebring', location: 'Sebring, USA', date: '2026-03-14' },
+                { name: '6 Hours of Imola', location: 'Imola, Italy', date: '2026-04-18' },
+                { name: '6 Hours of Spa', location: 'Spa, Belgium', date: '2026-05-02' },
+                { name: '24 Hours of Le Mans', location: 'Le Mans, France', date: '2026-06-13' },
+            ];
+            wecEvents.forEach((e, i) => {
+                events.push({
+                    id: `wec-${i}`,
+                    series: 'wec',
+                    name: e.name,
+                    location: e.location,
+                    date: new Date(e.date)
+                });
+            });
+            
+            allEvents = events.sort((a, b) => a.date - b.date);
+            updateStats();
+            renderView();
+        }
+        
+        // ============================================
+        // CALENDAR RENDERING
+        // ============================================
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const startDay = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            
+            // Update title
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                              'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('month-title').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Clear existing days (keep headers)
+            const headers = grid.querySelectorAll('.calendar-header');
+            grid.innerHTML = '';
+            headers.forEach(h => grid.appendChild(h));
+            
+            // Get today for highlighting
+            const today = new Date();
+            const isCurrentMonth = today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+            
+            // Previous month days
+            const prevMonth = new Date(currentYear, currentMonth, 0);
+            const prevMonthDays = prevMonth.getDate();
+            for (let i = startDay - 1; i >= 0; i--) {
+                const day = prevMonthDays - i;
+                const dayEl = createDayElement(day, true);
+                grid.appendChild(dayEl);
+            }
+            
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const isToday = isCurrentMonth && day === today.getDate();
+                const dayEl = createDayElement(day, false, isToday, date);
+                grid.appendChild(dayEl);
+            }
+            
+            // Next month days
+            const totalCells = grid.children.length;
+            const remainingCells = 42 - totalCells; // 6 rows * 7 days
+            for (let day = 1; day <= remainingCells; day++) {
+                const dayEl = createDayElement(day, true);
+                grid.appendChild(dayEl);
+            }
+        }
+        
+        function createDayElement(day, isOtherMonth, isToday = false, date = null) {
+            const dayEl = document.createElement('div');
+            dayEl.className = `calendar-day${isOtherMonth ? ' other-month' : ''}${isToday ? ' today' : ''}`;
+            
+            const dayNum = document.createElement('div');
+            dayNum.className = 'day-number';
+            dayNum.textContent = day;
+            dayEl.appendChild(dayNum);
+            
+            // Add events for this day
+            if (date && !isOtherMonth) {
+                const dayEvents = allEvents.filter(e => {
+                    if (!filteredSeries.has(e.series)) return false;
+                    const eventDate = new Date(e.date);
+                    return eventDate.getDate() === day && 
+                           eventDate.getMonth() === currentMonth && 
+                           eventDate.getFullYear() === currentYear;
+                });
+                
+                dayEvents.forEach(event => {
+                    const eventEl = document.createElement('div');
+                    eventEl.className = `race-event ${event.series}`;
+                    eventEl.textContent = event.name;
+                    eventEl.title = `${event.name} - ${event.location}`;
+                    eventEl.onclick = () => showEventModal(event);
+                    dayEl.appendChild(eventEl);
+                });
+            }
+            
+            return dayEl;
+        }
+        
+        // ============================================
+        // LIST VIEW RENDERING
+        // ============================================
+        function renderListView() {
+            const container = document.getElementById('race-list');
+            container.innerHTML = '';
+            
+            const filtered = allEvents.filter(e => filteredSeries.has(e.series));
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-500">No events match your filters</div>';
+                return;
+            }
+            
+            // Group by month
+            const byMonth = {};
+            filtered.forEach(event => {
+                const key = `${event.date.getFullYear()}-${String(event.date.getMonth() + 1).padStart(2, '0')}`;
+                if (!byMonth[key]) byMonth[key] = [];
+                byMonth[key].push(event);
+            });
+            
+            Object.entries(byMonth).forEach(([month, events]) => {
+                const [year, m] = month.split('-');
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                
+                const header = document.createElement('h3');
+                header.className = 'text-lg font-bold mb-4 mt-8 first:mt-0';
+                header.textContent = `${monthNames[parseInt(m) - 1]} ${year}`;
+                container.appendChild(header);
+                
+                events.forEach(event => {
+                    const item = document.createElement('div');
+                    item.className = 'race-list-item';
+                    item.onclick = () => showEventModal(event);
+                    
+                    const dateStr = event.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                    
+                    item.innerHTML = `
+                        <div class="race-event ${event.series}" style="width: auto; padding: 8px 12px; font-size: 0.75rem;">
+                            ${event.series.toUpperCase()}
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold">${event.name}</div>
+                            <div class="text-sm text-gray-400">${event.location || 'TBD'}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-medium">${dateStr}</div>
+                            <div class="text-sm text-gray-400">${event.time || ''}</div>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            });
+        }
+        
+        // ============================================
+        // VIEW SWITCHING
+        // ============================================
+        function renderView() {
+            if (currentView === 'calendar') {
+                renderCalendar();
+            } else {
+                renderListView();
+            }
+        }
+        
+        function switchView(view) {
+            currentView = view;
+            
+            document.getElementById('btn-calendar-view').classList.toggle('active', view === 'calendar');
+            document.getElementById('btn-list-view').classList.toggle('active', view === 'list');
+            
+            document.getElementById('calendar-view').classList.toggle('hidden', view !== 'calendar');
+            document.getElementById('list-view').classList.toggle('active', view === 'list');
+            document.getElementById('month-nav').style.display = view === 'calendar' ? 'flex' : 'none';
+            
+            renderView();
+        }
+        
+        // ============================================
+        // SERIES FILTERING
+        // ============================================
+        function setupFilters() {
+            document.querySelectorAll('.series-filter button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const series = btn.dataset.series;
+                    
+                    if (series === 'all') {
+                        // Toggle all
+                        const allActive = filteredSeries.size === 6;
+                        if (allActive) {
+                            filteredSeries.clear();
+                        } else {
+                            filteredSeries = new Set(['f1', 'indycar', 'nascar', 'wec', 'motogp', 'wrc']);
+                        }
+                    } else {
+                        if (filteredSeries.has(series)) {
+                            filteredSeries.delete(series);
+                        } else {
+                            filteredSeries.add(series);
+                        }
+                    }
+                    
+                    // Update button states
+                    document.querySelectorAll('.series-filter button').forEach(b => {
+                        const s = b.dataset.series;
+                        if (s === 'all') {
+                            b.classList.toggle('active', filteredSeries.size === 6);
+                        } else {
+                            b.classList.toggle('active', filteredSeries.has(s));
+                            b.classList.toggle('inactive', !filteredSeries.has(s));
+                        }
+                    });
+                    
+                    updateStats();
+                    renderView();
+                });
+            });
+        }
+        
+        // ============================================
+        // MODAL
+        // ============================================
+        function showEventModal(event) {
+            const modal = document.getElementById('event-modal');
+            document.getElementById('modal-title').textContent = event.name;
+            
+            const dateStr = event.date.toLocaleDateString('en-US', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+            
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4">
+                    <div class="race-event ${event.series}" style="width: fit-content; padding: 8px 16px; font-size: 0.875rem;">
+                        ${event.series.toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-400">Location</div>
+                        <div class="font-medium">${event.location || 'TBD'}</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-400">Date</div>
+                        <div class="font-medium">${dateStr}</div>
+                    </div>
+                    ${event.time ? `
+                    <div>
+                        <div class="text-sm text-gray-400">Time</div>
+                        <div class="font-medium">${event.time}</div>
+                    </div>
+                    ` : ''}
+                    ${event.round ? `
+                    <div>
+                        <div class="text-sm text-gray-400">Round</div>
+                        <div class="font-medium">${event.round}</div>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            modal.classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('event-modal').classList.remove('show');
+        }
+        
+        // Close on outside click
+        document.getElementById('event-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'event-modal') closeModal();
+        });
+        
+        // ============================================
+        // STATS
+        // ============================================
+        function updateStats() {
+            const filtered = allEvents.filter(e => filteredSeries.has(e.series));
+            const now = new Date();
+            
+            // Total races
+            document.getElementById('stat-total').textContent = filtered.length;
+            
+            // This month
+            const thisMonth = filtered.filter(e => 
+                e.date.getMonth() === now.getMonth() && e.date.getFullYear() === now.getFullYear()
+            ).length;
+            document.getElementById('stat-month').textContent = thisMonth;
+            
+            // Next race
+            const upcoming = filtered.filter(e => e.date >= now).sort((a, b) => a.date - b.date);
+            if (upcoming[0]) {
+                const daysUntil = Math.ceil((upcoming[0].date - now) / (1000 * 60 * 60 * 24));
+                document.getElementById('stat-next').textContent = daysUntil === 0 ? 'Today!' : `${daysUntil}d`;
+            } else {
+                document.getElementById('stat-next').textContent = '--';
+            }
+            
+            // Series tracked
+            document.getElementById('stat-series').textContent = filteredSeries.size;
+        }
+        
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        document.getElementById('prev-month').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        });
+        
+        document.getElementById('next-month').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        });
+        
+        document.getElementById('btn-calendar-view').addEventListener('click', () => switchView('calendar'));
+        document.getElementById('btn-list-view').addEventListener('click', () => switchView('list'));
+        
+        // Mobile menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (hamburger && mobileMenu) {
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+        }
+        
+        // ============================================
+        // INIT
+        // ============================================
+        setupFilters();
+        loadAllEvents();
+    </script>
+    <!-- Vercel Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+</body>
+</html>

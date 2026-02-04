@@ -166,6 +166,12 @@ const GridViewThemes = {
    */
   toggleMode() {
     this.darkMode = !this.darkMode;
+    // Add transition class to mode icon for smooth animation
+    const modeIcon = document.querySelector('.mode-toggle-btn .mode-icon');
+    if (modeIcon) {
+      modeIcon.classList.add('mode-transitioning');
+      setTimeout(() => modeIcon.classList.remove('mode-transitioning'), 300);
+    }
     this.applyTheme(true);
   },
   

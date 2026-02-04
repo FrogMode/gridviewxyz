@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="default">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motorsport News - GridView</title>
+    <meta name="theme-color" content="#e10600">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Theme System -->
+    <link rel="stylesheet" href="/themes/default.css" id="theme-css">
+    <link rel="stylesheet" href="/themes/theme-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        racing: { red: '#e10600', orange: '#ff6b35', dark: '#0a0a0f', card: '#16161d', border: '#2a2a35' }
+                        racing: { red: '#e10600', orange: '#ff6b35', dark: '#0a0a0f', card: '#16161d', border: '#2a2a35', hover: '#1f1f28' }
                     },
                     fontFamily: { sans: ['Inter', 'system-ui'], mono: ['JetBrains Mono', 'monospace'] }
                 }
@@ -20,7 +26,11 @@
         }
     </script>
     <style>
-        body { background: linear-gradient(180deg, #0a0a0f 0%, #111117 100%); min-height: 100vh; }
+        body { 
+            background: var(--theme-gradient-body, linear-gradient(180deg, #0a0a0f 0%, #111117 100%)); 
+            min-height: 100vh; 
+            color: var(--theme-text-primary, #fff);
+        }
         .category-btn { transition: all 0.2s ease; }
         .category-btn.active { background: #e10600; color: white; }
         .category-btn:not(.active):hover { background: rgba(255,255,255,0.1); }
@@ -32,25 +42,73 @@
         @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
-<body class="text-white">
+<body class="text-white" style="color: var(--theme-text-primary);">
     <script src="/js/live-banner.js" defer></script>
-    <!-- Nav -->
-    <nav class="border-b border-racing-border sticky top-0 bg-racing-dark/95 backdrop-blur z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-racing-red rounded flex items-center justify-center">
-                    <span class="text-sm">🏁</span>
-                </div>
-                <span class="font-bold text-lg">GridView</span>
-            </a>
-            <div class="flex items-center gap-4 text-sm">
-                <a href="/" class="text-gray-400 hover:text-white">Home</a>
-                <a href="/results.html" class="text-gray-400 hover:text-white">Results</a>
-                <span class="text-racing-red font-medium">News</span>
-                <a href="/telemetry.html" class="text-gray-400 hover:text-white">Telemetry</a>
+    <!-- Nav Bar (matches index.html) -->
+    <nav class="relative z-50 max-w-7xl mx-auto px-4 py-4 flex items-center justify-between border-b border-racing-border sticky top-0 backdrop-blur" style="border-color: var(--theme-border); background: var(--theme-bg-base, rgba(10,10,15,0.95));">
+        <a href="/" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded flex items-center justify-center gridview-logo-icon" style="background-color: var(--theme-primary, #e10600);">
+                <span class="text-sm">🏁</span>
             </div>
+            <span class="font-bold text-lg gridview-logo" style="color: var(--theme-text-primary);">GridView</span>
+        </a>
+        <!-- Mobile Hamburger -->
+        <button onclick="toggleMobileMenu()" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Toggle menu">
+            <span class="w-6 h-0.5 bg-current"></span>
+            <span class="w-6 h-0.5 bg-current"></span>
+            <span class="w-6 h-0.5 bg-current"></span>
+        </button>
+        <div class="hidden md:flex items-center gap-6">
+            <a href="/" class="text-gray-400 hover:text-white text-sm transition-colors">Home</a>
+            <a href="/results.html" class="text-gray-400 hover:text-white text-sm transition-colors">Results</a>
+            <span class="text-sm font-medium" style="color: var(--theme-primary, #e10600);">News</span>
+            <a href="/telemetry.html" class="text-gray-400 hover:text-white text-sm transition-colors">Telemetry</a>
+            <button onclick="toggleSpoilerMode()" id="spoiler-toggle" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-racing-red/50 text-sm transition-all">
+                <span id="spoiler-icon">👁️</span>
+                <span id="spoiler-text" class="text-gray-400">Spoilers</span>
+            </button>
+            <select id="timezone-picker" onchange="setTimezone(this.value)" class="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-sm text-gray-400 cursor-pointer hover:border-racing-red/50 transition-colors">
+                <option value="local">Local Time</option>
+                <option value="UTC">UTC</option>
+                <option value="America/New_York">ET</option>
+                <option value="America/Los_Angeles">PT</option>
+                <option value="Europe/London">GMT</option>
+                <option value="Asia/Tokyo">JST</option>
+            </select>
+            <!-- Theme switcher injected by JS -->
+            <button onclick="openNotificationSettings()" id="notification-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-racing-red/50 text-sm transition-all">
+                <span id="notification-icon">🔔</span>
+                <span id="notification-text" class="text-gray-400">Alerts</span>
+            </button>
         </div>
     </nav>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 hidden" style="background: var(--theme-bg-base, #0a0a0f);">
+        <div class="flex flex-col h-full">
+            <div class="flex items-center justify-between px-4 py-4 border-b" style="border-color: var(--theme-border);">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded flex items-center justify-center" style="background-color: var(--theme-primary);">
+                        <span class="text-sm">🏁</span>
+                    </div>
+                    <span class="font-bold text-lg" style="color: var(--theme-text-primary);">GridView</span>
+                </div>
+                <button onclick="toggleMobileMenu()" class="p-2 text-2xl" aria-label="Close menu">✕</button>
+            </div>
+            <div class="flex flex-col p-4 gap-2">
+                <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">🏠 Home</a>
+                <a href="/results.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">🏆 Results</a>
+                <a href="/news.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium bg-white/10" style="color: var(--theme-primary);">📰 News</a>
+                <a href="/telemetry.html" class="flex items-center gap-3 px-4 py-3 rounded-lg text-lg font-medium hover:bg-white/5" style="color: var(--theme-text-primary);">📊 Telemetry</a>
+            </div>
+            <div class="flex flex-col p-4 gap-3 border-t mt-auto" style="border-color: var(--theme-border);">
+                <button onclick="toggleSpoilerMode(); toggleMobileMenu();" class="flex items-center justify-between px-4 py-3 rounded-lg bg-white/5">
+                    <span style="color: var(--theme-text-primary);">Spoiler Mode</span>
+                    <span id="mobile-spoiler-icon">👁️</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="max-w-6xl mx-auto px-4 py-8">
@@ -262,11 +320,11 @@
                 return `
                     <a href="${article.link}" target="_blank" rel="noopener" class="news-card bg-racing-card border border-racing-border rounded-xl overflow-hidden block">
                         ${article.image ? `
-                            <div class="h-48 overflow-hidden bg-racing-border">
+                            <div class="aspect-video overflow-hidden bg-racing-border">
                                 <img src="${article.image}" alt="" class="news-image w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'h-full flex items-center justify-center text-4xl\\'>🏎️</div>'">
                             </div>
                         ` : `
-                            <div class="h-48 bg-racing-border flex items-center justify-center text-4xl">🏎️</div>
+                            <div class="aspect-video bg-racing-border flex items-center justify-center text-4xl">🏎️</div>
                         `}
                         <div class="p-4">
                             <div class="flex items-center gap-2 mb-2">
@@ -296,5 +354,62 @@
         // Initialize
         init();
     </script>
+    
+    <!-- Shared Header Functions -->
+    <script>
+        // Mobile Menu
+        let mobileMenuOpen = false;
+        function toggleMobileMenu() {
+            mobileMenuOpen = !mobileMenuOpen;
+            const menu = document.getElementById('mobile-menu');
+            if (mobileMenuOpen) {
+                menu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                const mobileIcon = document.getElementById('mobile-spoiler-icon');
+                if (mobileIcon) mobileIcon.textContent = spoilerMode ? '🙈' : '👁️';
+            } else {
+                menu.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenuOpen) toggleMobileMenu(); });
+        
+        // Spoiler Mode
+        let spoilerMode = localStorage.getItem('gridview-spoiler-mode') === 'true';
+        function toggleSpoilerMode() {
+            spoilerMode = !spoilerMode;
+            localStorage.setItem('gridview-spoiler-mode', spoilerMode);
+            updateSpoilerUI();
+        }
+        function updateSpoilerUI() {
+            const icon = document.getElementById('spoiler-icon');
+            const text = document.getElementById('spoiler-text');
+            if (icon) icon.textContent = spoilerMode ? '🙈' : '👁️';
+            if (text) text.textContent = spoilerMode ? 'Hidden' : 'Spoilers';
+            document.body.classList.toggle('spoiler-mode', spoilerMode);
+        }
+        updateSpoilerUI();
+        
+        // Timezone
+        function setTimezone(tz) {
+            localStorage.setItem('gridview-timezone', tz);
+        }
+        const savedTz = localStorage.getItem('gridview-timezone');
+        if (savedTz) {
+            const picker = document.getElementById('timezone-picker');
+            if (picker) picker.value = savedTz;
+        }
+        
+        // Notifications placeholder
+        function openNotificationSettings() {
+            alert('Push notifications coming soon!');
+        }
+    </script>
+    
+    <!-- Theme Switcher -->
+    <script src="/js/theme-switcher.js?v=4"></script>
+    <!-- Vercel Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>
