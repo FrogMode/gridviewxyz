@@ -72,3 +72,20 @@
   ✅ Saved f1_2010.json (506.7 KB)
 
 🏁 Archive complete!
+🏁 Archiving 2 seasons: 1950-2009
+
+🏎️  Archiving 1950...
+  📅 7 races
+  🏁 Round 1/7  🏁 Round 2/7  🏁 Round 3/7  🏁 Round 4/7  🏁 Round 5/7  🏁 Round 6/7  🏁 Round 7/7
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_1950.json (149.5 KB)
+
+🏎️  Archiving 2009...
+  📅 17 races
+  🏁 Round 1/17  🏁 Round 2/17  🏁 Round 3/17  🏁 Round 4/17  🏁 Round 5/17  🏁 Round 6/17  🏁 Round 7/17  🏁 Round 8/17  🏁 Round 9/17  🏁 Round 10/17  🏁 Round 11/17  🏁 Round 12/17  🏁 Round 13/17  🏁 Round 14/17  🏁 Round 15/17  🏁 Round 16/17  🏁 Round 17/17
+  🏆 Driver standings captured
+  🏆 Constructor standings captured
+  ✅ Saved f1_2009.json (390.4 KB)
+
+🏁 Archive complete!
